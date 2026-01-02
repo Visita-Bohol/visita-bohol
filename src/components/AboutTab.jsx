@@ -78,7 +78,7 @@ export default function AboutTab() {
 
                 {/* Info Card */}
                 <div className="bg-white rounded-[32px] p-6 shadow-sm border border-blue-50">
-                    <h3 className="font-black text-gray-900 text-[15px] mb-4 uppercase tracking-tight">About Project</h3>
+                    <h3 className="font-black text-gray-900 text-[15px] mb-4 uppercase tracking-tight">About</h3>
                     <p className="text-xs text-gray-500 leading-relaxed font-medium mb-6">
                         Visita Bohol is your complete spiritual companion for visiting churches across the island. We provide verified mass schedules, historical insights, and a guided pilgrimage experience for devotees.
                     </p>

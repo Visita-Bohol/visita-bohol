@@ -416,8 +416,8 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
     if (visitaChurches.length === 0) {
         return (
             <div id="tab-visita" className="tab-content h-full overflow-y-auto px-4 pt-0 pb-20 bg-gray-50 active flex flex-col items-center justify-center p-8">
-                <div className="mb-8 drop-shadow-2xl">
-                    <AppLogo className="w-28 h-28" />
+                <div className="mb-8 drop-shadow-2xl text-blue-600">
+                    <i className="fas fa-cross text-8xl"></i>
                 </div>
                 <h1 className="text-3xl font-black text-gray-900 mb-3 text-center">Visita Iglesia</h1>
                 <p className="text-sm text-gray-600 mb-8 max-w-sm mx-auto leading-relaxed text-center">

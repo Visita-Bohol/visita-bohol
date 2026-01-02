@@ -71,7 +71,7 @@ export default function AboutTab() {
                         If you notice incorrect mass schedules, feast dates, or other church details, please let us know immediately through our support email.
                     </p>
                     <a href="mailto:feedback.visitabohol@gmail.com"
-                        className="flex items-center justify-center gap-2 w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-xs shadow-lg shadow-blue-100 active:scale-95 transition-all uppercase tracking-widest">
+                        className="flex items-center justify-center gap-2 w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-xs shadow-lg shadow-blue-200 active:scale-95 transition-all uppercase tracking-widest">
                         <i className="fas fa-envelope"></i> Contact Support
                     </a>
                 </div>

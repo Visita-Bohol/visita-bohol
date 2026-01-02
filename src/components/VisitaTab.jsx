@@ -335,7 +335,7 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
                                 className={`floating-action-btn !h-12 !w-12 !rounded-xl !shadow-sm !border !border-blue-100/50 !text-blue-600 active:!scale-95 bg-white transition-all ${geoLoading ? 'animate-pulse' : ''}`}
                                 title="Auto-select 7 nearest churches"
                             >
-                                <i className={`fas ${geoLoading ? 'fa-spinner fa-spin' : 'fa-map-marked-alt'} text-lg`}></i>
+                                <i className={`${geoLoading ? 'fas fa-spinner fa-spin' : 'fa-solid fa-location-crosshairs'} text-lg`}></i>
                             </button>
                         </div>
                     </div>

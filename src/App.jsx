@@ -20,6 +20,7 @@ function App() {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [specialHeader, setSpecialHeader] = useState(null);
     const [visitaProgress, setVisitaProgress] = useLocalStorage('visitaProgress', []);
+    const [visitaChurches, setVisitaChurches] = useLocalStorage('visitaChurches', []);
     const [showCompletion, setShowCompletion] = useState(false);
     const { toasts, addToast, removeToast } = useToast();
 
@@ -111,6 +112,8 @@ function App() {
                         visitedChurches={visitedChurches}
                         visitaProgress={visitaProgress}
                         setVisitaProgress={setVisitaProgress}
+                        visitaChurches={visitaChurches}
+                        setVisitaChurches={setVisitaChurches}
                         onVisitChurch={toggleVisited}
                         onChurchClick={(c, h) => openSheet(c, h, false)}
                         setHideNav={setHideNav}
@@ -143,7 +146,7 @@ function App() {
                 }}
             />
             {showCompletion && (
-                <div id="completion-fullscreen-modal" className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-md transition-all duration-300">
+                <div id="completion-fullscreen-modal" className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-md transition-all duration-500 animate-in fade-in">
                     <div className="bg-white rounded-[40px] p-2 shadow-2xl w-full max-w-sm animate-scale-in relative border border-white">
                         <button onClick={() => setShowCompletion(false)} className="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 active:scale-90 transition-transform z-10">
                             <i className="fas fa-times text-lg"></i>
@@ -161,7 +164,7 @@ function App() {
                             <div className="bg-gray-50/50 rounded-3xl p-6 border border-gray-100 relative z-10 text-left mb-6">
                                 <p className="text-[9px] uppercase font-black text-gray-400 tracking-[0.1em] mb-4">Pilgrimage Stations</p>
                                 <div className="space-y-1">
-                                    {(JSON.parse(localStorage.getItem('visitaChurches')) || []).map((id, i) => {
+                                    {visitaChurches.map((id, i) => {
                                         const church = churches.find(c => c.id === id);
                                         return (
                                             <div key={i} className="flex items-center gap-3 py-1.5 border-b border-gray-100/50 last:border-0">

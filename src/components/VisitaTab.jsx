@@ -2,8 +2,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import Sortable from 'sortablejs';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 
-export default function VisitaTab({ churches, prayers, visitedChurches, visitaProgress, setVisitaProgress, onVisitChurch, onChurchClick, setHideNav }) {
-    const [visitaChurches, setVisitaChurches] = useLocalStorage('visitaChurches', []);
+export default function VisitaTab({ churches, prayers, visitedChurches, visitaProgress, setVisitaProgress, visitaChurches, setVisitaChurches, onVisitChurch, onChurchClick, setHideNav }) {
     const [isSelecting, setIsSelecting] = useState(false);
     const [currentStep, setCurrentStep] = useState(0);
     const [tempChurches, setTempChurches] = useState([]);
@@ -11,10 +10,10 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
     const [isReviewing, setIsReviewing] = useState(false);
     const sortableRef = useRef(null);
 
-    // Sync hideNav with parent
+    // Sync hideNav with parent - only hide during final review
     useEffect(() => {
-        if (setHideNav) setHideNav(isSelecting || isReviewing);
-    }, [isSelecting, isReviewing, setHideNav]);
+        if (setHideNav) setHideNav(isReviewing);
+    }, [isReviewing, setHideNav]);
 
     // Handle reordering
     useEffect(() => {
@@ -402,7 +401,7 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
 
                     if (isDone) {
                         return (
-                            <div key={id} className="mb-4 relative px-4">
+                            <div key={id} className="mb-4 relative px-0">
                                 <div className="rounded-2xl p-5 border border-blue-600 bg-blue-50/10 shadow-md shadow-blue-100 active:scale-98 transition-all hover:border-blue-200 relative overflow-hidden">
                                     <div className="absolute inset-0 bg-gradient-to-br from-blue-100/40 to-blue-600/5 backdrop-blur-sm -z-10"></div>
                                     <div className="flex items-start gap-4 relative z-10">
@@ -445,7 +444,7 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
                     }
 
                     return (
-                        <div key={id} className="mb-4 relative px-4">
+                        <div key={id} className="mb-4 relative px-0">
                             <div className={`rounded-2xl p-5 border ${isNext ? 'border-blue-50/50' : 'border-gray-100'} shadow-sm active:scale-98 transition-all hover:border-blue-200 relative overflow-hidden`}>
                                 <div className={`absolute inset-0 bg-gradient-to-br ${isNext ? 'from-blue-50/90 to-white/90' : 'from-white/95 to-blue-50/20'} backdrop-blur-sm -z-10`}></div>
                                 <div className="flex items-start gap-4 relative z-10">

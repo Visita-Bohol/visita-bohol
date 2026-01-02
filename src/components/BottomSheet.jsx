@@ -1,17 +1,43 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { formatMassTimes, getDioceseBadgeClasses } from '../utils/helpers';
 
 export default function BottomSheet({ isOpen, church, isVisited, onClose, SpecialHeader, onToggleVisited, onVisitaComplete }) {
     const sheetRef = useRef(null);
+    const [dragOffset, setDragOffset] = useState(0);
+    const [isDragging, setIsDragging] = useState(false);
+    const touchStart = useRef(0);
 
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
+            setDragOffset(0);
         } else {
             document.body.style.overflow = '';
         }
         return () => { document.body.style.overflow = ''; };
     }, [isOpen]);
+
+    const handleTouchStart = (e) => {
+        touchStart.current = e.touches[0].clientY;
+        setIsDragging(true);
+    };
+
+    const handleTouchMove = (e) => {
+        const currentY = e.touches[0].clientY;
+        const deltaY = currentY - touchStart.current;
+        if (deltaY > 0) {
+            setDragOffset(deltaY);
+        }
+    };
+
+    const handleTouchEnd = () => {
+        setIsDragging(false);
+        if (dragOffset > 100) {
+            onClose();
+        } else {
+            setDragOffset(0);
+        }
+    };
 
     if (!church) return null;
 
@@ -71,22 +97,30 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
             {/* Backdrop */}
             <div
                 onClick={onClose}
-                className={`fixed inset-0 bg-gray-900/30 backdrop-blur-[2px] z-[1500] transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                className={`fixed inset-0 bg-gray-900/40 backdrop-blur-[2px] z-[1500] transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
             />
 
             {/* Sheet */}
             <div
                 ref={sheetRef}
-                className={`fixed bottom-0 left-0 right-0 bg-white z-[2000] border-t-left-radius-[24px] border-t-right-radius-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] max-h-[85vh] flex flex-col ${isOpen ? 'translate-y-0' : 'translate-y-full'}`}
-                style={{ borderTopLeftRadius: '24px', borderTopRightRadius: '24px' }}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                className={`fixed bottom-0 left-0 right-0 bg-white z-[2000] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] max-h-[85vh] flex flex-col ${isOpen ? 'translate-y-0' : 'translate-y-full'}`}
+                style={{
+                    borderTopLeftRadius: '24px',
+                    borderTopRightRadius: '24px',
+                    transform: isOpen ? `translateY(${dragOffset}px)` : 'translateY(100%)',
+                    transition: isDragging ? 'none' : 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+                }}
             >
-                {/* Handle */}
-                <div onClick={onClose} className="p-3 cursor-pointer flex-shrink-0">
-                    <div className="w-9 h-1 bg-gray-200 rounded-full mx-auto"></div>
+                {/* Handle Container */}
+                <div onClick={onClose} className="p-4 cursor-pointer flex-shrink-0">
+                    <div className="w-12 h-1.5 bg-gray-200/80 rounded-full mx-auto"></div>
                 </div>
 
                 {/* Content */}
-                <div className="overflow-y-auto flex-1 px-5 pb-8 no-scrollbar">
+                <div className="overflow-y-auto flex-1 px-5 pb-10 no-scrollbar">
                     {isStation || isSpecialPrayer ? (
                         <div id="sheet-content">
                             <div className="text-center mb-6">
@@ -154,7 +188,7 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
                             )}
 
                             <div className="flex gap-3">
-                                <button onClick={onClose} className="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-black shadow-xl shadow-blue-200 active:scale-95 transition-all">
+                                <button onClick={onClose} className="flex-1 bg-gray-100 text-gray-600 py-4 rounded-2xl font-black text-sm active:scale-95 transition-all">
                                     Close
                                 </button>
                                 {isStation && onVisitaComplete && (

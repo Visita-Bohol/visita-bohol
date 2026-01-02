@@ -1,15 +1,60 @@
+import { useState, useEffect } from 'react';
+import AppLogo from './AppLogo';
+
 export default function AboutTab() {
+    const [deferredPrompt, setDeferredPrompt] = useState(null);
+
+    useEffect(() => {
+        const handleBeforeInstallPrompt = (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            setDeferredPrompt(e);
+        };
+
+        window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+        return () => {
+            window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+        };
+    }, []);
+
+    const handleInstallClick = async () => {
+        if (!deferredPrompt) return;
+        // Show the install prompt
+        deferredPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        const { outcome } = await deferredPrompt.userChoice;
+        // We've used the prompt, and can't use it again, discard it
+        setDeferredPrompt(null);
+    };
+
     return (
         <div id="tab-about" className="tab-content h-full overflow-y-auto pt-6 pb-32 bg-gray-50 no-scrollbar">
             <div className="px-4 max-w-md mx-auto space-y-6">
                 {/* App Header */}
                 <div className="text-center pt-10 pb-4">
-                    <div className="w-20 h-20 bg-blue-600 rounded-[28px] flex items-center justify-center mx-auto mb-5 shadow-2xl shadow-blue-100">
-                        <i className="fas fa-church text-white text-3xl"></i>
+                    <div className="mb-5 drop-shadow-2xl flex justify-center">
+                        <AppLogo className="w-24 h-24" />
                     </div>
                     <h2 className="text-2xl font-black text-gray-900 mb-1 italic">Visita Bohol</h2>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Version 1.0.0 • Pilgrimage Edition</p>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Version 1.0.0 • Your Pilgrimage Companion</p>
                 </div>
+
+                {deferredPrompt && (
+                    <button
+                        onClick={handleInstallClick}
+                        className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-[24px] shadow-lg shadow-blue-200 active:scale-95 transition-all flex items-center justify-center gap-3"
+                    >
+                        <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-white">
+                            <i className="fas fa-download text-lg"></i>
+                        </div>
+                        <div className="text-left">
+                            <div className="font-black text-sm uppercase tracking-wide">Install App</div>
+                            <div className="text-[10px] font-bold text-blue-100 uppercase tracking-wider">Get the full experience</div>
+                        </div>
+                    </button>
+                )}
 
                 {/* Report Card */}
                 <div className="bg-white rounded-[32px] p-6 shadow-sm border border-blue-50">

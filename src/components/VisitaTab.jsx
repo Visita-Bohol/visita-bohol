@@ -27,10 +27,12 @@ export default function VisitaTab({ churches, prayers, visitedChurches, onVisitC
                 ghostClass: 'opacity-50',
                 chosenClass: 'bg-blue-50/50',
                 onEnd: (evt) => {
-                    const newTemp = [...tempChurches];
-                    const [movedItem] = newTemp.splice(evt.oldIndex, 1);
-                    newTemp.splice(evt.newIndex, 0, movedItem);
-                    setTempChurches(newTemp);
+                    setTempChurches(prev => {
+                        const newTemp = [...prev];
+                        const [movedItem] = newTemp.splice(evt.oldIndex, 1);
+                        newTemp.splice(evt.newIndex, 0, movedItem);
+                        return newTemp;
+                    });
                 }
             });
             return () => sortable.destroy();
@@ -99,7 +101,7 @@ export default function VisitaTab({ churches, prayers, visitedChurches, onVisitC
                                 const church = churches.find(c => c.id === id);
                                 return (
                                     <div
-                                        key={idx}
+                                        key={id}
                                         onClick={() => editStep(idx)}
                                         className="flex items-center gap-2 bg-white pl-3 pr-4 py-2 rounded-xl border border-blue-100 shadow-sm flex-shrink-0 cursor-pointer hover:border-blue-300 hover:bg-blue-50/60 transition-all"
                                     >
@@ -123,7 +125,7 @@ export default function VisitaTab({ churches, prayers, visitedChurches, onVisitC
                             const markerColor = church.Diocese === 'Tagbilaran' ? 'bg-blue-600' : 'bg-amber-500';
 
                             return (
-                                <div key={idx} className="church-select-item rounded-2xl p-4 border transition-all cursor-pointer relative overflow-hidden group border-blue-600 bg-blue-50/20 shadow-md">
+                                <div key={id} className="church-select-item rounded-2xl p-4 border transition-all cursor-pointer relative overflow-hidden group border-blue-600 bg-blue-50/20 shadow-md">
                                     <div className="flex items-center gap-3 relative z-10">
                                         <div className="drag-handle text-gray-300 px-1 cursor-grab active:cursor-grabbing hover:text-blue-400">
                                             <i className="fas fa-grip-vertical text-lg"></i>

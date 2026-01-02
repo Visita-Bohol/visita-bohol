@@ -11,7 +11,7 @@ export default function SplashScreen() {
                     Visita Bohol
                 </h1>
                 <p className="text-gray-400 font-bold text-xs uppercase tracking-[0.3em] ml-1">
-                    Pilgrimage Edition
+                    Your Pilgrimage Companion
                 </p>
             </div>
 

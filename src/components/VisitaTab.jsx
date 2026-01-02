@@ -256,7 +256,7 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
                         </div>
                     </div>
 
-                    <div id="church-selection-list" className="space-y-2 mb-28 pt-2 px-4">
+                    <div id="church-selection-list" className="space-y-2 mb-28 pt-2 px-0">
                         {filtered.map(church => {
                             const isPicked = tempChurches.includes(church.id);
                             const isCurrentSlot = tempChurches[currentStep] === church.id;

@@ -92,7 +92,7 @@ export default function DirectoryTab({ churches, visitedChurches, onChurchClick 
                 </div>
             </div>
 
-            <div className="px-4 pb-32 max-w-[1400px] mx-auto">
+            <div className="px-4 pb-32 mx-auto">
                 {/* Fiestas this Month Section */}
                 {currentMonthChurches.length > 0 && (
                     <div className="mb-6 relative z-10 overflow-hidden">

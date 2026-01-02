@@ -97,7 +97,18 @@
 
     .floating-header,
     .inline-header {
-      @apply max-w-2xl mx-auto left-4 right-4 rounded-3xl mt-4 border border-white/50 shadow-2xl;
+      /* left: 1rem; */
+      /* right: 1rem; */
+      /* margin-left: auto; */
+      /* margin-right: auto; */
+      /* margin-top: 1rem; */
+      /* max-width: 42rem; */
+      /* border-radius: 1.5rem; */
+      /* border-width: 1px; */
+      /* border-color: #ffffff80; */
+      /* --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / .25); */
+      --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
+      box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
     }
   }
 

@@ -417,8 +417,8 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
                 <div className="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-200">
                     <i className="fas fa-cross text-white text-3xl"></i>
                 </div>
-                <h1 className="text-3xl font-black text-gray-900 mb-3">Visita Iglesia</h1>
-                <p className="text-sm text-gray-600 mb-8 max-w-sm mx-auto leading-relaxed">
+                <h1 className="text-3xl font-black text-gray-900 mb-3 text-center">Visita Iglesia</h1>
+                <p className="text-sm text-gray-600 mb-8 max-w-sm mx-auto leading-relaxed text-center">
                     Select 7 churches for your Visita Iglesia journey. Pray at each station and track your pilgrimage progress.
                 </p>
                 <button

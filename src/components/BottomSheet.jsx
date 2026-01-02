@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
+import { calculateDistance } from '../utils/helpers';
 
-export default function BottomSheet({ isOpen, church, isVisited, onClose, SpecialHeader, onToggleVisited, onVisitaComplete, onResetPilgrimage }) {
+export default function BottomSheet({ isOpen, church, allChurches, userLocation, isVisited, onClose, SpecialHeader, onToggleVisited, onVisitaComplete, onResetPilgrimage }) {
     const sheetRef = useRef(null);
     const [dragOffset, setDragOffset] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
@@ -10,6 +11,9 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
     const isResetView = SpecialHeader && SpecialHeader.text === 'Reset Journey';
     const isStation = SpecialHeader && SpecialHeader.text.includes('STATION');
     const isSpecialPrayer = SpecialHeader && (SpecialHeader.text === 'VISITA IGLESIA' || SpecialHeader.text === 'PILGRIMAGE COMPLETE' || isResetView);
+
+    // Lock the sheet (disable swipe-to-dismiss) only for Prayers and Initial Guide
+    const isLocked = isStation || (SpecialHeader && SpecialHeader.text === 'VISITA IGLESIA');
 
     useEffect(() => {
         if (church) {
@@ -33,8 +37,8 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
     };
 
     const handleTouchMove = (e) => {
-        // Disable swipe dismissal for prayer/station views to prevent accidental closure
-        if (isStation || isSpecialPrayer) return;
+        // Disable swipe dismissal for locked views to prevent accidental closure
+        if (isLocked) return;
 
         const currentY = e.touches[0].clientY;
         const deltaY = currentY - touchStart.current;
@@ -47,7 +51,7 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
     };
 
     const handleTouchEnd = () => {
-        if (isStation || isSpecialPrayer) {
+        if (isLocked) {
             setIsDragging(false);
             setDragOffset(0);
             return;
@@ -101,6 +105,18 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
         );
     };
 
+    const nearbyChurches = useMemo(() => {
+        if (!userLocation || !allChurches || !currentChurch) return [];
+        return allChurches
+            .filter(c => c.id !== currentChurch.id)
+            .map(c => ({
+                ...c,
+                dist: calculateDistance(userLocation.latitude, userLocation.longitude, c.Coords[0], c.Coords[1])
+            }))
+            .sort((a, b) => a.dist - b.dist)
+            .slice(0, 2);
+    }, [allChurches, userLocation, currentChurch, isOpen]);
+
     return (
         <>
             {/* Backdrop */}
@@ -123,14 +139,14 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
                     transition: isDragging ? 'none' : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
                 }}
             >
-                {/* Fixed Header/Handle */}
-                {!(isStation || isSpecialPrayer) && (
+                {/* Fixed Header/Handle - Hidden only when locked */}
+                {!isLocked && (
                     <div onClick={onClose} className="pt-3 pb-2 cursor-pointer flex-shrink-0">
                         <div className="w-12 h-1.5 bg-gray-200/80 rounded-full mx-auto"></div>
                     </div>
                 )}
 
-                {(isStation || isSpecialPrayer) && <div className="pt-6 flex-shrink-0"></div>}
+                {isLocked && <div className="pt-6 flex-shrink-0"></div>}
 
                 {/* Scrollable Content Area */}
                 <div className="overflow-y-auto flex-1 px-5 no-scrollbar">
@@ -204,6 +220,25 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
                                             </p>
                                         </div>
                                     )}
+
+                                    {nearbyChurches.length > 0 && (
+                                        <div className="mt-8 mb-4">
+                                            <h3 className="text-[10px] uppercase font-black text-gray-400 tracking-[0.2em] mb-4">Other Nearby Churches</h3>
+                                            <div className="space-y-3">
+                                                {nearbyChurches.map(nb => (
+                                                    <div key={nb.id} className="bg-gray-50/50 border border-gray-100/50 rounded-2xl p-4 flex justify-between items-center animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                                        <div className="min-w-0 pr-4">
+                                                            <p className="text-sm font-black text-gray-900 truncate">{nb.Name}</p>
+                                                            <p className="text-[11px] text-gray-500 font-semibold truncate">{nb.Location}</p>
+                                                        </div>
+                                                        <div className="text-right flex-shrink-0">
+                                                            <p className="text-sm font-black text-blue-600">{nb.dist.toFixed(1)} km</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                 </>
                             )}
                         </div>
@@ -267,6 +302,25 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
                                         <p className="text-[15px] text-gray-900 font-black">{currentChurch.Fiesta}</p>
                                     </div>
                                 </div>
+
+                                {nearbyChurches.length > 0 && (
+                                    <div className="mt-8 mb-4">
+                                        <h3 className="text-[10px] uppercase font-black text-gray-400 tracking-[0.2em] mb-4">Other Nearby Churches</h3>
+                                        <div className="space-y-3">
+                                            {nearbyChurches.map(nb => (
+                                                <div key={nb.id} className="bg-gray-50/50 border border-gray-100/50 rounded-2xl p-4 flex justify-between items-center animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                                    <div className="min-w-0 pr-4">
+                                                        <p className="text-sm font-black text-gray-900 truncate">{nb.Name}</p>
+                                                        <p className="text-[11px] text-gray-500 font-semibold truncate">{nb.Location}</p>
+                                                    </div>
+                                                    <div className="text-right flex-shrink-0">
+                                                        <p className="text-sm font-black text-blue-600">{nb.dist.toFixed(1)} km</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}

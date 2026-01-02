@@ -9,6 +9,7 @@ import BottomSheet from './components/BottomSheet';
 import ToastContainer from './components/ToastContainer';
 import { useToast } from './hooks/useToast';
 import { useLocalStorage } from './hooks/useLocalStorage';
+import { useGeolocation } from './hooks/useGeolocation';
 
 function App() {
     const [loading, setLoading] = useState(true);
@@ -23,6 +24,7 @@ function App() {
     const [visitaChurches, setVisitaChurches] = useLocalStorage('visitaChurches', []);
     const [showCompletion, setShowCompletion] = useState(false);
     const { toasts, addToast, removeToast } = useToast();
+    const { location: userLocation } = useGeolocation();
 
     // Data Loading with identical timing to HTML
     useEffect(() => {
@@ -128,6 +130,8 @@ function App() {
             <BottomSheet
                 isOpen={isSheetOpen}
                 church={selectedChurch}
+                allChurches={churches}
+                userLocation={userLocation}
                 isVisited={selectedChurch && visitedChurches.includes(selectedChurch.id)}
                 onClose={closeSheet}
                 SpecialHeader={specialHeader}

@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import Sortable from 'sortablejs';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { calculateDistance } from '../utils/helpers';
 
 export default function VisitaTab({ churches, prayers, visitedChurches, visitaProgress, setVisitaProgress, visitaChurches, setVisitaChurches, onVisitChurch, onChurchClick, setHideNav }) {
     const [isSelecting, setIsSelecting] = useState(false);
@@ -69,6 +70,50 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
 
     const unmarkStation = (idx) => {
         setVisitaProgress(prev => prev.filter(p => p !== idx));
+    };
+
+    const autoSelectRoute = () => {
+        const firstSelectedIdx = tempChurches.findIndex(id => id !== null);
+        if (firstSelectedIdx === -1) return;
+
+        const startChurchId = tempChurches[firstSelectedIdx];
+        const startChurch = churches.find(c => c.id === startChurchId);
+        if (!startChurch) return;
+
+        let selected = [startChurchId];
+        let currentCoords = startChurch.Coords;
+
+        // Iteratively find the nearest unselected church
+        while (selected.length < 7) {
+            let nearest = null;
+            let minDistance = Infinity;
+
+            churches.forEach(church => {
+                if (!selected.includes(church.id)) {
+                    const dist = calculateDistance(
+                        currentCoords[0], currentCoords[1],
+                        church.Coords[0], church.Coords[1]
+                    );
+                    if (dist < minDistance) {
+                        minDistance = dist;
+                        nearest = church;
+                    }
+                }
+            });
+
+            if (nearest) {
+                selected.push(nearest.id);
+                currentCoords = nearest.Coords;
+            } else {
+                break;
+            }
+        }
+
+        // Fill tempChurches with the new route
+        const newRoute = [...selected];
+        while (newRoute.length < 7) newRoute.push(null);
+        setTempChurches(newRoute);
+        setCurrentStep(0); // View the whole route
     };
 
     // --- REVIEW UI ---
@@ -250,8 +295,22 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
                                 />
                             </div>
 
-                            <button className="floating-action-btn !h-12 !w-12 !rounded-xl !shadow-sm !border !border-blue-100/50 !text-blue-600 active:!scale-95 bg-white">
+                            <button
+                                onClick={autoSelectRoute}
+                                disabled={!tempChurches.some(id => id)}
+                                className={`floating-action-btn !h-12 !w-12 !rounded-xl !shadow-sm !border !border-blue-100/50 active:!scale-95 transition-all relative
+                                    ${tempChurches.some(id => id)
+                                        ? 'bg-blue-600 !text-white !border-blue-600 shadow-blue-100'
+                                        : 'bg-white !text-blue-600 opacity-60'}`}
+                                title="Auto-select nearest route"
+                            >
                                 <i className="fas fa-map-marked-alt text-lg"></i>
+                                {tempChurches.some(id => id) && !tempChurches.every(id => id) && (
+                                    <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-400"></span>
+                                    </span>
+                                )}
                             </button>
                         </div>
                     </div>
@@ -334,7 +393,7 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
                     <i className="fas fa-cross text-white text-3xl"></i>
                 </div>
                 <h1 className="text-3xl font-black text-gray-900 mb-3">Visita Iglesia</h1>
-                <p className="text-sm text-gray-600 mb-8 max-w-sm mx-auto leading-relaxed">
+                <p className="text-sm text-center text-gray-600 mb-8 max-w-sm mx-auto leading-relaxed">
                     Select 7 churches for your Visita Iglesia journey. Pray at each station and track your pilgrimage progress.
                 </p>
                 <button

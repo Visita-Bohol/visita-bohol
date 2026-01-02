@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { formatMassTimes, getDioceseBadgeClasses } from '../utils/helpers';
 
-export default function BottomSheet({ isOpen, church, isVisited, onClose, SpecialHeader, onToggleVisited, onVisitaComplete }) {
+export default function BottomSheet({ isOpen, church, isVisited, onClose, SpecialHeader, onToggleVisited, onVisitaComplete, onResetPilgrimage }) {
     const sheetRef = useRef(null);
     const [dragOffset, setDragOffset] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
     const touchStart = useRef(0);
+
+    const isResetView = SpecialHeader && SpecialHeader.text === 'Reset Journey';
 
     useEffect(() => {
         if (isOpen) {
@@ -25,7 +27,11 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
     const handleTouchMove = (e) => {
         const currentY = e.touches[0].clientY;
         const deltaY = currentY - touchStart.current;
-        if (deltaY > 0) {
+
+        // Add resistance when pulling up (deltaY < 0)
+        if (deltaY < 0) {
+            setDragOffset(deltaY * 0.2); // 20% resistance
+        } else {
             setDragOffset(deltaY);
         }
     };
@@ -45,7 +51,7 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
     const isStation = SpecialHeader && SpecialHeader.text.includes('STATION');
     const stationMatch = isStation ? SpecialHeader.text.match(/STATION (\d+)/) : null;
     const stationNumber = stationMatch ? parseInt(stationMatch[1]) : null;
-    const isSpecialPrayer = SpecialHeader && (SpecialHeader.text === 'VISITA IGLESIA' || SpecialHeader.text === 'PILGRIMAGE COMPLETE');
+    const isSpecialPrayer = SpecialHeader && (SpecialHeader.text === 'VISITA IGLESIA' || SpecialHeader.text === 'PILGRIMAGE COMPLETE' || isResetView);
 
     const dioceseColor = church.Diocese === 'Tagbilaran' ? 'bg-blue-100 text-blue-800' :
         church.Diocese === 'Talibon' ? 'bg-amber-100 text-amber-800' :
@@ -97,7 +103,7 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
             {/* Backdrop */}
             <div
                 onClick={onClose}
-                className={`fixed inset-0 bg-gray-900/40 backdrop-blur-[2px] z-[1500] transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                className={`fixed inset-0 bg-gray-900/40 backdrop-blur-[2px] z-[1500] transition-opacity duration-500 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
             />
 
             {/* Sheet */}
@@ -106,12 +112,12 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
-                className={`fixed bottom-0 left-0 right-0 bg-white z-[2000] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] max-h-[85vh] flex flex-col ${isOpen ? 'translate-y-0' : 'translate-y-full'}`}
+                className={`fixed bottom-0 left-0 right-0 bg-white z-[2000] shadow-[0_-10px_40px_rgba(0,0,0,0.15)] flex flex-col ${isOpen ? 'translate-y-0' : 'translate-y-full'}`}
                 style={{
                     borderTopLeftRadius: '24px',
                     borderTopRightRadius: '24px',
                     transform: isOpen ? `translateY(${dragOffset}px)` : 'translateY(100%)',
-                    transition: isDragging ? 'none' : 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+                    transition: isDragging ? 'none' : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
                 }}
             >
                 {/* Handle Container */}
@@ -123,83 +129,112 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
                 <div className="overflow-y-auto flex-1 px-5 pb-10 no-scrollbar">
                     {isStation || isSpecialPrayer ? (
                         <div id="sheet-content">
-                            <div className="text-center mb-6">
-                                <div className="w-16 h-16 bg-blue-600 shadow-blue-200 shadow-lg rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                    <i className={`${SpecialHeader?.icon || 'fas fa-book-open'} text-white text-2xl`}></i>
-                                </div>
-                                <h2 className="text-2xl font-black text-gray-900 leading-tight">
-                                    {SpecialHeader?.text === 'VISITA IGLESIA' ? 'Begin Your Pilgrimage' : church.Name}
-                                </h2>
-                                {isStation && (
-                                    <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-3">
-                                        Prayer {stationNumber} of 7
-                                    </p>
-                                )}
-                                {isSpecialPrayer && (
-                                    <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-2">
-                                        {SpecialHeader.text === 'VISITA IGLESIA' ? 'Before Visiting the Church' : SpecialHeader.text}
-                                    </p>
-                                )}
-                            </div>
-
-                            {SpecialHeader?.text === 'VISITA IGLESIA' ? (
-                                <div className="space-y-6 mb-8">
-                                    <div>
-                                        <p className="text-[10px] uppercase font-black text-blue-600 tracking-[0.2em] mb-3">Tips</p>
-                                        <ul className="space-y-3">
-                                            {[
-                                                'Dress modestly and respectfully.',
-                                                'Arrive a few minutes early.',
-                                                'Silence your phone before entering.',
-                                                'Be respectful of people praying.',
-                                                'Follow any posted rules or signs.'
-                                            ].map((tip, idx) => (
-                                                <li key={idx} className="flex items-start gap-3 text-xs font-bold text-gray-600">
-                                                    <i className="fas fa-check text-[10px] mt-0.5 text-blue-500"></i>
-                                                    <span>{tip}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
+                            {isResetView ? (
+                                <div className="text-center">
+                                    <div className="mb-6">
+                                        <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-200">
+                                            <i className="fas fa-redo-alt text-white text-2xl"></i>
+                                        </div>
+                                        <h2 className="text-2xl font-black text-gray-900">Reset Journey?</h2>
+                                        <p className="text-xs text-red-600 font-bold uppercase tracking-wider mt-1">Warning: Permanent Action</p>
                                     </div>
 
-                                    <div>
-                                        <p className="text-[10px] uppercase font-black text-blue-600 tracking-[0.2em] mb-3">Guides</p>
-                                        <ul className="space-y-3">
-                                            {[
-                                                'Check the church schedule (mass times or visiting hours).',
-                                                'Learn basic church etiquette.',
-                                                'Ask politely if photos are allowed.',
-                                                'Sit or stand when others do, if attending a service.'
-                                            ].map((guide, idx) => (
-                                                <li key={idx} className="flex items-start gap-3 text-xs font-bold text-gray-600">
-                                                    <i className="fas fa-chevron-right text-[10px] mt-0.5 text-blue-500"></i>
-                                                    <span>{guide}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
+                                    <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 mb-8">
+                                        <p className="text-gray-600 leading-relaxed text-sm text-center">
+                                            This will clear your 7 selected churches and reset all station progress. This action cannot be undone.
+                                        </p>
+                                    </div>
+
+                                    <div className="flex gap-3 mb-4">
+                                        <button onClick={onClose} className="flex-1 bg-gray-100 text-gray-600 py-4 rounded-xl font-bold active:scale-95 transition-all text-sm">
+                                            Cancel
+                                        </button>
+                                        <button onClick={onResetPilgrimage} className="flex-1 bg-red-600 text-white py-4 rounded-xl font-bold shadow-lg shadow-red-200 active:scale-95 transition-all text-sm">
+                                            <i className="fas fa-trash-alt mr-2"></i> Reset
+                                        </button>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="bg-blue-50/50 rounded-3xl p-6 mb-8 border border-blue-50">
-                                    <p className="text-gray-700 leading-relaxed whitespace-pre-line text-sm font-medium">
-                                        {church.History}
-                                    </p>
-                                </div>
-                            )}
+                                <>
+                                    <div className="text-center mb-6">
+                                        <div className="w-16 h-16 bg-blue-600 shadow-blue-200 shadow-lg rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                            <i className={`${SpecialHeader?.icon || 'fas fa-book-open'} text-white text-2xl`}></i>
+                                        </div>
+                                        <h2 className="text-2xl font-black text-gray-900 leading-tight">
+                                            {SpecialHeader?.text === 'VISITA IGLESIA' ? 'Begin Your Pilgrimage' : church.Name}
+                                        </h2>
+                                        {isStation && (
+                                            <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-3">
+                                                Prayer {stationNumber} of 7
+                                            </p>
+                                        )}
+                                        {isSpecialPrayer && (
+                                            <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-2">
+                                                {SpecialHeader.text === 'VISITA IGLESIA' ? 'Before Visiting the Church' : SpecialHeader.text}
+                                            </p>
+                                        )}
+                                    </div>
 
-                            <div className="flex gap-3">
-                                <button onClick={onClose} className="flex-1 bg-gray-100 text-gray-600 py-4 rounded-2xl font-black text-sm active:scale-95 transition-all">
-                                    Close
-                                </button>
-                                {isStation && onVisitaComplete && (
-                                    <button
-                                        onClick={() => onVisitaComplete(stationNumber)}
-                                        className="flex-[2] bg-blue-600 text-white py-4 rounded-2xl font-black shadow-xl shadow-blue-200 active:scale-95 transition-all"
-                                    >
-                                        <i className="fas fa-check-circle mr-2"></i> Complete
-                                    </button>
-                                )}
-                            </div>
+                                    {SpecialHeader?.text === 'VISITA IGLESIA' ? (
+                                        <div className="space-y-6 mb-8">
+                                            <div>
+                                                <p className="text-[10px] uppercase font-black text-blue-600 tracking-[0.2em] mb-3">Tips</p>
+                                                <ul className="space-y-3">
+                                                    {[
+                                                        'Dress modestly and respectfully.',
+                                                        'Arrive a few minutes early.',
+                                                        'Silence your phone before entering.',
+                                                        'Be respectful of people praying.',
+                                                        'Follow any posted rules or signs.'
+                                                    ].map((tip, idx) => (
+                                                        <li key={idx} className="flex items-start gap-3 text-xs font-bold text-gray-600">
+                                                            <i className="fas fa-check text-[10px] mt-0.5 text-blue-500"></i>
+                                                            <span>{tip}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+
+                                            <div>
+                                                <p className="text-[10px] uppercase font-black text-blue-600 tracking-[0.2em] mb-3">Guides</p>
+                                                <ul className="space-y-3">
+                                                    {[
+                                                        'Check the church schedule (mass times or visiting hours).',
+                                                        'Learn basic church etiquette.',
+                                                        'Ask politely if photos are allowed.',
+                                                        'Sit or stand when others do, if attending a service.'
+                                                    ].map((guide, idx) => (
+                                                        <li key={idx} className="flex items-start gap-3 text-xs font-bold text-gray-600">
+                                                            <i className="fas fa-chevron-right text-[10px] mt-0.5 text-blue-500"></i>
+                                                            <span>{guide}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-blue-50/50 rounded-3xl p-6 mb-8 border border-blue-50">
+                                            <p className="text-gray-700 leading-relaxed whitespace-pre-line text-sm font-medium">
+                                                {church.History}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    <div className="flex gap-3">
+                                        <button onClick={onClose} className="flex-1 bg-gray-100 text-gray-600 py-4 rounded-2xl font-black text-sm active:scale-95 transition-all">
+                                            Close
+                                        </button>
+                                        {isStation && onVisitaComplete && (
+                                            <button
+                                                onClick={() => onVisitaComplete(stationNumber)}
+                                                className="flex-[2] bg-blue-600 text-white py-4 rounded-2xl font-black shadow-xl shadow-blue-200 active:scale-95 transition-all"
+                                            >
+                                                <i className="fas fa-check-circle mr-2"></i> Complete
+                                            </button>
+                                        )}
+                                    </div>
+                                </>
+                            )}
                         </div>
                     ) : (
                         <>

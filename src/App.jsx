@@ -131,6 +131,11 @@ function App() {
                 onClose={closeSheet}
                 SpecialHeader={specialHeader}
                 onToggleVisited={() => selectedChurch && toggleVisited(selectedChurch.id)}
+                onResetPilgrimage={() => {
+                    setVisitaChurches([]);
+                    setVisitaProgress([]);
+                    closeSheet();
+                }}
                 onVisitaComplete={(idx) => {
                     if (!visitaProgress.includes(idx)) {
                         const newProgress = [...visitaProgress, idx];

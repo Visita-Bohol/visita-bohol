@@ -64,10 +64,7 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
     };
 
     const resetVisita = () => {
-        if (window.confirm('Reset your Visita Iglesia journey? This will clear all progress.')) {
-            setVisitaChurches([]);
-            setVisitaProgress([]);
-        }
+        onChurchClick({ Name: 'Reset Journey?', id: 'reset_journey' }, { text: 'Reset Journey', icon: 'fas fa-redo-alt', color: 'bg-red-600' });
     };
 
     const unmarkStation = (idx) => {
@@ -77,9 +74,9 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
     // --- REVIEW UI ---
     if (isReviewing) {
         return (
-            <div id="tab-visita" className="tab-content h-full overflow-y-auto px-4 pt-0 pb-20 bg-gradient-to-b from-blue-50 to-white active no-scrollbar">
+            <div id="tab-visita" className="tab-content h-full overflow-y-auto px-4 pt-0 pb-20 bg-gray-50 active no-scrollbar">
                 <div id="visita-content">
-                    <div className="sticky top-0 z-40 -mx-4 px-4 pt-4 pb-4 mb-2 bg-gradient-to-b from-white/95 to-blue-50/95 backdrop-blur-xl border-b border-white/60 shadow-[0_4px_30px_-10px_rgba(37,99,235,0.1)] transition-all">
+                    <div className="sticky top-0 z-40 w-screen -ml-4 -mr-4 mb-[10px] px-4 pt-4 pb-4 bg-gradient-to-b from-white/95 to-blue-50/95 backdrop-blur-xl border-b border-white/60 shadow-[0_4px_30px_-10px_rgba(37,99,235,0.1)] transition-all">
                         <div className="flex items-center justify-between mb-4">
                             <button onClick={() => setIsReviewing(false)} className="flex items-center gap-2 text-gray-600 active:text-blue-600 transition-colors group">
                                 <div className="w-8 h-8 rounded-full bg-white border border-gray-200 group-active:border-blue-200 flex items-center justify-center shadow-sm transition-colors">
@@ -166,7 +163,7 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
                         </button>
                     </div>
                 </div>
-            </div>
+            </div >
         );
     }
 
@@ -181,9 +178,9 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
         const filledCount = tempChurches.filter(id => id).length;
 
         return (
-            <div id="tab-visita" className="tab-content h-full overflow-y-auto pt-0 pb-20 bg-gradient-to-b from-blue-50 to-white active no-scrollbar">
+            <div id="tab-visita" className="tab-content h-full overflow-y-auto px-4 pt-0 pb-20 bg-gray-50 active no-scrollbar">
                 <div id="visita-content">
-                    <div className="sticky top-0 z-40 px-4 pt-4 pb-4 mb-2 bg-gradient-to-b from-white/95 to-blue-50/95 backdrop-blur-xl border-b border-white/60 shadow-[0_4px_30px_-10px_rgba(37,99,235,0.1)] transition-all">
+                    <div className="sticky top-0 z-40 w-screen -ml-4 -mr-4 mb-[10px] px-4 pt-4 pb-4 bg-gradient-to-b from-white/95 to-blue-50/95 backdrop-blur-xl border-b border-white/60 shadow-[0_4px_30px_-10px_rgba(37,99,235,0.1)] transition-all">
                         <div className="flex items-center justify-between mb-4">
                             <button onClick={() => setIsSelecting(false)} className="flex items-center gap-2 text-gray-600 active:text-blue-600 transition-colors group">
                                 <div className="w-8 h-8 rounded-full bg-white border border-gray-200 group-active:border-blue-200 flex items-center justify-center shadow-sm transition-colors">
@@ -332,7 +329,7 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
     // --- MAIN VISITA UI ---
     if (visitaChurches.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[75vh] text-center py-10 px-4">
+            <div id="tab-visita" className="tab-content h-full overflow-y-auto px-4 pt-0 pb-20 bg-gray-50 active flex flex-col items-center justify-center p-8">
                 <div className="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-200">
                     <i className="fas fa-cross text-white text-3xl"></i>
                 </div>
@@ -351,9 +348,9 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
     }
 
     return (
-        <div id="tab-visita" className="tab-content h-full overflow-y-auto px-4 pt-0 pb-20 bg-gradient-to-b from-blue-50 to-white active no-scrollbar relative">
+        <div id="tab-visita" className="tab-content h-full overflow-y-auto px-4 pt-0 pb-20 bg-gray-50 active no-scrollbar relative">
             {/* Pilgrimage Progress Header */}
-            <div className="sticky top-0 -mx-4 px-5 py-5 backdrop-blur-md border-b border-blue-50/50 z-40 mb-6" style={{ background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(239, 246, 255, 0.95))' }}>
+            <div className="sticky top-0 z-40 w-screen -ml-4 -mr-4 mb-[10px] px-4 pt-4 pb-4 backdrop-blur-md border-b border-blue-50/50" style={{ background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(239, 246, 255, 0.95))' }}>
                 <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                         <i className="fas fa-route text-blue-600"></i>
@@ -473,7 +470,6 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
                                                 onClick={() => {
                                                     const p = prayers[prayerIdx];
                                                     onChurchClick({ ...church, Name: p.title, History: p.prayer }, { text: `STATION ${prayerIdx}`, icon: 'fas fa-book-open', color: 'text-blue-600' });
-                                                    if (!isDone) setVisitaProgress(prev => [...prev, prayerIdx]);
                                                 }}
                                                 className="flex-1 bg-blue-600 text-white shadow-lg shadow-blue-200 py-2.5 rounded-xl text-[11px] font-bold active:scale-95 transition-all"
                                             >

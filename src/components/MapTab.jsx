@@ -13,23 +13,54 @@ function MapRefresher({ center, zoom }) {
     return null;
 }
 
-export default function MapTab({ churches, visitedChurches, onChurchClick }) {
+export default function MapTab({ churches, visitedChurches, onChurchClick, initialFocusChurch }) {
     const { location, getLocation, loading: geoLoading } = useGeolocation();
     const [searchTerm, setSearchTerm] = useState('');
     const [dioceseFilter, setDioceseFilter] = useState('All');
-    const [activeCenter, setActiveCenter] = useState([9.85, 124.15]);
-    const [activeZoom, setActiveZoom] = useState(10);
+    const [activeCenter, setActiveCenter] = useState(initialFocusChurch ? initialFocusChurch.Coords : [9.85, 124.15]);
+    const [activeZoom, setActiveZoom] = useState(initialFocusChurch ? 16 : 10);
     const [isLocating, setIsLocating] = useState(false);
+    const [isFindingNearest, setIsFindingNearest] = useState(false);
 
     useEffect(() => {
-        if (location && isLocating) {
-            setActiveCenter([location.latitude, location.longitude]);
-            setActiveZoom(15);
-            setIsLocating(false);
+        if (initialFocusChurch) {
+            setActiveCenter(initialFocusChurch.Coords);
+            setActiveZoom(16);
         }
-    }, [location, isLocating]);
+    }, [initialFocusChurch]);
+
+    const performNearestSearch = (loc) => {
+        const churchesWithDistance = churches.map(church => ({
+            ...church,
+            distance: calculateDistance(loc.latitude, loc.longitude, church.Coords[0], church.Coords[1])
+        }));
+        const nearest = churchesWithDistance.sort((a, b) => a.distance - b.distance).slice(0, 3);
+        const nearestChurch = nearest[0];
+        setActiveCenter(nearestChurch.Coords);
+        setActiveZoom(16);
+        onChurchClick(nearestChurch, {
+            text: `Nearest Church · ${nearestChurch.distance.toFixed(1)} km away`,
+            icon: 'fas fa-compass',
+            color: 'text-green-600'
+        });
+    };
+
+    useEffect(() => {
+        if (location && !geoLoading) {
+            if (isLocating) {
+                setActiveCenter([location.latitude, location.longitude]);
+                setActiveZoom(15);
+                setIsLocating(false);
+            }
+            if (isFindingNearest) {
+                performNearestSearch(location);
+                setIsFindingNearest(false);
+            }
+        }
+    }, [location, geoLoading, isLocating, isFindingNearest]);
 
     const handleLocate = () => {
+        setIsFindingNearest(false);
         setIsLocating(true);
         getLocation();
     };
@@ -61,27 +92,12 @@ export default function MapTab({ churches, visitedChurches, onChurchClick }) {
 
     const findNearest = () => {
         if (!location) {
-            setIsLocating(true); // Treat as loading for both
+            setIsLocating(false);
+            setIsFindingNearest(true);
             getLocation();
             return;
         }
-
-        const churchesWithDistance = churches.map(church => ({
-            ...church,
-            distance: calculateDistance(location.latitude, location.longitude, church.Coords[0], church.Coords[1])
-        }));
-
-        const nearest = churchesWithDistance.sort((a, b) => a.distance - b.distance).slice(0, 3);
-        const nearestChurch = nearest[0];
-
-        setActiveCenter(nearestChurch.Coords);
-        setActiveZoom(16);
-
-        onChurchClick(nearestChurch, {
-            text: `Nearest Church · ${nearestChurch.distance.toFixed(1)} km away`,
-            icon: 'fas fa-compass',
-            color: 'text-green-600'
-        });
+        performNearestSearch(location);
     };
 
     return (
@@ -101,10 +117,10 @@ export default function MapTab({ churches, visitedChurches, onChurchClick }) {
                         />
                     </div>
                     <button onClick={handleLocate} id="locate-btn" className="floating-action-btn">
-                        <i className={`fas ${geoLoading ? 'fa-spinner fa-spin' : 'fa-location-arrow'} text-lg`}></i>
+                        <i className={`fas ${geoLoading && isLocating ? 'fa-spinner fa-spin' : 'fa-location-arrow'} text-lg`}></i>
                     </button>
                     <button onClick={findNearest} id="nearest-btn" className="floating-action-btn" title="Find Nearest Church">
-                        <i className="fas fa-compass text-lg"></i>
+                        <i className={`fas ${geoLoading && isFindingNearest ? 'fa-spinner fa-spin' : 'fa-compass'} text-lg`}></i>
                     </button>
                 </div>
 

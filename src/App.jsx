@@ -96,6 +96,7 @@ function App() {
                         churches={churches}
                         visitedChurches={visitedChurches}
                         onChurchClick={(c, h) => openSheet(c, h, false)}
+                        initialFocusChurch={selectedChurch}
                     />
                 )}
                 {activeTab === 'directory' && (

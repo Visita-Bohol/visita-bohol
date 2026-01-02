@@ -8,6 +8,8 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
     const [activeChurch, setActiveChurch] = useState(church);
 
     const isResetView = SpecialHeader && SpecialHeader.text === 'Reset Journey';
+    const isStation = SpecialHeader && SpecialHeader.text.includes('STATION');
+    const isSpecialPrayer = SpecialHeader && (SpecialHeader.text === 'VISITA IGLESIA' || SpecialHeader.text === 'PILGRIMAGE COMPLETE' || isResetView);
 
     useEffect(() => {
         if (church) {
@@ -31,6 +33,9 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
     };
 
     const handleTouchMove = (e) => {
+        // Disable swipe dismissal for prayer/station views to prevent accidental closure
+        if (isStation || isSpecialPrayer) return;
+
         const currentY = e.touches[0].clientY;
         const deltaY = currentY - touchStart.current;
 
@@ -42,6 +47,11 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
     };
 
     const handleTouchEnd = () => {
+        if (isStation || isSpecialPrayer) {
+            setIsDragging(false);
+            setDragOffset(0);
+            return;
+        }
         setIsDragging(false);
         if (dragOffset > 100) {
             onClose();
@@ -54,11 +64,8 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
     const currentChurch = activeChurch || church;
     if (!currentChurch) return null;
 
-    // Detect if this is a Visita Iglesia station or prayer
-    const isStation = SpecialHeader && SpecialHeader.text.includes('STATION');
     const stationMatch = isStation ? SpecialHeader.text.match(/STATION (\d+)/) : null;
     const stationNumber = stationMatch ? parseInt(stationMatch[1]) : null;
-    const isSpecialPrayer = SpecialHeader && (SpecialHeader.text === 'VISITA IGLESIA' || SpecialHeader.text === 'PILGRIMAGE COMPLETE' || isResetView);
 
     const dioceseColor = currentChurch.Diocese === 'Tagbilaran' ? 'bg-blue-100 text-blue-800' :
         currentChurch.Diocese === 'Talibon' ? 'bg-amber-100 text-amber-800' :
@@ -117,9 +124,13 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
                 }}
             >
                 {/* Fixed Header/Handle */}
-                <div onClick={onClose} className="pt-3 pb-2 cursor-pointer flex-shrink-0">
-                    <div className="w-12 h-1.5 bg-gray-200/80 rounded-full mx-auto"></div>
-                </div>
+                {!(isStation || isSpecialPrayer) && (
+                    <div onClick={onClose} className="pt-3 pb-2 cursor-pointer flex-shrink-0">
+                        <div className="w-12 h-1.5 bg-gray-200/80 rounded-full mx-auto"></div>
+                    </div>
+                )}
+
+                {(isStation || isSpecialPrayer) && <div className="pt-6 flex-shrink-0"></div>}
 
                 {/* Scrollable Content Area */}
                 <div className="overflow-y-auto flex-1 px-5 no-scrollbar">

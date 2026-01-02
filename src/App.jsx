@@ -81,6 +81,8 @@ function App() {
         );
     };
 
+    const [hideNav, setHideNav] = useState(false);
+
     if (loading) return <SplashScreen />;
 
     return (
@@ -107,12 +109,13 @@ function App() {
                         visitedChurches={visitedChurches}
                         onVisitChurch={toggleVisited}
                         onChurchClick={(c, h) => openSheet(c, h, false)}
+                        setHideNav={setHideNav}
                     />
                 )}
                 {activeTab === 'about' && <AboutTab />}
             </main>
 
-            <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+            {!hideNav && <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />}
 
             <BottomSheet
                 isOpen={isSheetOpen}

@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import Sortable from 'sortablejs';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 
-export default function VisitaTab({ churches, prayers, visitedChurches, onVisitChurch, onChurchClick }) {
+export default function VisitaTab({ churches, prayers, visitedChurches, onVisitChurch, onChurchClick, setHideNav }) {
     const [visitaChurches, setVisitaChurches] = useLocalStorage('visitaChurches', []);
     const [visitaProgress, setVisitaProgress] = useLocalStorage('visitaProgress', []);
     const [isSelecting, setIsSelecting] = useState(false);
@@ -9,6 +10,32 @@ export default function VisitaTab({ churches, prayers, visitedChurches, onVisitC
     const [tempChurches, setTempChurches] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [isReviewing, setIsReviewing] = useState(false);
+    const sortableRef = useRef(null);
+
+    // Sync hideNav with parent
+    useEffect(() => {
+        if (setHideNav) setHideNav(isSelecting || isReviewing);
+    }, [isSelecting, isReviewing, setHideNav]);
+
+    // Handle reordering
+    useEffect(() => {
+        if (isReviewing && sortableRef.current) {
+            const el = sortableRef.current;
+            const sortable = new Sortable(el, {
+                animation: 250,
+                handle: '.drag-handle',
+                ghostClass: 'opacity-50',
+                chosenClass: 'bg-blue-50/50',
+                onEnd: (evt) => {
+                    const newTemp = [...tempChurches];
+                    const [movedItem] = newTemp.splice(evt.oldIndex, 1);
+                    newTemp.splice(evt.newIndex, 0, movedItem);
+                    setTempChurches(newTemp);
+                }
+            });
+            return () => sortable.destroy();
+        }
+    }, [isReviewing, tempChurches]);
 
     const completedCount = useMemo(() => visitaProgress.filter(p => p >= 1 && p <= 7).length, [visitaProgress]);
 
@@ -85,7 +112,11 @@ export default function VisitaTab({ churches, prayers, visitedChurches, onVisitC
                         </div>
                     </div>
 
-                    <div id="itinerary-list" className="space-y-4 mb-28 pt-4">
+                    <div
+                        id="itinerary-list"
+                        ref={sortableRef}
+                        className="space-y-4 mb-28 pt-4"
+                    >
                         {tempChurches.map((id, idx) => {
                             const church = churches.find(c => c.id === id);
                             if (!church) return null;
@@ -259,7 +290,13 @@ export default function VisitaTab({ churches, prayers, visitedChurches, onVisitC
                                         const newTemp = [...tempChurches];
                                         newTemp[currentStep] = church.id;
                                         setTempChurches(newTemp);
-                                        if (currentStep < 6) setCurrentStep(currentStep + 1);
+
+                                        const isComplete = newTemp.filter(id => id).length === 7;
+                                        if (isComplete) {
+                                            setIsReviewing(true);
+                                        } else if (currentStep < 6) {
+                                            setCurrentStep(currentStep + 1);
+                                        }
                                     }}
                                     className={`church-select-item rounded-2xl p-4 border transition-all cursor-pointer relative overflow-hidden group shadow-sm hover:shadow-md hover:border-blue-200 active:scale-[0.98] ${isCurrentSlot ? 'border-blue-600 bg-blue-50/40' : 'border-white bg-white'
                                         }`}
@@ -284,16 +321,6 @@ export default function VisitaTab({ churches, prayers, visitedChurches, onVisitC
                     </div>
                 </div>
 
-                {filledCount === 7 && (
-                    <div className="fixed bottom-24 inset-x-4 z-50">
-                        <button
-                            onClick={confirmSelection}
-                            className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-lg shadow-xl shadow-blue-200 active:scale-95 transition-transform uppercase tracking-widest animate-pulse"
-                        >
-                            Confirm Seven Churches
-                        </button>
-                    </div>
-                )}
             </div>
         );
     }

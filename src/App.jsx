@@ -21,7 +21,7 @@ function App() {
     const [specialHeader, setSpecialHeader] = useState(null);
     const { toasts, addToast, removeToast } = useToast();
 
-    // Load data
+    // Data Loading with identical timing to HTML
     useEffect(() => {
         const loadData = async () => {
             try {
@@ -30,9 +30,7 @@ function App() {
                     fetch('/prayers.json')
                 ]);
 
-                if (!churchesRes.ok || !prayersRes.ok) {
-                    throw new Error('Failed to load data');
-                }
+                if (!churchesRes.ok || !prayersRes.ok) throw new Error('Data fetch failed');
 
                 const churchesData = await churchesRes.json();
                 const prayersData = await prayersRes.json();
@@ -40,22 +38,31 @@ function App() {
                 setChurches(churchesData);
                 setPrayers(prayersData);
 
-                console.log(`✓ Loaded ${churchesData.length} churches and ${prayersData.length} prayers`);
+                // Splash screen timing parity
+                setTimeout(() => setLoading(false), 2000);
             } catch (error) {
-                console.error('Error loading data:', error);
-                addToast('Failed to load church data', 'error');
-            } finally {
-                setTimeout(() => setLoading(false), 1500);
+                console.error('Error:', error);
+                addToast('Failed to load pilgrimage data', 'error');
             }
         };
 
         loadData();
     }, []);
 
-    const openSheet = (church, header = null) => {
-        setSpecialHeader(header);
-        setSelectedChurch(church);
-        setIsSheetOpen(true);
+    const openSheet = (church, header = null, switchTabState = false) => {
+        if (switchTabState) {
+            setActiveTab('map');
+            // Small delay to allow tab animation/mount before opening sheet
+            setTimeout(() => {
+                setSpecialHeader(header);
+                setSelectedChurch(church);
+                setIsSheetOpen(true);
+            }, 350);
+        } else {
+            setSpecialHeader(header);
+            setSelectedChurch(church);
+            setIsSheetOpen(true);
+        }
     };
 
     const closeSheet = () => {
@@ -63,7 +70,7 @@ function App() {
         setTimeout(() => {
             setSelectedChurch(null);
             setSpecialHeader(null);
-        }, 300);
+        }, 400);
     };
 
     const toggleVisited = (churchId) => {
@@ -74,26 +81,23 @@ function App() {
         );
     };
 
-    if (loading) {
-        return <SplashScreen />;
-    }
+    if (loading) return <SplashScreen />;
 
     return (
-        <div className="h-full flex flex-col bg-gray-50">
-            {/* Main Content */}
-            <main className="flex-1 relative overflow-hidden">
+        <div className="fixed inset-0 flex flex-col overflow-hidden bg-gray-50">
+            <main className="flex-1 relative overflow-hidden h-full">
                 {activeTab === 'map' && (
                     <MapTab
                         churches={churches}
                         visitedChurches={visitedChurches}
-                        onChurchClick={openSheet}
+                        onChurchClick={(c, h) => openSheet(c, h, false)}
                     />
                 )}
                 {activeTab === 'directory' && (
                     <DirectoryTab
                         churches={churches}
                         visitedChurches={visitedChurches}
-                        onChurchClick={openSheet}
+                        onChurchClick={(c, h) => openSheet(c, h, true)}
                     />
                 )}
                 {activeTab === 'visita' && (
@@ -102,15 +106,14 @@ function App() {
                         prayers={prayers}
                         visitedChurches={visitedChurches}
                         onVisitChurch={toggleVisited}
+                        onChurchClick={(c, h) => openSheet(c, h, false)}
                     />
                 )}
                 {activeTab === 'about' && <AboutTab />}
             </main>
 
-            {/* Bottom Navigation */}
             <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
-            {/* Bottom Sheet */}
             <BottomSheet
                 isOpen={isSheetOpen}
                 church={selectedChurch}
@@ -119,8 +122,6 @@ function App() {
                 SpecialHeader={specialHeader}
                 onToggleVisited={() => selectedChurch && toggleVisited(selectedChurch.id)}
             />
-
-            {/* Toast Notifications */}
             <ToastContainer toasts={toasts} onRemove={removeToast} />
         </div>
     );

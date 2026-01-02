@@ -1,0 +1,1271 @@
+[
+    {
+        "id": 1,
+        "Name": "Santa Monica Church",
+        "Location": "Alburquerque",
+        "Coords": [
+            9.611208004813623,
+            123.95759454021747
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:30 AM, 8:30 AM, 4:30 PM",
+        "Facebook": "santamonicaalbur",
+        "Fiesta": "May 4",
+        "FiestaMonth": 4,
+        "History": "Features a massive convent and unique bridge connecting the belfry."
+    },
+    {
+        "id": 2,
+        "Name": "Our Lady of the Holy Rosary Parish",
+        "Location": "Antequera",
+        "Coords": [
+            9.796205847882682,
+            123.89733917092694
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:00 AM, 8:00 AM, 4:30 PM",
+        "Facebook": "rosaryparishantequera",
+        "Fiesta": "October 31",
+        "FiestaMonth": 9,
+        "History": "Rebuilt with a striking modern facade after the earthquake."
+    },
+    {
+        "id": 3,
+        "Name": "Immaculate Conception Parish Church",
+        "Location": "Baclayon",
+        "Coords": [
+            9.623069347897669,
+            123.91245119539172
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 5:30 AM, 8:00 AM, 5:00 PM | Sat: 6:00 AM, 5:00 PM",
+        "Facebook": "@baclayonparish",
+        "Fiesta": "December 8",
+        "FiestaMonth": 11,
+        "History": "One of the oldest stone churches in the Philippines."
+    },
+    {
+        "id": 4,
+        "Name": "Our Lady of Mount Carmel Parish",
+        "Location": "Balilihan",
+        "Coords": [
+            9.758013815389488,
+            123.97226343374132
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:30 AM, 9:00 AM, 4:30 PM",
+        "Facebook": "Our-Lady-of-Mt-Carmel-Parish-Balilihan-100077740407517",
+        "Fiesta": "July 16",
+        "FiestaMonth": 6,
+        "History": "Known for the Balilihan belfry situated on a nearby hill."
+    },
+    {
+        "id": 5,
+        "Name": "St. James the Greater Parish Church",
+        "Location": "Batuan",
+        "Coords": [
+            9.78716678756146,
+            124.14728438186812
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:00 AM, 8:00 AM, 10:00 AM",
+        "Facebook": "santiago.apostolbatuan",
+        "Fiesta": "July 25",
+        "FiestaMonth": 6,
+        "History": "Known for its beautiful altar and traditional architecture."
+    },
+    {
+        "id": 6,
+        "Name": "St. Isidore the Farmer Parish Church",
+        "Location": "Bilar",
+        "Coords": [
+            9.708930166582467,
+            124.1040301315468
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:00 AM, 8:00 AM, 10:00 AM",
+        "Facebook": "idrongbilar",
+        "Fiesta": "May 15",
+        "FiestaMonth": 4,
+        "History": "Patron saint of farmers, located in the agricultural town of Bilar."
+    },
+    {
+        "id": 7,
+        "Name": "St. Vincent Ferrer Parish Church",
+        "Location": "Calape",
+        "Coords": [
+            9.89109858206106,
+            123.87274383240337
+        ],
+        "Diocese": "Tagbilaran",
+        "Facebook": "",
+        "Fiesta": "May 10",
+        "FiestaMonth": 4,
+        "History": "Known for its scenic location near the sea. Celebrates Pahinungod Festival."
+    },
+    {
+        "id": 8,
+        "Name": "Immaculate Conception Parish",
+        "Location": "Catigbian",
+        "Coords": [
+            9.854433120529265,
+            123.99910299849253
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 7:30 AM, 10:00 AM, 5:00 PM",
+        "Facebook": "icpcatigbianbohol",
+        "Fiesta": "December 8",
+        "FiestaMonth": 11,
+        "History": "Simple yet elegant church in the upland town."
+    },
+    {
+        "id": 9,
+        "Name": "St. Michael the Archangel Parish Church",
+        "Location": "Clarin",
+        "Coords": [
+            9.961425804876667,
+            124.0242933763616
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:00 AM, 8:30 AM, 4:30 PM",
+        "Facebook": "smapclarin",
+        "Fiesta": "September 29",
+        "FiestaMonth": 8,
+        "History": "Dedicated to St. Michael the Archangel."
+    },
+    {
+        "id": 10,
+        "Name": "Our Lady of the Village Parish Church",
+        "Location": "Corella",
+        "Coords": [
+            9.688123536572007,
+            123.9212543517118
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:30 AM, 8:30 AM, 4:00 PM | Sat: 6:00 AM | Mon-Fri (except Wed): 6:00 AM | Wed: 5:15 PM",
+        "Facebook": "delvillar.parish",
+        "Fiesta": "April 27",
+        "FiestaMonth": 3,
+        "History": "Nuestra Señora del Villar, small but historically significant church."
+    },
+    {
+        "id": 11,
+        "Name": "Sto. Niño Parish",
+        "Location": "Cortes",
+        "Coords": [
+            9.722797891637855,
+            123.87912017949682
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:30 AM, 8:30 AM, 4:30 PM",
+        "Facebook": "@StoNinoParishCortes",
+        "Fiesta": "January 16",
+        "FiestaMonth": 0,
+        "History": "Dedicated to the Holy Child Jesus."
+    },
+    {
+        "id": 12,
+        "Name": "Our Lady of the Assumption Parish Church",
+        "Location": "Dauis",
+        "Coords": [
+            9.625813380964074,
+            123.86498609523807
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:30 AM, 8:30 AM, 10:00 AM, 12:00 PM, 3:30 PM, 5:00 PM, 6:30 PM",
+        "Facebook": "@DauisChurch",
+        "Fiesta": "August 15",
+        "FiestaMonth": 7,
+        "History": "Famous for the miraculous fresh water well located near the main altar."
+    },
+    {
+        "id": 13,
+        "Name": "St. Nicholas Tolentino Parish Church",
+        "Location": "Dimiao",
+        "Coords": [
+            9.605143187212976,
+            124.16136331350386
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:30 AM, 8:30 AM",
+        "Facebook": "DimiaoParish",
+        "Fiesta": "September 10",
+        "FiestaMonth": 8,
+        "History": "Known for its well-preserved facade."
+    },
+    {
+        "id": 14,
+        "Name": "St. John the Baptist",
+        "Location": "Garcia Hernandez",
+        "Coords": [
+            9.61450186199258,
+            124.29454847171931
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:00 AM, 8:00 AM, 4:30 PM",
+        "Facebook": "SJBPGaher",
+        "Fiesta": "June 24",
+        "FiestaMonth": 5,
+        "History": "Dedicated to St. John the Baptist, the forerunner of Christ."
+    },
+    {
+        "id": 15,
+        "Name": "Holy Rosary Parish",
+        "Location": "Lila",
+        "Coords": [
+            9.591461783136875,
+            124.09566696655557
+        ],
+        "Diocese": "Tagbilaran",
+        "Facebook": "",
+        "Fiesta": "October 7",
+        "FiestaMonth": 9,
+        "History": "Our Lady of the Holy Rosary parish."
+    },
+    {
+        "id": 16,
+        "Name": "Holy Trinity Parish Church",
+        "Location": "Loay",
+        "Coords": [
+            9.601002514235942,
+            124.01187762447603
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:00 AM, 8:00 AM, 10:00 AM, 5:00 PM",
+        "Facebook": "holytrinityparishofloay",
+        "Fiesta": "Trinity Sunday",
+        "FiestaMonth": 5,
+        "History": "Dedicated to the Holy Trinity."
+    },
+    {
+        "id": 17,
+        "Name": "Diocesan Shrine of Our Lady of Guadalupe de Extremadura",
+        "Location": "Loboc",
+        "Coords": [
+            9.636470542797378,
+            124.03093054888265
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:30 AM, 8:30 AM, 5:00 PM | Sat: 6:00 AM, 5:00 PM",
+        "Facebook": "@lobocparishchurch",
+        "Fiesta": "May 24 (Our Lady), June 29 (St Peter)",
+        "FiestaMonth": 4,
+        "History": "Known for its pipe organ and beautiful Neo-Gothic architecture. Celebrates Bolibongkingking Festival."
+    },
+    {
+        "id": 18,
+        "Name": "Our Lady of Light Parish Church",
+        "Location": "Loon",
+        "Coords": [
+            9.798818580449279,
+            123.79272474378105
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 5:00 AM, 6:30 AM, 8:00 AM, 4:30 PM, 6:00 PM",
+        "Facebook": "kasilakshrineparishloon",
+        "Fiesta": "September 8",
+        "FiestaMonth": 8,
+        "History": "Our Lady of Light, one of the largest churches in Bohol. Celebrates the SidlaKasilak Festival."
+    },
+    {
+        "id": 19,
+        "Name": "Holy Cross Parish",
+        "Location": "Maribojoc",
+        "Coords": [
+            9.740593493617299,
+            123.84368903107762
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 5:00 AM, 8:30 AM",
+        "Facebook": "hcp.maribojoc",
+        "Fiesta": "November 24",
+        "FiestaMonth": 10,
+        "History": "Dedicated to the Holy Cross, symbol of salvation."
+    },
+    {
+        "id": 20,
+        "Name": "St. Augustine Parish Church",
+        "Location": "Panglao",
+        "Coords": [
+            9.57827945989003,
+            123.74606217997496
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:30 AM, 8:30 AM, 5:00 PM",
+        "Facebook": "@panglaochurch",
+        "Fiesta": "August 28",
+        "FiestaMonth": 7,
+        "History": "Dedicated to St. Augustine of Hippo, located in tourist-rich Panglao."
+    },
+    {
+        "id": 21,
+        "Name": "Saint Augustine Parish",
+        "Location": "Sagbayan",
+        "Coords": [
+            9.913383565462611,
+            124.09154037717472
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 5:30 AM, 7:15 AM, 9:00 AM, 4:00 PM",
+        "Facebook": "parokyanisanagustin21",
+        "Fiesta": "August 28",
+        "FiestaMonth": 7,
+        "History": "Another church dedicated to St. Augustine in Sagbayan."
+    },
+    {
+        "id": 22,
+        "Name": "San Isidro Labrador Parish",
+        "Location": "San Isidro, Tagbilaran",
+        "Coords": [
+            9.675499534597819,
+            123.8787312871022
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:30 AM, 9:30 AM, 5:15 PM",
+        "Facebook": "SILPTagbilaranOFFICIALFBPage",
+        "Fiesta": "May 15",
+        "FiestaMonth": 4,
+        "History": "Dedicated to St. Isidore the Laborer, patron of farmers."
+    },
+    {
+        "id": 23,
+        "Name": "Our Lady of Guadalupe Parish Church",
+        "Location": "Sevilla",
+        "Coords": [
+            9.703265067518815,
+            124.04483168332715
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:30 AM, 8:30 AM, 6:00 PM",
+        "Facebook": "SevillaParish",
+        "Fiesta": "December 12",
+        "FiestaMonth": 11,
+        "History": "Dedicated to Our Lady of Guadalupe."
+    },
+    {
+        "id": 24,
+        "Name": "San Antonio de Padua Parish Church",
+        "Location": "Sikatuna",
+        "Coords": [
+            9.688910236820194,
+            123.97429597104347
+        ],
+        "Diocese": "Tagbilaran",
+        "Facebook": "",
+        "Fiesta": "June 13",
+        "FiestaMonth": 5,
+        "History": "Dedicated to St. Anthony of Padua, finder of lost things."
+    },
+    {
+        "id": 25,
+        "Name": "St. Joseph the Worker Cathedral",
+        "Location": "Tagbilaran",
+        "Coords": [
+            9.639758532490063,
+            123.85583519221024
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 4:30 AM, 6:00 AM, 7:30 AM, 9:00 AM, 10:30 AM, 12:00 PM, 2:00 PM, 3:30 PM, 5:00 PM, 6:30 PM, 7:45 PM",
+        "Facebook": "@tagbilarancathedral",
+        "Fiesta": "May 1",
+        "FiestaMonth": 4,
+        "History": "Seat of the Diocese of Tagbilaran, featuring intricate frescoes on its ceilings."
+    },
+    {
+        "id": 26,
+        "Name": "St. Isidore's Parish",
+        "Location": "Tubigon",
+        "Coords": [
+            9.950696251204365,
+            123.96252212771003
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 5:30 AM, 8:00 AM, 4:00 PM, 6:00 PM",
+        "Facebook": "SaintIsidoretheFarmerTubigon",
+        "Fiesta": "May 15",
+        "FiestaMonth": 4,
+        "History": "Dedicated to St. Isidore the Farmer in Tubigon. Celebrates Tanda Festival."
+    },
+    {
+        "id": 27,
+        "Name": "Sto. Nino Parish Church",
+        "Location": "Valencia",
+        "Coords": [
+            9.60860122034406,
+            124.20973797981833
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:00 AM, 4:00 PM",
+        "Facebook": "100076543154953",
+        "Fiesta": "January 16",
+        "FiestaMonth": 0,
+        "History": "Holy Child Jesus parish in Valencia municipality."
+    },
+    {
+        "id": 69,
+        "Name": "Virgen de la Paz y Buen Viaje Parish",
+        "Location": "La Paz, Cortes",
+        "Coords": [
+            9.700691144582867,
+            123.86839692650568
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:00 AM, 8:00 AM, 5:00 PM",
+        "Facebook": "Birhen-sa-De-La-Paz-y-Buen-Viaje-Parish-100069027117094",
+        "Fiesta": "January 24",
+        "FiestaMonth": 0,
+        "History": "A newer parish in the quiet community of La Paz, Cortes, dedicated to Our Lady of Peace and Good Voyage."
+    },
+    {
+        "id": 70,
+        "Name": "Nuestra Señora de la Paz y Buen Viaje Parish",
+        "Location": "Songculan, Dauis",
+        "Coords": [
+            9.629269714676905,
+            123.83008657316566
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:00 AM, 8:00 AM, 5:00 PM",
+        "Facebook": "@ourladyofpeaceandgoodvoyageparishsdb",
+        "Fiesta": "January 24",
+        "FiestaMonth": 0,
+        "History": "Located in Songculan, Dauis, this parish is dedicated to Our Lady of Peace and Good Voyage."
+    },
+    {
+        "id": 71,
+        "Name": "Santa Cruz Parish",
+        "Location": "Dao, Tagbilaran",
+        "Coords": [
+            9.67377574418056,
+            123.87026011571645
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:00 AM, 10:00 AM, 6:00 PM",
+        "Facebook": "SantaCruzParishDao",
+        "Fiesta": "May 3",
+        "FiestaMonth": 4,
+        "History": "Dedicated to the Holy Cross."
+    },
+    {
+        "id": 72,
+        "Name": "Immaculate Heart of Mary Parish",
+        "Location": "Taloto, Tagbilaran",
+        "Coords": [
+            9.675202563395752,
+            123.8533779551744
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:00 AM, 9:00 AM, 12:00 PM, 5:00 PM",
+        "Facebook": "IHMParishTalotoDioceseofTagbilaran",
+        "Fiesta": "July 16 & August 22",
+        "FiestaMonth": 7,
+        "History": "Dedicated to the Immaculate Heart of Mary."
+    },
+    {
+        "id": 73,
+        "Name": "Our Lady of Guadalupe Parish",
+        "Location": "Booy, Tagbilaran",
+        "Coords": [
+            9.661433001358226,
+            123.8476669672347
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:30 AM, 9:00 AM, 6:00 PM",
+        "Facebook": "booyguadalupeparish",
+        "Fiesta": "December 12",
+        "FiestaMonth": 11,
+        "History": "Dedicated to Our Lady of Guadalupe."
+    },
+    {
+        "id": 74,
+        "Name": "Birhen sa Barangay Parish",
+        "Location": "Cogon, Tagbilaran",
+        "Coords": [
+            9.65510961373624,
+            123.85483583040437
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 5:30 AM, 7:30 AM, 9:00 AM, 10:30 AM, 4:30 PM, 6:00 PM, 7:30 PM",
+        "Facebook": "BirhensaBarangayCogon",
+        "Fiesta": "October 16",
+        "FiestaMonth": 9,
+        "History": "Dedicated to Birhen sa Barangay."
+    },
+    {
+        "id": 75,
+        "Name": "Our Lady of Lourdes Parish Church",
+        "Location": "Celestino Gallares, Tagbilaran",
+        "Coords": [
+            9.645881645587483,
+            123.85275390424168
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:00 AM, 7:30 AM, 9:00 AM, 10:30 AM, 12:00 PM, 1:30 PM, 3:00 PM, 4:30 PM",
+        "Facebook": "lourdesshrineparish",
+        "Fiesta": "February 11",
+        "FiestaMonth": 1,
+        "History": "Dedicated to Our Lady of Lourdes."
+    },
+    {
+        "id": 76,
+        "Name": "San Antonio de Padua Parish Church",
+        "Location": "Poblacion III, Tagbilaran",
+        "Coords": [
+            9.641453599420649,
+            123.85985974314725
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:00 AM, 10:00 AM, 5:30 PM",
+        "Facebook": "",
+        "Fiesta": "June 13",
+        "FiestaMonth": 5,
+        "History": "Dedicated to St. Anthony of Padua."
+    },
+    {
+        "id": 77,
+        "Name": "Shrine Of St. Jude Thaddeus",
+        "Location": "Mansasa, Tagbilaran",
+        "Coords": [
+            9.636807115077945,
+            123.86736799656441
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:00 AM, 10:00 AM, 5:30 PM | Mon-Tue, Fri-Sat: 6:00 AM | Wed: 6:00 PM | Thu: 5:30 PM",
+        "Facebook": "@ShrineSJTParish",
+        "Fiesta": "October 28",
+        "FiestaMonth": 9,
+        "History": "Diocesan Shrine dedicated to St. Jude Thaddeus."
+    },
+    {
+        "id": 78,
+        "Name": "St. Vincent Ferrer Parish",
+        "Location": "Bool, Tagbilaran",
+        "Coords": [
+            9.629480408813375,
+            123.87858793531908
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 7:00 AM, 5:00 PM",
+        "Facebook": "officialSVFparishbool",
+        "Fiesta": "April 5",
+        "FiestaMonth": 3,
+        "History": "Dedicated to St. Vincent Ferrer."
+    },
+    {
+        "id": 79,
+        "Name": "Saint Ignatius of Loyola Parish",
+        "Location": "Dampas, Tagbilaran",
+        "Coords": [
+            9.645863906455757,
+            123.87108678494987
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:30 AM, 8:30 AM, 4:30 PM",
+        "Facebook": "100064757980790",
+        "Fiesta": "July 31",
+        "FiestaMonth": 6,
+        "History": "Dedicated to St. Ignatius of Loyola."
+    },
+    {
+        "id": 80,
+        "Name": "Immaculate Spouse of the Holy Spirit (HNU Church)",
+        "Location": "Dampas, Tagbilaran",
+        "Coords": [
+            9.649634906676946,
+            123.86716439582132
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 10:30 AM (English)",
+        "Facebook": "holynameuniversityofficial",
+        "Fiesta": "No Feast Day",
+        "FiestaMonth": 12,
+        "History": "University church dedicated to the Immaculate Spouse of the Holy Spirit."
+    },
+    {
+        "id": 81,
+        "Name": "San Antonio De Padua Parish Church",
+        "Location": "Ubujan, Tagbilaran",
+        "Coords": [
+            9.686037977140938,
+            123.8604098519121
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:00 AM",
+        "Facebook": "profile.php?id=100079564832549",
+        "Fiesta": "June 13",
+        "FiestaMonth": 5,
+        "History": "Dedicated to St. Anthony of Padua."
+    },
+    {
+        "id": 82,
+        "Name": "Holy Trinity Church",
+        "Location": "Manga, Tagbilaran",
+        "Coords": [
+            9.692531311809486,
+            123.86302883182186
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:00 AM, 10:00 AM, 5:00 PM, 7:30 PM",
+        "Facebook": "Mostholytrinitymanga",
+        "Fiesta": "Trinity Sunday",
+        "FiestaMonth": 5,
+        "History": "Dedicated to the Holy Trinity."
+    },
+    {
+        "id": 83,
+        "Name": "San Roque Parish",
+        "Location": "TipTip, Tagbilaran",
+        "Coords": [
+            9.687093665017205,
+            123.87337091274452
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:30 AM, 9:30 AM, 6:00 PM",
+        "Facebook": "",
+        "Fiesta": "August 16",
+        "FiestaMonth": 7,
+        "History": "Dedicated to San Roque."
+    },
+    {
+        "id": 28,
+        "Name": "Sts. Joachim and Anne Parish",
+        "Location": "Alicia",
+        "Coords": [
+            9.89462154729682,
+            124.44239430403641
+        ],
+        "Diocese": "Talibon",
+        "Mass": "",
+        "Facebook": "",
+        "Fiesta": "July 26",
+        "FiestaMonth": 6,
+        "History": "Dedicated to the parents of the Blessed Virgin Mary."
+    },
+    {
+        "id": 29,
+        "Name": "Santo Niño Parish",
+        "Location": "Anda",
+        "Coords": [
+            9.743404002204853,
+            124.57553390897647
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 6:30 AM, 8:00 AM",
+        "Facebook": "olivia.miasco.1",
+        "Fiesta": "January 15",
+        "FiestaMonth": 0,
+        "History": "Holy Child Jesus parish in the beautiful island of Anda."
+    },
+    {
+        "id": 30,
+        "Name": "San Roque Parish",
+        "Location": "Bagacay",
+        "Coords": [
+            10.16085780776024,
+            124.24520241436657
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 6:15 AM, 10:00 AM",
+        "Facebook": "100081916381251",
+        "Fiesta": "August 16",
+        "FiestaMonth": 7,
+        "History": "St. Roch parish, protector against plagues and diseases."
+    },
+    {
+        "id": 31,
+        "Name": "St. Isidore Parish",
+        "Location": "Biabas",
+        "Coords": [
+            9.983256090731215,
+            124.53185972072988
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 6:00 AM, 8:30 AM",
+        "Facebook": "st.isidoreparish20",
+        "Fiesta": "May 15",
+        "FiestaMonth": 4,
+        "History": "Patron saint of farmers and rural communities."
+    },
+    {
+        "id": 32,
+        "Name": "Santo Niño Parish",
+        "Location": "Bien-Unido",
+        "Coords": [
+            10.138144762616362,
+            124.37873022022076
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 6:30 AM, 8:30 AM",
+        "Facebook": "100068977513054",
+        "Fiesta": "January 15",
+        "FiestaMonth": 0,
+        "History": "Holy Child Jesus parish in the municipality of Bien-Unido."
+    },
+    {
+        "id": 33,
+        "Name": "Our Lady of Fatima Shrine",
+        "Location": "Buenavista, Carmen",
+        "Coords": [
+            10.120924455882436,
+            124.55326194226718
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 6:00 AM, 8:00 AM, 10:00 AM, 3:00 PM, 5:00 PM",
+        "Facebook": "fatimashrine.carmen.bohol",
+        "Fiesta": "May 13",
+        "FiestaMonth": 4,
+        "History": "Shrine dedicated to Our Lady of Fatima, a popular pilgrimage site."
+    },
+    {
+        "id": 34,
+        "Name": "Our Lady of the Holy Rosary Parish",
+        "Location": "Buenavista",
+        "Coords": [
+            10.084533498632625,
+            124.10822458361778
+        ],
+        "Diocese": "Talibon",
+        "Mass": "",
+        "Facebook": "parokyasabuenavista",
+        "Fiesta": "October 7",
+        "FiestaMonth": 9,
+        "History": "Our Lady of the Rosary parish, promoting devotion to the rosary."
+    },
+    {
+        "id": 35,
+        "Name": "St. Michael the Archangel Parish",
+        "Location": "Cabulao",
+        "Coords": [
+            9.991047111163969,
+            124.08215949158387
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 7:00 AM",
+        "Facebook": "St.MichaelParishCabulaoMabini",
+        "Fiesta": "September 29",
+        "FiestaMonth": 8,
+        "History": "Dedicated to St. Michael the Archangel, leader of heavenly armies."
+    },
+    {
+        "id": 36,
+        "Name": "St. Isidore",
+        "Location": "Camambugan",
+        "Coords": [
+            9.824452753815335,
+            124.1989732836175
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 6:30 AM",
+        "Facebook": "COLL.Camambugan",
+        "Fiesta": "May 15",
+        "FiestaMonth": 4,
+        "History": "Farmers' patron saint in Camambugan community."
+    },
+    {
+        "id": 37,
+        "Name": "St. Joseph Parish",
+        "Location": "Candijay",
+        "Coords": [
+            9.824452753815335,
+            124.1989732836175
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 7:00 AM, 9:00 AM",
+        "Facebook": "SaintJosephTheWorkerParishCandijay",
+        "Fiesta": "May 19",
+        "FiestaMonth": 4,
+        "History": "Dedicated to St. Joseph, the foster father of Jesus."
+    },
+    {
+        "id": 38,
+        "Name": "St. Anthony the Abbot Parish",
+        "Location": "Carmen",
+        "Coords": [
+            9.824452753815335,
+            124.1989732836175
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 6:00 AM, 8:00 AM, 10:00 AM",
+        "Facebook": "stanthonytheabbotparish",
+        "Fiesta": "January 17",
+        "FiestaMonth": 0,
+        "History": "Dedicated to St. Anthony the Abbot, patron of animals."
+    },
+    {
+        "id": 39,
+        "Name": "St. Isidore Parish",
+        "Location": "Cawayan",
+        "Coords": [
+            9.991076569859976,
+            124.08291736656885
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 6:00 AM, 9:30 AM",
+        "Facebook": "st.isidoreparish.cawayan",
+        "Fiesta": "May 7",
+        "FiestaMonth": 4,
+        "History": "Another parish dedicated to St. Isidore the Farmer."
+    },
+    {
+        "id": 40,
+        "Name": "St. Joseph Parish",
+        "Location": "Cogtong",
+        "Coords": [
+            9.8394842373267,
+            124.5301694338572
+        ],
+        "Diocese": "Talibon",
+        "Mass": "",
+        "Facebook": "profile.php?id=100082869447551",
+        "Fiesta": "March 19",
+        "FiestaMonth": 2,
+        "History": "St. Joseph parish in the coastal area of Cogtong."
+    },
+    {
+        "id": 41,
+        "Name": "Our Lady of Lourdes Parish",
+        "Location": "Dagohoy",
+        "Coords": [
+            9.94453329254694,
+            124.22180731725112
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 7:00 AM, 9:00 AM",
+        "Fiesta": "February 11",
+        "FiestaMonth": 1,
+        "History": "Dedicated to Our Lady of Lourdes, known for healing."
+    },
+    {
+        "id": 42,
+        "Name": "Holy Family Parish",
+        "Location": "Danao",
+        "Coords": [
+            9.94453329254694,
+            124.22180731725112
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 6:00 AM, 8:30 AM, 10:00 AM",
+        "Facebook": "litoy.estose",
+        "Fiesta": "December 30",
+        "FiestaMonth": 11,
+        "History": "Dedicated to the Holy Family of Jesus, Mary and Joseph."
+    },
+    {
+        "id": 43,
+        "Name": "Immaculate Conception Parish",
+        "Location": "Duero",
+        "Coords": [
+            10.148924858741061,
+            124.1545258229227
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 7:00 AM, 9:00 AM",
+        "Facebook": "immaculate.conception.parish.duero",
+        "Fiesta": "December 8",
+        "FiestaMonth": 11,
+        "History": "Dedicated to the Immaculate Conception of Mary."
+    },
+    {
+        "id": 44,
+        "Name": "Santo Niño Parish",
+        "Location": "Getafe",
+        "Coords": [
+            10.148924858741061,
+            124.1545258229227
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 8:30 AM",
+        "Facebook": "ParokyaSaGetafeOfficialPage",
+        "Fiesta": "January 31",
+        "FiestaMonth": 0,
+        "History": "Holy Child Jesus parish in Getafe municipality."
+    },
+    {
+        "id": 45,
+        "Name": "Santo Niño Parish",
+        "Location": "Guinacot",
+        "Coords": [
+            9.731569948750543,
+            124.45620281328493
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 5:15 AM, 7:30 AM",
+        "Facebook": "Sto.NinoParishGuinacot",
+        "Fiesta": "January 15",
+        "FiestaMonth": 0,
+        "History": "Holy Child Jesus parish in Guinacot community."
+    },
+    {
+        "id": 46,
+        "Name": "Our Lady of Consolation Parish",
+        "Location": "Guindulman",
+        "Coords": [
+            9.76260888327133,
+            124.48781370816734
+        ],
+        "Diocese": "Talibon",
+        "Mass": "",
+        "Facebook": "",
+        "Fiesta": "September 5",
+        "FiestaMonth": 8,
+        "History": "Our Lady of Consolation, comforter of the afflicted."
+    },
+    {
+        "id": 47,
+        "Name": "St. Isidore and St. Maria Torribia dela Cabeza Parish",
+        "Location": "La Hacienda",
+        "Coords": [
+            9.88197377765722,
+            124.3932023558129
+        ],
+        "Diocese": "Talibon",
+        "Mass": "",
+        "Facebook": "people/Sts-Isidore-Mary-Torribia-dela-Cabeza-Parish-La-Hacienda/61584384920545",
+        "Fiesta": "May 15",
+        "FiestaMonth": 4,
+        "History": "Dedicated to St. Isidore and his wife, St. Maria Torribia."
+    },
+    {
+        "id": 48,
+        "Name": "St. Vincent Ferrer Parish",
+        "Location": "Hinlayagan Ilaya",
+        "Coords": [
+            9.650048248439191,
+            124.36554412974485
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 7:00 AM",
+        "Facebook": "svfp.hinlayaganilaya.trinidad.bohol",
+        "Fiesta": "April 5",
+        "FiestaMonth": 3,
+        "History": "Dedicated to St. Vincent Ferrer, the Angel of the Apocalypse."
+    },
+    {
+        "id": 49,
+        "Name": "San Pablo Parish",
+        "Location": "Inabanga",
+        "Coords": [
+            9.650048248439191,
+            124.36554412974485
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 7:00 AM, 9:00 AM",
+        "Facebook": "sanpabloapostol.inabanga",
+        "Fiesta": "June 30",
+        "FiestaMonth": 5,
+        "History": "Dedicated to St. Paul the Apostle, formerly Saul of Tarsus."
+    },
+    {
+        "id": 50,
+        "Name": "St. Michael the Archangel Parish",
+        "Location": "Jagna",
+        "Coords": [
+            9.650048248439191,
+            124.36554412974485
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 8:00 AM, 10:00 AM, 5:00 PM",
+        "Facebook": "SMAPJBDC",
+        "Fiesta": "September 29",
+        "FiestaMonth": 8,
+        "History": "St. Michael the Archangel parish in Jagna municipality."
+    },
+    {
+        "id": 51,
+        "Name": "Santo Niño Parish",
+        "Location": "Lapacan Sur, Inabanga",
+        "Coords": [
+            10.038321121192658,
+            124.11607775004504
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 5:00 AM, 8:00 AM",
+        "Facebook": "100064568146295",
+        "Fiesta": "April 28",
+        "FiestaMonth": 3,
+        "History": "Holy Child Jesus parish in Lapacan Sur area."
+    },
+    {
+        "id": 52,
+        "Name": "St. Joseph Parish",
+        "Location": "Lonoy",
+        "Coords": [
+            9.696171061807014,
+            124.36969573205488
+        ],
+        "Diocese": "Talibon",
+        "Mass": "",
+        "Facebook": "COLL-Lonoy-Jagna-61575547394785",
+        "Fiesta": "March 19",
+        "FiestaMonth": 2,
+        "History": "St. Joseph parish serving the Lonoy community."
+    },
+    {
+        "id": 53,
+        "Name": "St. Monica Parish",
+        "Location": "Mabini",
+        "Coords": [
+            9.862377513451632,
+            124.521206170569
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 6:00 AM, 8:30 PM",
+        "Facebook": "SantaMonicaMabini",
+        "Fiesta": "May 4",
+        "FiestaMonth": 4,
+        "History": "Dedicated to St. Monica, mother of St. Augustine."
+    },
+    {
+        "id": 54,
+        "Name": "St. Isidore Parish",
+        "Location": "Mahayag",
+        "Coords": [
+            9.935931763289979,
+            124.31373572184417
+        ],
+        "Diocese": "Talibon",
+        "Mass": "",
+        "Facebook": "sipymmahayag.wall",
+        "Fiesta": "May 15",
+        "FiestaMonth": 4,
+        "History": "Farmers' patron saint in Mahayag community."
+    },
+    {
+        "id": 55,
+        "Name": "San Pedro Calungsod",
+        "Location": "Nueva Vida Este",
+        "Coords": [
+            9.769498508217438,
+            124.20218603622274
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 6:00 AM, 8:00 AM",
+        "Facebook": "sanpedrocalungsod062120",
+        "Fiesta": "October 21",
+        "FiestaMonth": 9,
+        "History": "Dedicated to San Pedro Calungsod, Filipino martyr and saint."
+    },
+    {
+        "id": 56,
+        "Name": "Santa Cruz",
+        "Location": "Payao",
+        "Coords": [
+            9.731254945877499,
+            124.40117489773569
+        ],
+        "Diocese": "Talibon",
+        "Mass": "",
+        "Fiesta": "May 3",
+        "FiestaMonth": 4,
+        "History": "Dedicated to the Holy Cross, symbol of salvation."
+    },
+    {
+        "id": 57,
+        "Name": "Virgen del Pilar Parish",
+        "Location": "Pilar",
+        "Coords": [
+            9.828964677443643,
+            124.32679233198361
+        ],
+        "Diocese": "Talibon",
+        "Mass": "",
+        "Facebook": "VirgenDelPilarParishOfficialPage",
+        "Fiesta": "October 11",
+        "FiestaMonth": 9,
+        "History": "Our Lady of the Pillar, patroness of Spain and Hispanic world."
+    },
+    {
+        "id": 58,
+        "Name": "Sr. Sto. Niño Parish Church",
+        "Location": "President Carlos P. Garcia",
+        "Coords": [
+            10.120863028344846,
+            124.553270086562
+        ],
+        "Diocese": "Talibon",
+        "Mass": "",
+        "Facebook": "",
+        "Fiesta": "January 16",
+        "FiestaMonth": 0,
+        "History": "Holy Child Jesus parish in President Carlos P. Garcia town."
+    },
+    {
+        "id": 59,
+        "Name": "San Agustin Parish",
+        "Location": "San Agustin",
+        "Coords": [
+            10.106533772851265,
+            124.31407834538788
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 4:30 AM, 6:30 AM, 9:00 AM",
+        "Facebook": "ang.gabayan.9",
+        "Fiesta": "August 28",
+        "FiestaMonth": 7,
+        "History": "Dedicated to St. Augustine of Hippo, Doctor of the Church."
+    },
+    {
+        "id": 60,
+        "Name": "St. Isidore Labrador Parish",
+        "Location": "San Isidro",
+        "Coords": [
+            9.861173249818123,
+            123.9553142949996
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 7:00 AM",
+        "Fiesta": "May 29",
+        "FiestaMonth": 4,
+        "History": "Dedicated to St. Isidore the Laborer, patron of farmers. Fiesta celebrated May 29."
+    },
+    {
+        "id": 61,
+        "Name": "St. Isidore Parish",
+        "Location": "San Miguel",
+        "Coords": [
+            9.935896191451326,
+            124.31375588605911
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 7:00 AM",
+        "Facebook": "100064618518314",
+        "Fiesta": "May 15",
+        "FiestaMonth": 4,
+        "History": "Another St. Isidore parish in San Miguel area."
+    },
+    {
+        "id": 62,
+        "Name": "St. Michael the Archangel Parish",
+        "Location": "San Miguel",
+        "Coords": [
+            9.985898226117328,
+            124.33600260332054
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 6:00 AM, 8:30 AM, 4:00 PM",
+        "Facebook": "parokyanisrsanmiguelarkanghel",
+        "Fiesta": "May 8",
+        "FiestaMonth": 4,
+        "History": "St. Michael the Archangel parish in San Miguel."
+    },
+    {
+        "id": 63,
+        "Name": "St. Vincent Ferrer Parish",
+        "Location": "San Pascual",
+        "Coords": [
+            9.8893578662246,
+            124.52014556501479
+        ],
+        "Diocese": "Talibon",
+        "Mass": "",
+        "Facebook": "",
+        "Fiesta": "April 5",
+        "FiestaMonth": 3,
+        "History": "St. Vincent Ferrer parish in San Pascual area."
+    },
+    {
+        "id": 64,
+        "Name": "Immaculate Conception Parish",
+        "Location": "Sierra Bullones",
+        "Coords": [
+            9.80758921367901,
+            124.29066649557112
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 6:00 AM, 8:00 AM",
+        "Facebook": "",
+        "Fiesta": "December 8",
+        "FiestaMonth": 11,
+        "History": "Immaculate Conception parish in Sierra Bullones."
+    },
+    {
+        "id": 65,
+        "Name": "St. Isidore Parish",
+        "Location": "Sierra Bullones",
+        "Coords": [
+            9.782742793229414,
+            124.33134009204703
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 6:00 AM, 8:00 AM",
+        "Facebook": "abachananparish",
+        "Fiesta": "May 22",
+        "FiestaMonth": 4,
+        "History": "St. Isidore parish in Sierra Bullones municipality."
+    },
+    {
+        "id": 66,
+        "Name": "Holy Trinity Cathedral",
+        "Location": "Talibon",
+        "Coords": [
+            10.150821974225686,
+            124.32608248672406
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 4:30 AM, 6:00 AM, 7:30 AM, 9:00 AM, 10:30 AM, 11:30 AM, 3:00 PM, 4:30 PM, 6:00 PM | Sat: 5:15 AM, 6:15 AM, 5:15 PM",
+        "Facebook": "@mhtcptalibon",
+        "Fiesta": "May 29",
+        "FiestaMonth": 4,
+        "History": "Seat of the Diocese of Talibon, dedicated to the Holy Trinity."
+    },
+    {
+        "id": 67,
+        "Name": "St. Isidore Parish",
+        "Location": "Trinidad",
+        "Coords": [
+            9.851050317869472,
+            124.46944380743834
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 7:00 AM, 9:00 AM",
+        "Facebook": "",
+        "Fiesta": "May 15",
+        "FiestaMonth": 4,
+        "History": "St. Isidore parish in Trinidad municipality."
+    },
+    {
+        "id": 68,
+        "Name": "Santo Niño Parish",
+        "Location": "Ubay",
+        "Coords": [
+            10.057860369908353,
+            124.47234348180685
+        ],
+        "Diocese": "Talibon",
+        "Mass": "Sun: 6:00 AM, 8:00 AM, 10:00 AM, 4:00 PM",
+        "Facebook": "HolyChildParishUbay",
+        "Fiesta": "January 29",
+        "FiestaMonth": 0,
+        "History": "Holy Child Jesus parish in Ubay, one of the largest towns in Bohol."
+    },
+    {
+        "id": 84,
+        "Name": "Birhen sa Barangay Parish",
+        "Location": "Lindaville, Tagbilaran",
+        "Coords": [
+            9.67941,
+            123.8725
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "",
+        "Facebook": "",
+        "Fiesta": "September 5",
+        "FiestaMonth": 8,
+        "History": "Dedicated to Birhen sa Barangay, located in Lindaville Subdivision."
+    },
+    {
+        "id": 85,
+        "Name": "Immaculate Conception Parish",
+        "Location": "Conception, Loay",
+        "Coords": [
+            9.620259983414854,
+            123.9971844512008
+        ],
+        "Diocese": "Tagbilaran",
+        "Mass": "Sun: 6:30 AM, 8:30 AM, 10:00 AM",
+        "Facebook": "immaculate.conception.parish.2025",
+        "Fiesta": "December 8",
+        "FiestaMonth": 11,
+        "History": "Immaculate Conception parish in Conception, Loay."
+    }
+]

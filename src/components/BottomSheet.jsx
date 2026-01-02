@@ -8,19 +8,14 @@ export default function BottomSheet({ isOpen, church, allChurches, userLocation,
     const touchStart = useRef(0);
     const [activeChurch, setActiveChurch] = useState(church);
 
-    const isResetView = SpecialHeader && SpecialHeader.text === 'Reset Journey';
-    const isStation = SpecialHeader && SpecialHeader.text.includes('STATION');
-    const isSpecialPrayer = SpecialHeader && (SpecialHeader.text === 'VISITA IGLESIA' || SpecialHeader.text === 'PILGRIMAGE COMPLETE' || isResetView);
-
-    // Lock the sheet (disable swipe-to-dismiss) only for Prayers and Initial Guide
-    const isLocked = isStation || (SpecialHeader && SpecialHeader.text === 'VISITA IGLESIA');
-
+    // Sync active church when prop changes
     useEffect(() => {
         if (church) {
             setActiveChurch(church);
         }
     }, [church]);
 
+    // Body scroll lock
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
@@ -31,20 +26,36 @@ export default function BottomSheet({ isOpen, church, allChurches, userLocation,
         return () => { document.body.style.overflow = ''; };
     }, [isOpen]);
 
+    // Derived values (Safe even if church is null)
+    const currentChurch = activeChurch || church;
+    const isResetView = SpecialHeader && SpecialHeader.text === 'Reset Journey';
+    const isStation = SpecialHeader && SpecialHeader.text && SpecialHeader.text.includes('STATION');
+    const isSpecialPrayer = SpecialHeader && (SpecialHeader.text === 'VISITA IGLESIA' || SpecialHeader.text === 'PILGRIMAGE COMPLETE' || isResetView);
+    const isLocked = isStation || (SpecialHeader && SpecialHeader.text === 'VISITA IGLESIA');
+
+    const nearbyChurches = useMemo(() => {
+        if (!userLocation || !allChurches || !currentChurch || !userLocation.latitude) return [];
+        return allChurches
+            .filter(c => c && c.id !== currentChurch.id && c.Coords && c.Coords.length >= 2)
+            .map(c => ({
+                ...c,
+                dist: calculateDistance(userLocation.latitude, userLocation.longitude, c.Coords[0], c.Coords[1])
+            }))
+            .sort((a, b) => a.dist - b.dist)
+            .slice(0, 2);
+    }, [allChurches, userLocation, currentChurch, isOpen]);
+
     const handleTouchStart = (e) => {
         touchStart.current = e.touches[0].clientY;
         setIsDragging(true);
     };
 
     const handleTouchMove = (e) => {
-        // Disable swipe dismissal for locked views to prevent accidental closure
         if (isLocked) return;
-
         const currentY = e.touches[0].clientY;
         const deltaY = currentY - touchStart.current;
-
         if (deltaY < 0) {
-            setDragOffset(deltaY * 0.15); // Stiff resistance for upward drag
+            setDragOffset(deltaY * 0.15);
         } else {
             setDragOffset(deltaY);
         }
@@ -64,25 +75,15 @@ export default function BottomSheet({ isOpen, church, allChurches, userLocation,
         }
     };
 
-    if (!activeChurch && !isOpen) return null;
-    const currentChurch = activeChurch || church;
-    if (!currentChurch) return null;
-
-    const stationMatch = isStation ? SpecialHeader.text.match(/STATION (\d+)/) : null;
-    const stationNumber = stationMatch ? parseInt(stationMatch[1]) : null;
-
-    const dioceseColor = currentChurch.Diocese === 'Tagbilaran' ? 'bg-blue-100 text-blue-800' :
-        currentChurch.Diocese === 'Talibon' ? 'bg-amber-100 text-amber-800' :
-            'bg-gray-100 text-gray-800';
-
     const handleFacebookLink = () => {
-        if (currentChurch.Facebook) {
+        if (currentChurch && currentChurch.Facebook) {
             window.open(`https://facebook.com/${currentChurch.Facebook.replace('@', '')}`, '_blank');
         }
     };
 
+    // Render logic separation
     const renderMassTimes = () => {
-        if (!currentChurch.Mass) return <p className="text-sm text-gray-500">Schedule not available</p>;
+        if (!currentChurch || !currentChurch.Mass) return <p className="text-sm text-gray-500">Schedule not available</p>;
         const sections = currentChurch.Mass.split('|').map(s => s.trim());
         return (
             <div className="flex flex-wrap gap-2">
@@ -90,12 +91,14 @@ export default function BottomSheet({ isOpen, church, allChurches, userLocation,
                     const parts = section.split(',').map(p => p.trim());
                     if (parts.length === 0) return null;
                     const dayInfo = parts[0].split(':')[0];
-                    const firstTime = parts[0].split(':').slice(1).join(':').trim();
+                    const times = parts[0].split(':').slice(1).join(':').trim();
+                    const otherTimes = parts.slice(1);
+
                     return (
                         <div key={sIdx} className="contents">
                             <div className="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase">{dayInfo}</div>
-                            <div className="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-semibold">{firstTime}</div>
-                            {parts.slice(1).map((time, tIdx) => (
+                            {times && <div className="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-semibold">{times}</div>}
+                            {otherTimes.map((time, tIdx) => (
                                 <div key={tIdx} className="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-semibold">{time}</div>
                             ))}
                         </div>
@@ -105,27 +108,26 @@ export default function BottomSheet({ isOpen, church, allChurches, userLocation,
         );
     };
 
-    const nearbyChurches = useMemo(() => {
-        if (!userLocation || !allChurches || !currentChurch) return [];
-        return allChurches
-            .filter(c => c.id !== currentChurch.id)
-            .map(c => ({
-                ...c,
-                dist: calculateDistance(userLocation.latitude, userLocation.longitude, c.Coords[0], c.Coords[1])
-            }))
-            .sort((a, b) => a.dist - b.dist)
-            .slice(0, 2);
-    }, [allChurches, userLocation, currentChurch, isOpen]);
+    // If neither open nor having content, render nothing
+    if (!isOpen && !currentChurch) return null;
+
+    // Safety check for critical render logic
+    if (!currentChurch) return null;
+
+    const stationMatch = isStation ? SpecialHeader.text.match(/STATION (\d+)/) : null;
+    const stationNumber = stationMatch ? parseInt(stationMatch[1]) : null;
+
+    const dioceseColor = currentChurch.Diocese === 'Tagbilaran' ? 'bg-blue-100 text-blue-800' :
+        currentChurch.Diocese === 'Talibon' ? 'bg-amber-100 text-amber-800' :
+            'bg-gray-100 text-gray-800';
 
     return (
         <>
-            {/* Backdrop */}
             <div
                 onClick={onClose}
                 className={`fixed inset-0 bg-gray-900/40 backdrop-blur-[2px] z-[1500] transition-opacity duration-500 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
             />
 
-            {/* Sheet */}
             <div
                 ref={sheetRef}
                 onTouchStart={handleTouchStart}
@@ -139,107 +141,38 @@ export default function BottomSheet({ isOpen, church, allChurches, userLocation,
                     transition: isDragging ? 'none' : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
                 }}
             >
-                {/* Fixed Header/Handle - Hidden only when locked */}
-                {!isLocked && (
-                    <div onClick={onClose} className="pt-3 pb-2 cursor-pointer flex-shrink-0">
-                        <div className="w-12 h-1.5 bg-gray-200/80 rounded-full mx-auto"></div>
-                    </div>
-                )}
+                <div className="w-full flex justify-center pt-3 pb-2 flex-shrink-0">
+                    {!isLocked && <div className="w-12 h-1.5 bg-gray-200 rounded-full" />}
+                    {isLocked && <div className="h-1.5" />}
+                </div>
 
-                {isLocked && <div className="pt-6 flex-shrink-0"></div>}
+                <div className="flex-1 overflow-y-auto px-6 no-scrollbar">
+                    {isSpecialPrayer ? (
+                        <div className="pt-2 pb-10">
+                            <div className="text-center mb-8 pt-4">
+                                <div className={`w-16 h-16 ${isResetView ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'} rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-sm border border-white`}>
+                                    <i className={SpecialHeader?.icon || 'fas fa-book-open'}></i>
+                                </div>
+                                <h2 className="text-2xl font-black text-gray-900 mb-1">{currentChurch.Name}</h2>
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{SpecialHeader?.text}</p>
+                            </div>
 
-                {/* Scrollable Content Area */}
-                <div className="overflow-y-auto flex-1 px-5 no-scrollbar">
-                    {isStation || isSpecialPrayer ? (
-                        <div className="pt-4 pb-6">
-                            {isResetView ? (
-                                <div className="text-center">
-                                    <div className="mb-6">
-                                        <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-200">
-                                            <i className="fas fa-redo-alt text-white text-2xl"></i>
-                                        </div>
-                                        <h2 className="text-2xl font-black text-gray-900">Reset Journey?</h2>
-                                        <p className="text-xs text-red-600 font-bold uppercase tracking-wider mt-1">Warning: Permanent Action</p>
+                            <div className="prose prose-sm max-w-none">
+                                {currentChurch.History.split('\n\n').map((para, pIdx) => (
+                                    <p key={pIdx} className="text-sm text-gray-600 leading-relaxed font-medium mb-4 whitespace-pre-wrap">{para}</p>
+                                ))}
+                            </div>
+
+                            {isResetView && (
+                                <div className="mt-8 p-6 bg-red-50 rounded-[32px] border border-red-100 flex items-start gap-4">
+                                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-red-600 shadow-sm flex-shrink-0">
+                                        <i className="fas fa-triangle-exclamation"></i>
                                     </div>
-                                    <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 mb-2">
-                                        <p className="text-gray-600 leading-relaxed text-sm text-center font-medium">
-                                            This will clear your 7 selected churches and reset all station progress. This action cannot be undone.
-                                        </p>
+                                    <div>
+                                        <p className="text-sm font-black text-red-900 mb-1 leading-none uppercase tracking-tight">Warning</p>
+                                        <p className="text-xs text-red-600 font-medium leading-relaxed">This will erase your 7-church itinerary and all prayers marked as done across all stations.</p>
                                     </div>
                                 </div>
-                            ) : (
-                                <>
-                                    <div className="text-center mb-6">
-                                        <div className="w-16 h-16 bg-blue-600 shadow-blue-200 shadow-lg rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                            <i className={`${SpecialHeader?.icon || 'fas fa-book-open'} text-white text-2xl`}></i>
-                                        </div>
-                                        <h2 className="text-2xl font-black text-gray-900 leading-tight">
-                                            {SpecialHeader?.text === 'VISITA IGLESIA' ? 'Begin Your Pilgrimage' : currentChurch.Name}
-                                        </h2>
-                                        {isStation && (
-                                            <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-3">
-                                                Prayer {stationNumber} of 7
-                                            </p>
-                                        )}
-                                        {isSpecialPrayer && SpecialHeader.text !== 'Reset Journey' && (
-                                            <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-2">
-                                                {SpecialHeader.text === 'VISITA IGLESIA' ? 'Before Visiting the Church' : SpecialHeader.text}
-                                            </p>
-                                        )}
-                                    </div>
-
-                                    {SpecialHeader?.text === 'VISITA IGLESIA' ? (
-                                        <div className="space-y-6 mb-4">
-                                            <div>
-                                                <p className="text-[10px] uppercase font-black text-blue-600 tracking-[0.2em] mb-3">Tips</p>
-                                                <ul className="space-y-3">
-                                                    {['Dress modestly and respectfully.', 'Arrive a few minutes early.', 'Silence your phone.', 'Be respectful of those praying.', 'Follow posted rules.'].map((tip, idx) => (
-                                                        <li key={idx} className="flex items-start gap-3 text-xs font-bold text-gray-600">
-                                                            <i className="fas fa-check text-[10px] mt-0.5 text-blue-500"></i>
-                                                            <span>{tip}</span>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                            <div>
-                                                <p className="text-[10px] uppercase font-black text-blue-600 tracking-[0.2em] mb-3">Guides</p>
-                                                <ul className="space-y-3">
-                                                    {['Check church schedule.', 'Learn basic church etiquette.', 'Ask politely if photos are allowed.', 'Sit/stand when others do.'].map((guide, idx) => (
-                                                        <li key={idx} className="flex items-start gap-3 text-xs font-bold text-gray-600">
-                                                            <i className="fas fa-chevron-right text-[10px] mt-0.5 text-blue-500"></i>
-                                                            <span>{guide}</span>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="bg-blue-50/50 rounded-[32px] p-6 mb-4 border border-blue-50/50 shadow-inner">
-                                            <p className="text-gray-700 leading-relaxed whitespace-pre-line text-sm font-medium">
-                                                {currentChurch.History}
-                                            </p>
-                                        </div>
-                                    )}
-
-                                    {nearbyChurches.length > 0 && (
-                                        <div className="mt-8 mb-4">
-                                            <h3 className="text-[10px] uppercase font-black text-gray-400 tracking-[0.2em] mb-4">Other Nearby Churches</h3>
-                                            <div className="space-y-3">
-                                                {nearbyChurches.map(nb => (
-                                                    <div key={nb.id} className="bg-gray-50/50 border border-gray-100/50 rounded-2xl p-4 flex justify-between items-center animate-in fade-in slide-in-from-bottom-2 duration-500">
-                                                        <div className="min-w-0 pr-4">
-                                                            <p className="text-sm font-black text-gray-900 truncate">{nb.Name}</p>
-                                                            <p className="text-[11px] text-gray-500 font-semibold truncate">{nb.Location}</p>
-                                                        </div>
-                                                        <div className="text-right flex-shrink-0">
-                                                            <p className="text-sm font-black text-blue-600">{nb.dist.toFixed(1)} km</p>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-                                </>
                             )}
                         </div>
                     ) : (
@@ -308,7 +241,7 @@ export default function BottomSheet({ isOpen, church, allChurches, userLocation,
                                         <h3 className="text-[10px] uppercase font-black text-gray-400 tracking-[0.2em] mb-4">Other Nearby Churches</h3>
                                         <div className="space-y-3">
                                             {nearbyChurches.map(nb => (
-                                                <div key={nb.id} className="bg-gray-50/50 border border-gray-100/50 rounded-2xl p-4 flex justify-between items-center animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                                <div key={nb.id} onClick={() => setActiveChurch(nb)} className="bg-gray-50/50 border border-gray-100/50 rounded-2xl p-4 flex justify-between items-center animate-in fade-in slide-in-from-bottom-2 duration-500 cursor-pointer hover:bg-white hover:border-blue-100 transition-all active:scale-[0.98]">
                                                     <div className="min-w-0 pr-4">
                                                         <p className="text-sm font-black text-gray-900 truncate">{nb.Name}</p>
                                                         <p className="text-[11px] text-gray-500 font-semibold truncate">{nb.Location}</p>
@@ -326,22 +259,17 @@ export default function BottomSheet({ isOpen, church, allChurches, userLocation,
                     )}
                 </div>
 
-                {/* Fixed Action Footer */}
                 <div className="p-5 pb-8 border-t border-gray-50 bg-white/95 backdrop-blur-md flex-shrink-0">
                     {isResetView ? (
                         <div className="flex gap-3">
-                            <button onClick={onClose} className="flex-1 bg-gray-100 text-gray-600 py-4 rounded-2xl font-black active:scale-95 transition-all text-sm">
-                                Cancel
-                            </button>
+                            <button onClick={onClose} className="flex-1 bg-gray-100 text-gray-600 py-4 rounded-2xl font-black active:scale-95 transition-all text-sm">Cancel</button>
                             <button onClick={onResetPilgrimage} className="flex-1 bg-red-600 text-white py-4 rounded-2xl font-black shadow-xl shadow-red-200 active:scale-95 transition-all text-sm">
                                 <i className="fas fa-trash-alt mr-2"></i> Reset
                             </button>
                         </div>
                     ) : isStation || isSpecialPrayer ? (
                         <div className="flex gap-3">
-                            <button onClick={onClose} className="flex-1 bg-gray-100 text-gray-600 py-4 rounded-2xl font-black text-sm active:scale-95 transition-all">
-                                Close
-                            </button>
+                            <button onClick={onClose} className="flex-1 bg-gray-100 text-gray-600 py-4 rounded-2xl font-black text-sm active:scale-95 transition-all">Close</button>
                             {isStation && onVisitaComplete && (
                                 <button
                                     onClick={() => onVisitaComplete(stationNumber)}
@@ -354,9 +282,11 @@ export default function BottomSheet({ isOpen, church, allChurches, userLocation,
                     ) : (
                         <div className="space-y-3">
                             <div className="flex gap-3">
-                                <button onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${currentChurch.Coords[0]},${currentChurch.Coords[1]}`, '_blank')} className="flex-1 bg-blue-600 text-white py-4 rounded-2xl text-[13px] font-black flex items-center justify-center gap-2 shadow-xl shadow-blue-200 active:scale-95 transition-all">
-                                    <i className="fas fa-directions"></i> Get Directions
-                                </button>
+                                {currentChurch.Coords && (
+                                    <button onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${currentChurch.Coords[0]},${currentChurch.Coords[1]}`, '_blank')} className="flex-1 bg-blue-600 text-white py-4 rounded-2xl text-[13px] font-black flex items-center justify-center gap-2 shadow-xl shadow-blue-200 active:scale-95 transition-all">
+                                        <i className="fas fa-directions"></i> Get Directions
+                                    </button>
+                                )}
                                 <a
                                     href={`mailto:feedback.visitabohol@gmail.com?subject=Suggested%20Edit%20for%20${encodeURIComponent(currentChurch.Name)}`}
                                     className="px-5 bg-blue-50 text-blue-600 border border-blue-100 py-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-blue-50 active:scale-95 transition-all"

@@ -349,25 +349,23 @@ export default function VisitaTab({ churches, prayers, visitedChurches, onVisitC
     }
 
     return (
-        <div id="tab-visita" className="h-full overflow-y-auto pt-0 pb-32 bg-gradient-to-b from-blue-50 to-white no-scrollbar">
-            <div className="sticky top-0 z-50 px-4 py-5 bg-white/90 backdrop-blur-md border-b border-gray-100 flex flex-col gap-4">
-                <div className="flex items-center justify-between">
+        <div id="tab-visita" className="tab-content h-full overflow-y-auto px-4 pt-0 pb-20 bg-gradient-to-b from-blue-50 to-white active no-scrollbar relative">
+            {/* Pilgrimage Progress Header */}
+            <div className="sticky top-0 -mx-4 px-5 py-5 backdrop-blur-md border-b border-blue-50/50 z-40 mb-6" style={{ background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(239, 246, 255, 0.95))' }}>
+                <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                         <i className="fas fa-route text-blue-600"></i>
-                        <span className="font-black text-[11px] text-gray-900 uppercase tracking-[0.2em]">Pilgrimage</span>
+                        <span className="font-black text-[11px] text-gray-900 uppercase tracking-widest px-1">Pilgrimage Progress</span>
+                        <span className="text-[10px] font-bold text-blue-600 bg-white px-2 py-1 rounded-lg shadow-sm">{completedCount}/7</span>
                     </div>
-                    <button onClick={resetVisita} className="text-red-600 text-[10px] font-bold px-3 py-1.5 bg-red-50 rounded-xl flex items-center gap-1.5 uppercase transition-all active:scale-90">
-                        <i className="fas fa-redo"></i> Reset
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button onClick={resetVisita} className="text-red-600 text-xs font-bold px-2 py-1 flex items-center gap-1 transition-all active:scale-90">
+                            <i className="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
                 </div>
-                <div>
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Your Progress</span>
-                        <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-full">{completedCount}/7</span>
-                    </div>
-                    <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden shadow-inner">
-                        <div className="bg-blue-600 h-full transition-all duration-1000 shadow-[0_0_10px_rgba(37,99,235,0.4)]" style={{ width: `${(completedCount / 7) * 100}%` }}></div>
-                    </div>
+                <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden shadow-inner">
+                    <div className="bg-blue-600 h-full transition-all duration-1000 shadow-[0_0_10px_rgba(37,99,235,0.4)]" style={{ width: `${(completedCount / 7) * 100}%` }}></div>
                 </div>
             </div>
 

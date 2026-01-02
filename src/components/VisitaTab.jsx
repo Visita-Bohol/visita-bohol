@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
+import AppLogo from './AppLogo';
 import Sortable from 'sortablejs';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useGeolocation } from '../hooks/useGeolocation';
@@ -415,8 +416,8 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
     if (visitaChurches.length === 0) {
         return (
             <div id="tab-visita" className="tab-content h-full overflow-y-auto px-4 pt-0 pb-20 bg-gray-50 active flex flex-col items-center justify-center p-8">
-                <div className="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-200">
-                    <i className="fas fa-cross text-white text-3xl"></i>
+                <div className="mb-8 drop-shadow-2xl">
+                    <AppLogo className="w-28 h-28" />
                 </div>
                 <h1 className="text-3xl font-black text-gray-900 mb-3 text-center">Visita Iglesia</h1>
                 <p className="text-sm text-gray-600 mb-8 max-w-sm mx-auto leading-relaxed text-center">

@@ -1,0 +1,69 @@
+export default function AppLogo({ className = "w-20 h-20" }) {
+    return (
+        <svg viewBox="0 0 512 512" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* Outer Shield Border */}
+            <path d="M256 0C114.615 0 0 45.385 0 45.385V232C0 357.231 106.615 470 256 512C405.385 470 512 357.231 512 232V45.385C512 45.385 397.385 0 256 0Z" fill="#FDEBD0" />
+            <path d="M256 22.5C125 22.5 22.5 60 22.5 60V232C22.5 345 120 448 256 488C392 448 489.5 345 489.5 232V60C489.5 60 387 22.5 256 22.5Z" fill="#1E3A8A" />
+
+            {/* Inner Sky Background */}
+            <mask id="shieldMask" maskUnits="userSpaceOnUse" x="22" y="22" width="468" height="466">
+                <path d="M256 22.5C125 22.5 22.5 60 22.5 60V232C22.5 345 120 448 256 488C392 448 489.5 345 489.5 232V60C489.5 60 387 22.5 256 22.5Z" fill="white" />
+            </mask>
+
+            <g mask="url(#shieldMask)">
+                {/* Sky */}
+                <rect x="0" y="0" width="512" height="512" fill="#BAE6FD" />
+
+                {/* Clouds */}
+                <path d="M50 120C50 120 70 80 110 80C140 80 160 100 165 110C170 95 185 90 200 95C215 100 220 120 220 120H50Z" fill="white" />
+                <path d="M300 100C300 100 320 70 350 70C380 70 395 90 400 100C405 85 420 80 435 85C450 90 450 100 450 100H300Z" fill="white" fillOpacity="0.6" />
+
+                {/* Chocolate Hills (Background) */}
+                <path d="M0 320C0 320 40 250 100 250C160 250 200 320 200 320H0Z" fill="#60A5FA" />
+                <path d="M150 340C150 340 210 260 280 260C350 260 410 340 410 340H150Z" fill="#3B82F6" />
+                <path d="M350 330C350 330 400 270 460 270C520 270 512 330 512 330V512H350V330Z" fill="#60A5FA" />
+                <path d="M-20 350C-20 350 50 280 120 280C190 280 240 350 240 350V512H-20V350Z" fill="#93C5FD" />
+
+                {/* Ground/Hill for Church */}
+                <path d="M-50 550C-50 550 150 380 256 380C362 380 562 550 562 550V600H-50V550Z" fill="#1D4ED8" />
+
+                {/* Church Stairs */}
+                <path d="M236 430L220 520H292L276 430H236Z" fill="#93C5FD" />
+                <path d="M241 430V520M246 430V520M251 430V520M256 430V520M261 430V520M266 430V520M271 430V520" stroke="#1E3A8A" strokeWidth="1" />
+
+                {/* Church Main Body */}
+                <rect x="196" y="320" width="120" height="110" fill="#DBEAFE" stroke="#1E3A8A" strokeWidth="3" />
+
+                {/* Church Door */}
+                <path d="M236 430V385C236 373.954 244.954 365 256 365C267.046 365 276 373.954 276 385V430H236Z" fill="#1E3A8A" />
+                <path d="M256 365V430" stroke="#DBEAFE" strokeWidth="1" />
+
+                {/* Left Tower */}
+                <rect x="176" y="320" width="30" height="110" fill="#BFDBFE" stroke="#1E3A8A" strokeWidth="3" />
+                <path d="M171 320L191 280L211 320H171Z" fill="#1E3A8A" />
+                <rect x="183" y="340" width="16" height="25" rx="8" fill="#1E3A8A" />
+                <rect x="183" y="380" width="16" height="25" rx="8" fill="#1E3A8A" />
+                <path d="M191 280V270M186 275H196" stroke="#1E3A8A" strokeWidth="3" /> {/* Cross */}
+
+                {/* Right Tower */}
+                <rect x="306" y="320" width="30" height="110" fill="#BFDBFE" stroke="#1E3A8A" strokeWidth="3" />
+                <path d="M301 320L321 280L341 320H301Z" fill="#1E3A8A" />
+                <rect x="313" y="340" width="16" height="25" rx="8" fill="#1E3A8A" />
+                <rect x="313" y="380" width="16" height="25" rx="8" fill="#1E3A8A" />
+                <path d="M321 280V270M316 275H326" stroke="#1E3A8A" strokeWidth="3" /> {/* Cross */}
+
+                {/* Main Body Details */}
+                <circle cx="256" cy="340" r="10" fill="#1E3A8A" />
+                <path d="M210 320L256 290L302 320" fill="none" stroke="#1E3A8A" strokeWidth="3" />
+                <path d="M256 290V280M251 285H261" stroke="#1E3A8A" strokeWidth="3" /> {/* Top Cross */}
+
+                {/* Decorative Elements */}
+                <path d="M196 430H316" stroke="#1E3A8A" strokeWidth="3" />
+
+            </g>
+
+            {/* Glossy Reflection Highlight */}
+            <path d="M256 22.5C140 22.5 40 55 40 60C100 80 400 80 472 60C472 55 372 22.5 256 22.5Z" fill="white" fillOpacity="0.2" />
+        </svg>
+    );
+}

@@ -1,9 +1,11 @@
+import AppLogo from './AppLogo';
+
 export default function SplashScreen() {
     return (
         <div className="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center transition-all duration-700">
             <div className="flex flex-col items-center text-center px-6 animate-pulse">
-                <div className="w-20 h-20 bg-blue-600 rounded-[28px] flex items-center justify-center text-white text-4xl shadow-2xl mb-8 shadow-blue-200">
-                    <i className="fas fa-church"></i>
+                <div className="mb-6 drop-shadow-2xl">
+                    <AppLogo className="w-32 h-32" />
                 </div>
                 <h1 className="text-3xl font-black tracking-tighter text-gray-900 mb-2 italic">
                     Visita Bohol

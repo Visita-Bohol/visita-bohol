@@ -106,7 +106,7 @@ export default function BottomSheet({ isOpen, church, nearbyChurches, isVisited,
             {/* Backdrop */}
             <div
                 onClick={onClose}
-                className={`fixed inset-0 bg-gray-900/40 backdrop-blur-[2px] z-[1500] transition-opacity duration-500 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                className={`fixed inset-0 bg-gray-900/40 z-[1500] transition-opacity duration-500 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
             />
 
             {/* Sheet */}

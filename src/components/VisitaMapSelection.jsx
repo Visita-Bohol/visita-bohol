@@ -159,7 +159,7 @@ export default function VisitaMapSelection({ churches, onSelect, onClose, onBack
                 {/* Backdrop for selection */}
                 <div
                     onClick={() => setSelectedChurch(null)}
-                    className={`absolute inset-0 bg-gray-900/40 backdrop-blur-[2px] z-[450] transition-opacity duration-300 ${selectedChurch ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                    className={`absolute inset-0 bg-gray-900/40 z-[450] transition-opacity duration-300 ${selectedChurch ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
                 />
 
                 {/* Main-Map Style Selection Sheet */}

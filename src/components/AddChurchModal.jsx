@@ -164,8 +164,8 @@ History: ${formData.history}
                                     className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all placeholder:font-medium placeholder:text-gray-400"
                                     value={formData.fbPage}
                                     onChange={e => setFormData({ ...formData, fbPage: e.target.value })}
-                                    type="url"
-                                    placeholder="https://facebook.com/..."
+                                    type="text"
+                                    placeholder="e.g. facebook.com/pageName"
                                 />
                             </div>
 

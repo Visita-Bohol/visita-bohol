@@ -182,9 +182,9 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                 </div>
             </div>
 
-            {/* Instruction Overlay (Styled like Toast) */}
+            {/* Instruction Overlay (Styled like Toast, at bottom) */}
             {isAddMode && (
-                <div className="fixed top-28 left-1/2 transform -translate-x-1/2 z-[3000] pointer-events-none flex flex-col gap-2 items-center w-full max-w-[90%] animate-in fade-in slide-in-from-top-4">
+                <div className="fixed bottom-36 left-1/2 transform -translate-x-1/2 z-[3000] pointer-events-none flex flex-col gap-2 items-center w-full max-w-[90%] animate-in fade-in slide-in-from-bottom-4">
                     <div className="bg-gray-900/95 text-white px-6 py-3 rounded-full text-sm font-semibold shadow-xl backdrop-blur-sm flex items-center gap-2 border border-white/10 pointer-events-auto">
                         <i className="fas fa-map-pin text-amber-400 animate-bounce"></i>
                         <span>Tap location on map</span>
@@ -230,6 +230,7 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                     />
                 )}
 
+                {/* Always render temp coordinate if it exists, regardless of modal state */}
                 {tempCoordinate && (
                     <Marker position={tempCoordinate} icon={createTempIcon()} />
                 )}

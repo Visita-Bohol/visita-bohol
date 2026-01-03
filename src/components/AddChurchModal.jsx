@@ -113,7 +113,7 @@ Facebook Page: ${formData.fbPage}
                 <div className="overflow-y-auto flex-1 px-0 no-scrollbar">
                     <div className="p-6 pt-2">
                         <div className="text-center mb-6">
-                            <div className="w-16 h-16 bg-amber-500 shadow-amber-200 shadow-lg rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <div className="w-16 h-16 bg-orange-500 shadow-orange-200 shadow-lg rounded-2xl flex items-center justify-center mx-auto mb-4">
                                 <i className="fas fa-map-pin text-white text-2xl"></i>
                             </div>
                             <h2 className="text-2xl font-black text-gray-900 leading-tight">Add Missing Church</h2>
@@ -124,7 +124,7 @@ Facebook Page: ${formData.fbPage}
                             <div className="space-y-1.5">
                                 <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Church Name</label>
                                 <input
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all placeholder:font-medium placeholder:text-gray-400"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all placeholder:font-medium placeholder:text-gray-400"
                                     value={formData.name}
                                     onChange={e => setFormData({ ...formData, name: e.target.value })}
                                     placeholder="e.g. San Isidro Labrador Parish"
@@ -135,7 +135,7 @@ Facebook Page: ${formData.fbPage}
                             <div className="space-y-1.5">
                                 <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Location / Town</label>
                                 <input
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all placeholder:font-medium placeholder:text-gray-400"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all placeholder:font-medium placeholder:text-gray-400"
                                     value={formData.location}
                                     onChange={e => setFormData({ ...formData, location: e.target.value })}
                                     placeholder="e.g. Tabalong, Dauis"
@@ -153,7 +153,7 @@ Facebook Page: ${formData.fbPage}
                                             value="Diocese of Tagbilaran"
                                             checked={formData.diocese === 'Diocese of Tagbilaran'}
                                             onChange={e => setFormData({ ...formData, diocese: e.target.value })}
-                                            className="w-5 h-5 text-amber-500 border-gray-300 focus:ring-amber-500"
+                                            className="w-5 h-5 text-orange-500 border-gray-300 focus:ring-orange-500"
                                         />
                                         <span className="text-sm font-bold text-gray-700">Diocese of Tagbilaran</span>
                                     </label>
@@ -164,7 +164,7 @@ Facebook Page: ${formData.fbPage}
                                             value="Diocese of Talibon"
                                             checked={formData.diocese === 'Diocese of Talibon'}
                                             onChange={e => setFormData({ ...formData, diocese: e.target.value })}
-                                            className="w-5 h-5 text-amber-500 border-gray-300 focus:ring-amber-500"
+                                            className="w-5 h-5 text-orange-500 border-gray-300 focus:ring-orange-500"
                                         />
                                         <span className="text-sm font-bold text-gray-700">Diocese of Talibon</span>
                                     </label>
@@ -174,7 +174,7 @@ Facebook Page: ${formData.fbPage}
                             <div className="space-y-1.5">
                                 <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Mass Schedule (Optional)</label>
                                 <textarea
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all placeholder:font-medium placeholder:text-gray-400 min-h-[80px]"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all placeholder:font-medium placeholder:text-gray-400 min-h-[80px]"
                                     value={formData.massSchedule}
                                     onChange={e => setFormData({ ...formData, massSchedule: e.target.value })}
                                     placeholder="e.g. Sun: 6am, 8am, 5pm"
@@ -184,7 +184,7 @@ Facebook Page: ${formData.fbPage}
                             <div className="space-y-1.5">
                                 <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Fiesta Date (Optional)</label>
                                 <input
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all placeholder:font-medium placeholder:text-gray-400"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all placeholder:font-medium placeholder:text-gray-400"
                                     value={formData.fiestaDate}
                                     onChange={e => setFormData({ ...formData, fiestaDate: e.target.value })}
                                     placeholder="e.g. May 15"
@@ -194,7 +194,7 @@ Facebook Page: ${formData.fbPage}
                             <div className="space-y-1.5">
                                 <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Facebook Page (Optional)</label>
                                 <input
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all placeholder:font-medium placeholder:text-gray-400"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all placeholder:font-medium placeholder:text-gray-400"
                                     value={formData.fbPage}
                                     onChange={e => setFormData({ ...formData, fbPage: e.target.value })}
                                     type="text"
@@ -205,7 +205,7 @@ Facebook Page: ${formData.fbPage}
                             <div className="space-y-1.5">
                                 <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">History (Optional)</label>
                                 <textarea
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all placeholder:font-medium placeholder:text-gray-400 min-h-[80px]"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all placeholder:font-medium placeholder:text-gray-400 min-h-[80px]"
                                     value={formData.history}
                                     onChange={e => setFormData({ ...formData, history: e.target.value })}
                                     placeholder="Brief history notes..."
@@ -225,7 +225,7 @@ Facebook Page: ${formData.fbPage}
                             </div>
 
                             <div className="pt-4 pb-8">
-                                <button type="submit" className="w-full bg-amber-500 text-white font-black text-lg py-4 rounded-2xl hover:bg-amber-600 active:scale-95 transition-all shadow-xl shadow-amber-200">
+                                <button type="submit" className="w-full bg-orange-500 text-white font-black text-lg py-4 rounded-2xl hover:bg-orange-600 active:scale-95 transition-all shadow-xl shadow-orange-200">
                                     Submit Details
                                 </button>
                             </div>

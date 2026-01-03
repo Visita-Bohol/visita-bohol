@@ -130,7 +130,7 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
 
     const createTempIcon = () => L.divIcon({
         className: 'custom-div-icon',
-        html: `<div class="flex items-center justify-center w-8 h-8 rounded-full bg-amber-500 animate-bounce" style="border: 2px solid white; color: white; box-shadow: 0 4px 8px rgba(0,0,0,0.4);">
+        html: `<div class="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500 animate-bounce" style="border: 2px solid white; color: white; box-shadow: 0 4px 8px rgba(0,0,0,0.4);">
                             <i class="fas fa-map-pin text-sm"></i>
                         </div>`,
         iconSize: [32, 32],
@@ -169,7 +169,7 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                     <button onClick={findNearest} id="nearest-btn" className="floating-action-btn" title="Find Nearest Church">
                         <i className={`fas ${geoLoading && isFindingNearest ? 'fa-spinner fa-spin' : 'fa-compass'} text-lg`}></i>
                     </button>
-                    <button onClick={enableAddMode} id="add-btn" className={`floating-action-btn ${isAddMode ? 'bg-amber-50 text-amber-600 ring-2 ring-amber-400' : 'text-amber-500 bg-amber-100 border-amber-200'}`} title="Add Missing Church">
+                    <button onClick={enableAddMode} id="add-btn" className={`floating-action-btn ${isAddMode ? 'bg-orange-50 text-orange-600 ring-2 ring-orange-400' : 'text-orange-500 bg-orange-100 border-orange-200'}`} title="Add Missing Church">
                         <i className="fas fa-map-pin text-lg"></i>
                     </button>
                 </div>
@@ -186,7 +186,7 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
             {isAddMode && (
                 <div className="fixed bottom-36 left-1/2 transform -translate-x-1/2 z-[3000] pointer-events-none flex flex-col gap-2 items-center w-full max-w-[90%] animate-in fade-in slide-in-from-bottom-4">
                     <div className="bg-gray-900/95 text-white px-6 py-3 rounded-full text-sm font-semibold shadow-xl backdrop-blur-sm flex items-center gap-2 border border-white/10 pointer-events-auto">
-                        <i className="fas fa-map-pin text-amber-400 animate-bounce"></i>
+                        <i className="fas fa-map-pin text-orange-500 animate-bounce"></i>
                         <span>Tap location on map</span>
                         <button onClick={() => setIsAddMode(false)} className="ml-2 w-6 h-6 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">
                             <i className="fas fa-times text-xs"></i>

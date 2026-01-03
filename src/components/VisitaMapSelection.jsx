@@ -37,7 +37,7 @@ function MapRefresher({ center, zoom }) {
     return null;
 }
 
-export default function VisitaMapSelection({ churches, onSelect, onClose, currentStep, selectedIds }) {
+export default function VisitaMapSelection({ churches, onSelect, onClose, onBack, currentStep, selectedIds }) {
     const { location, getLocation, loading: geoLoading } = useGeolocation();
     const [selectedChurch, setSelectedChurch] = useState(null);
     const [activeCenter, setActiveCenter] = useState([9.85, 124.15]); // Default Bohol
@@ -87,17 +87,31 @@ export default function VisitaMapSelection({ churches, onSelect, onClose, curren
     return (
         <div className="fixed inset-0 z-[6000] bg-white flex flex-col">
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100 shadow-sm z-10">
-                <div className="flex items-center gap-3">
+            <div className="px-4 py-3 bg-white border-b border-gray-100 shadow-sm z-10">
+                <div className="flex items-center justify-between mb-4">
                     <button
-                        onClick={onClose}
-                        className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 active:bg-gray-200"
+                        onClick={onBack || onClose}
+                        className="flex items-center gap-2 text-gray-600 active:text-blue-600 transition-colors group"
                     >
-                        <i className="fas fa-arrow-left text-sm"></i>
+                        <div className="w-8 h-8 rounded-full bg-white border border-gray-200 group-active:border-blue-200 flex items-center justify-center shadow-sm transition-colors">
+                            <i className="fas fa-arrow-left text-xs group-active:text-blue-600"></i>
+                        </div>
+                        <span className="text-xs font-bold group-active:text-blue-600">Back</span>
                     </button>
-                    <div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-blue-500 block">Step {currentStep + 1}</span>
-                        <h2 className="text-sm font-bold text-gray-900">Select via Map</h2>
+
+                    <div className="text-center">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-blue-500 block mb-0.5">
+                            Step {currentStep + 1} of 7
+                        </span>
+                        <h2 className="text-base font-black text-gray-900 leading-none">
+                            Choose {["1st", "2nd", "3rd", "4th", "5th", "6th", "7th"][currentStep]}
+                        </h2>
+                    </div>
+
+                    <div className="w-16 flex justify-end">
+                        <span className="text-[10px] font-bold text-blue-600 bg-white px-2 py-1 rounded-lg shadow-sm">
+                            {selectedIds ? selectedIds.filter(id => id).length : 0}/7
+                        </span>
                     </div>
                 </div>
             </div>

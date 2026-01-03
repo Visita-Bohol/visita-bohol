@@ -5,23 +5,25 @@ import { useState, useEffect } from 'react';
 import { useGeolocation } from '../hooks/useGeolocation';
 
 // Reuse helper for icons
-const createChurchIcon = (church, isSelected, isTaken) => {
+const createChurchIcon = (church, isSelected, isPicked) => {
     // Default Colors
     let markerColor = church.Diocese === 'Tagbilaran' ? '#2563eb' : '#f59e0b';
     let content = '<i class="fas fa-church text-[12px]"></i>';
     let borderColor = 'white';
+    let opacity = '1';
 
-    // Grey out if taken by another step
-    if (isTaken) {
+    // Grey out if already picked
+    if (isPicked) {
         markerColor = '#9ca3af'; // gray-400
         borderColor = '#d1d5db'; // gray-300
+        opacity = '0.7'; // More visible than 0.5
     }
 
     return L.divIcon({
         className: 'custom-div-icon',
         html: `
             <div class="flex items-center justify-center w-8 h-8 rounded-full" 
-                 style="background-color: ${markerColor}; border: 2px solid ${borderColor}; color: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); transform: ${isSelected ? 'scale(1.2)' : 'scale(1)'}; opacity: ${isTaken ? '0.5' : '1'}">
+                 style="background-color: ${markerColor}; border: 2px solid ${borderColor}; color: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); transform: ${isSelected ? 'scale(1.2)' : 'scale(1)'}; opacity: ${opacity}">
                 ${content}
             </div>`,
         iconSize: [32, 32],
@@ -136,17 +138,14 @@ export default function VisitaMapSelection({ churches, onSelect, onClose, onBack
                     )}
 
                     {churches.map(church => {
-                        // Robust check with string comparison
-                        const takenIndex = selectedIds ? selectedIds.findIndex(id => id && String(id) === String(church.id)) : -1;
-
-                        // Show as grey if already picked (in any step)
-                        const isTaken = takenIndex !== -1;
+                        // Check if this church is already picked (in any step)
+                        const isPicked = selectedIds && selectedIds.some(id => id && String(id) === String(church.id));
 
                         return (
                             <Marker
                                 key={church.id}
                                 position={church.Coords}
-                                icon={createChurchIcon(church, selectedChurch?.id === church.id, isTaken)}
+                                icon={createChurchIcon(church, selectedChurch?.id === church.id, isPicked)}
                                 eventHandlers={{
                                     click: () => handleChurchClick(church)
                                 }}

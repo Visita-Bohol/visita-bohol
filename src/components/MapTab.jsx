@@ -1,9 +1,10 @@
-import { MapContainer, TileLayer, Marker, useMap, CircleMarker } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMap, CircleMarker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useState, useMemo } from 'react';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { calculateDistance } from '../utils/helpers';
+import AddChurchModal from './AddChurchModal';
 
 function MapRefresher({ center, zoom }) {
     const map = useMap();
@@ -13,6 +14,25 @@ function MapRefresher({ center, zoom }) {
     return null;
 }
 
+const MapClickHandler = ({ isAddMode, onMapClick }) => {
+    useMapEvents({
+        click(e) {
+            if (isAddMode) {
+                onMapClick(e.latlng);
+            }
+        },
+    });
+    const map = useMap();
+    useEffect(() => {
+        if (isAddMode) {
+            map.getContainer().style.cursor = 'crosshair';
+        } else {
+            map.getContainer().style.cursor = '';
+        }
+    }, [isAddMode, map]);
+    return null;
+};
+
 export default function MapTab({ churches, visitedChurches, onChurchClick, initialFocusChurch }) {
     const { location, getLocation, loading: geoLoading } = useGeolocation();
     const [searchTerm, setSearchTerm] = useState('');
@@ -21,6 +41,11 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
     const [activeZoom, setActiveZoom] = useState(initialFocusChurch ? 16 : 10);
     const [isLocating, setIsLocating] = useState(false);
     const [isFindingNearest, setIsFindingNearest] = useState(false);
+
+    // Add Missing Church State
+    const [isAddMode, setIsAddMode] = useState(false);
+    const [tempCoordinate, setTempCoordinate] = useState(null);
+    const [showAddModal, setShowAddModal] = useState(false);
 
     useEffect(() => {
         if (initialFocusChurch) {
@@ -65,6 +90,19 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
         getLocation();
     };
 
+    const enableAddMode = () => {
+        setIsAddMode(true);
+        setTempCoordinate(null);
+        // Clear search or filters if needed, or leave them
+    };
+
+    const handleMapClick = (latlng) => {
+        setTempCoordinate(latlng);
+        setIsAddMode(false);
+        // Small delay to show the pin before opening modal? Optional.
+        setTimeout(() => setShowAddModal(true), 300);
+    };
+
     const filteredChurches = useMemo(() => {
         return churches.filter(church => {
             const matchesSearch = church.Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -89,6 +127,13 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
             iconAnchor: [16, 32]
         });
     };
+
+    const createTempIcon = () => L.divIcon({
+        className: 'custom-div-icon',
+        html: `<div style="font-size: 36px; color: #f59e0b; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); transform: translate(-50%, -100%);"><i class="fas fa-map-pin"></i></div>`,
+        iconSize: [0, 0], // Handled by html transform
+        iconAnchor: [0, 0]
+    });
 
     const findNearest = () => {
         if (!location) {
@@ -122,6 +167,9 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                     <button onClick={findNearest} id="nearest-btn" className="floating-action-btn" title="Find Nearest Church">
                         <i className={`fas ${geoLoading && isFindingNearest ? 'fa-spinner fa-spin' : 'fa-compass'} text-lg`}></i>
                     </button>
+                    <button onClick={enableAddMode} id="add-btn" className={`floating-action-btn ${isAddMode ? 'bg-amber-50 text-amber-600 ring-2 ring-amber-400' : 'text-amber-500 bg-amber-100 border-amber-200'}`} title="Add Missing Church">
+                        <i className="fas fa-map-pin text-lg"></i>
+                    </button>
                 </div>
 
                 {/* Diocese Filter Pills */}
@@ -132,6 +180,19 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                 </div>
             </div>
 
+            {/* Instruction Overlay */}
+            {isAddMode && (
+                <div className="absolute top-28 left-1/2 -translate-x-1/2 z-[3000] animate-in fade-in slide-in-from-top-4">
+                    <div className="bg-amber-500 text-white px-6 py-3 rounded-full font-bold shadow-xl flex items-center gap-3">
+                        <i className="fas fa-map-pin animate-bounce"></i>
+                        <span className="text-sm">Tap location on map</span>
+                        <button onClick={() => setIsAddMode(false)} className="ml-1 w-6 h-6 rounded-full bg-black/20 flex items-center justify-center hover:bg-black/30">
+                            <i className="fas fa-times text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <MapContainer
                 center={activeCenter}
                 zoom={activeZoom}
@@ -140,6 +201,8 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                 attributionControl={false}
             >
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <MapClickHandler isAddMode={isAddMode} onMapClick={handleMapClick} />
+
                 {filteredChurches.map((church) => (
                     <Marker
                         key={church.id}
@@ -147,13 +210,16 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                         icon={createChurchIcon(church)}
                         eventHandlers={{
                             click: () => {
-                                setActiveCenter(church.Coords);
-                                setActiveZoom(16);
-                                onChurchClick(church);
+                                if (!isAddMode) {
+                                    setActiveCenter(church.Coords);
+                                    setActiveZoom(16);
+                                    onChurchClick(church);
+                                }
                             }
                         }}
                     />
                 ))}
+
                 {location && (
                     <CircleMarker
                         center={[location.latitude, location.longitude]}
@@ -161,8 +227,19 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                         pathOptions={{ color: 'white', fillColor: '#2563eb', fillOpacity: 0.8, weight: 3 }}
                     />
                 )}
+
+                {tempCoordinate && (
+                    <Marker position={tempCoordinate} icon={createTempIcon()} />
+                )}
+
                 <MapRefresher center={activeCenter} zoom={activeZoom} />
             </MapContainer>
+
+            <AddChurchModal
+                isOpen={showAddModal}
+                onClose={() => { setShowAddModal(false); setTempCoordinate(null); }}
+                coordinates={tempCoordinate}
+            />
 
             {/* Map Legend */}
             <div className="absolute bottom-6 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-gray-100 z-[400] text-[10px] font-bold space-y-2">

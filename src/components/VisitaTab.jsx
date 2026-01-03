@@ -3,10 +3,12 @@ import AppLogo from './AppLogo';
 import Sortable from 'sortablejs';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useGeolocation } from '../hooks/useGeolocation';
+import VisitaMapSelection from './VisitaMapSelection';
 
 export default function VisitaTab({ churches, prayers, visitedChurches, visitaProgress, setVisitaProgress, visitaChurches, setVisitaChurches, onVisitChurch, onChurchClick, setHideNav, addToast }) {
     const { location, getLocation, loading: geoLoading } = useGeolocation();
     const [isSelecting, setIsSelecting] = useLocalStorage('visita_isSelecting', false);
+    const [showMapSelection, setShowMapSelection] = useState(false);
     const [currentStep, setCurrentStep] = useLocalStorage('visita_currentStep', 0);
     const [tempChurches, setTempChurches] = useLocalStorage('visita_tempChurches', []);
     const [searchTerm, setSearchTerm] = useState('');
@@ -259,8 +261,31 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
 
         const filledCount = tempChurches.filter(id => id).length;
 
+        const handleMapSelect = (churchId) => {
+            const newTemp = [...tempChurches];
+            newTemp[currentStep] = churchId;
+            setTempChurches(newTemp);
+            setSearchTerm('');
+            setShowMapSelection(false);
+
+            const isComplete = newTemp.filter(id => id).length === 7;
+            if (isComplete) {
+                setIsReviewing(true);
+            } else if (currentStep < 6) {
+                setCurrentStep(currentStep + 1);
+            }
+        };
+
         return (
             <div id="tab-visita" className="tab-content h-full overflow-y-auto px-4 pt-0 pb-20 bg-gray-50 active no-scrollbar">
+                {showMapSelection && (
+                    <VisitaMapSelection
+                        churches={churches}
+                        currentStep={currentStep}
+                        onSelect={handleMapSelect}
+                        onClose={() => setShowMapSelection(false)}
+                    />
+                )}
                 <div id="visita-content">
                     <div className="sticky top-0 z-40 w-[100vw] -ml-4 -mr-4 mb-[10px] px-4 pt-4 pb-3 bg-gradient-to-b from-white/95 to-blue-50/95 backdrop-blur-md border-b border-white/80 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.02)] transition-all">
                         <div className="flex items-center justify-between mb-4">
@@ -338,6 +363,13 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
                                 title="Auto-select 7 nearest churches"
                             >
                                 <i className={`${geoLoading ? 'fas fa-spinner fa-spin' : 'fa-solid fa-location-crosshairs'} text-lg`}></i>
+                            </button>
+                            <button
+                                onClick={() => setShowMapSelection(true)}
+                                className={`floating-action-btn ml-2 !h-12 !w-12 !rounded-xl !shadow-sm !border !border-blue-100/50 !text-blue-600 active:!scale-95 bg-white transition-all`}
+                                title="Select via Map"
+                            >
+                                <i className="fas fa-map text-lg"></i>
                             </button>
                         </div>
                     </div>

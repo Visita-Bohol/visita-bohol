@@ -147,12 +147,19 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
         performNearestSearch(location);
     };
 
+    const handleSearchResultClick = (church) => {
+        setSearchTerm('');
+        setActiveCenter(church.Coords);
+        setActiveZoom(18);
+        onChurchClick(church);
+    };
+
     return (
         <div className="h-full w-full relative">
             {/* MATCHING EXACT HTML STRUCTURE */}
             <div className="header-ui-container floating-header" id="top-ui" style={{ display: 'flex' }}>
                 <div className="flex gap-2">
-                    <div className="search-input-wrapper flex-1 min-w-0">
+                    <div className="search-input-wrapper flex-1 min-w-0 relative">
                         <i className="fas fa-search text-gray-400 text-sm"></i>
                         <input
                             type="text"
@@ -167,6 +174,28 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                                 }
                             }}
                         />
+                        {/* Search Results Dropdown */}
+                        {searchTerm.length > 0 && filteredChurches.length > 0 && (
+                            <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-[5000] animate-in fade-in slide-in-from-top-2">
+                                <div className="max-h-[60vh] overflow-y-auto no-scrollbar">
+                                    {filteredChurches.map(church => (
+                                        <div
+                                            key={church.id}
+                                            className="p-3 border-b border-gray-50 last:border-0 hover:bg-gray-50 active:bg-blue-50 cursor-pointer flex items-center gap-3 transition-colors"
+                                            onClick={() => handleSearchResultClick(church)}
+                                        >
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${church.Diocese === 'Tagbilaran' ? 'bg-blue-100 text-blue-600' : 'bg-amber-100 text-amber-600'}`}>
+                                                <i className="fas fa-church text-xs"></i>
+                                            </div>
+                                            <div className="min-w-0">
+                                                <h4 className="text-xs font-bold text-gray-800 leading-tight truncate">{church.Name}</h4>
+                                                <p className="text-[10px] text-gray-500 font-medium truncate">{church.Location}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                     <button onClick={handleLocate} id="locate-btn" className="floating-action-btn">
                         <i className={`fas ${geoLoading && isLocating ? 'fa-spinner fa-spin' : 'fa-location-arrow'} text-lg`}></i>

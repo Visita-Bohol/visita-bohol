@@ -282,6 +282,7 @@ export default function VisitaTab({ churches, prayers, visitedChurches, visitaPr
                     <VisitaMapSelection
                         churches={churches}
                         currentStep={currentStep}
+                        selectedIds={tempChurches}
                         onSelect={handleMapSelect}
                         onClose={() => setShowMapSelection(false)}
                     />

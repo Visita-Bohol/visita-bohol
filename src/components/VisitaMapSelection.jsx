@@ -68,9 +68,9 @@ export default function VisitaMapSelection({ churches, onSelect, onClose, curren
         // Robust check with string comparison
         const takenIndex = selectedIds ? selectedIds.findIndex(id => id && String(id) === String(church.id)) : -1;
 
-        // If it is taken AND it is NOT the current step we are editing
+        // If it is taken AND it is NOT the current step we are editing, do nothing
         if (takenIndex !== -1 && takenIndex !== currentStep) {
-            return;
+            return; // Don't allow selection of already-picked churches
         }
 
         setSelectedChurch(church);

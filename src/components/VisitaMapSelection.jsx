@@ -59,15 +59,11 @@ export default function VisitaMapSelection({ churches, onSelect, onClose, curren
     };
 
     const handleChurchClick = (church) => {
-        // Check if church is taken by another step
-        const takenIndex = selectedIds ? selectedIds.indexOf(church.id) : -1;
+        // Robust check with string comparison
+        const takenIndex = selectedIds ? selectedIds.findIndex(id => id && String(id) === String(church.id)) : -1;
 
         // If it is taken AND it is NOT the current step we are editing
         if (takenIndex !== -1 && takenIndex !== currentStep) {
-            // It is taken. User wants to hide badge if church selected?
-            // Actually, if we hide the badge (marker), the user CANNOT CLICK IT.
-            // So this handler won't be called.
-            // If the user meant "don't select it", we just return.
             return;
         }
 
@@ -120,7 +116,9 @@ export default function VisitaMapSelection({ churches, onSelect, onClose, curren
                     )}
 
                     {churches.map(church => {
-                        const takenIndex = selectedIds ? selectedIds.indexOf(church.id) : -1;
+                        // Robust check with string comparison
+                        const takenIndex = selectedIds ? selectedIds.findIndex(id => id && String(id) === String(church.id)) : -1;
+
                         // If taken by another step (and not the current one we are re-selecting), HIDE IT completely.
                         if (takenIndex !== -1 && takenIndex !== currentStep) {
                             return null;

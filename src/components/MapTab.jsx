@@ -174,7 +174,7 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                     <button onClick={findNearest} id="nearest-btn" className="floating-action-btn" title="Find Nearest Church">
                         <i className={`fas ${geoLoading && isFindingNearest ? 'fa-spinner fa-spin' : 'fa-compass'} text-lg`}></i>
                     </button>
-                    <button onClick={enableAddMode} id="add-btn" className={`floating-action-btn ${isAddMode ? 'bg-orange-50 text-orange-600 ring-2 ring-orange-400' : 'text-orange-500 bg-orange-100 border-orange-200'}`} title="Add Missing Church">
+                    <button onClick={enableAddMode} id="add-btn" className={`floating-action-btn ${isAddMode ? 'bg-orange-100 text-orange-600 ring-2 ring-orange-400' : 'text-orange-500 bg-white border-orange-200 active:bg-orange-100'}`} title="Add Missing Church">
                         <i className="fas fa-map-pin text-lg"></i>
                     </button>
                 </div>

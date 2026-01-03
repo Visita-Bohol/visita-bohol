@@ -41,7 +41,7 @@ export default function ChurchCard({ church, isVisited, onClick, onViewOnMap }) 
                                 e.stopPropagation();
                                 if (onViewOnMap) onViewOnMap();
                             }}
-                            className="w-full bg-blue-600 text-white py-3 rounded-xl text-[11px] font-bold shadow-lg shadow-blue-200 active:scale-95 transition-all"
+                            className="w-full bg-white/80 text-blue-600 py-3 rounded-xl text-[11px] font-bold border border-blue-50 active:scale-95 transition-all shadow-sm"
                         >
                             <i className="fas fa-map-pin mr-1"></i> View Church Location
                         </button>

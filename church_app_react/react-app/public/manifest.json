@@ -1,0 +1,16 @@
+{
+    "name": "Visita Bohol",
+    "short_name": "Visita Bohol",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#2563EB",
+    "description": "Your complete spiritual companion for visiting churches across the island.",
+    "icons": [
+        {
+            "src": "logo.svg",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        }
+    ]
+}

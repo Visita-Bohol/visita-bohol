@@ -1,0 +1,2365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Visita Bohol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: contain;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+        }
+
+        .active-tab {
+            color: #2563eb;
+        }
+
+        .tab-content {
+            display: none;
+            height: 100%;
+            width: 100%;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+            z-index: 1;
+        }
+
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease-out, visibility 0.6s;
+        }
+
+        .splash-fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .church-icon {
+            background: #2563eb;
+            border: 2px solid white;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-ui-container {
+            width: 100%;
+            z-index: 5000;
+            /* Stays in front of everything */
+            display: none;
+            /* Hidden during loading */
+            flex-direction: column;
+            gap: 12px;
+            padding: 15px 0;
+            background: transparent;
+        }
+
+        .floating-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 20px 16px;
+            background: transparent;
+        }
+
+        .inline-header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            width: 100vw;
+            margin-left: -16px;
+            margin-right: -16px;
+            margin-bottom: 10px;
+            padding: 16px 16px 12px 16px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(239, 246, 255, 0.95));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            height: 52px;
+            border: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .search-input-wrapper input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 12px;
+            color: #1a202c;
+        }
+
+        .floating-action-btn {
+            width: 52px;
+            height: 52px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2563eb;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            border: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .floating-action-btn:active {
+            transform: scale(0.95);
+            background: #f8fafc;
+        }
+
+        /* Diocese Filter Pills */
+        .diocese-filter-container {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .diocese-filter-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .diocese-pill {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s;
+            background: #f1f5f9;
+            color: #475569;
+            border: none;
+        }
+
+        .diocese-pill.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        #bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            z-index: 2000;
+            /* Behind header but in front of map */
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+            will-change: transform;
+            max-height: 75vh;
+            /* Reduced height to leave space for header */
+            display: flex;
+            flex-direction: column;
+        }
+
+        #bottom-sheet.open {
+            transform: translateY(0);
+        }
+
+        .sheet-handle-container {
+            padding: 12px 0;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .sheet-handle {
+            width: 36px;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            margin: 0 auto;
+        }
+
+        .sheet-scroll-area {
+            overflow-y: auto;
+            flex: 1;
+            padding: 0 20px 30px 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .visited-badge {
+            background: #dcfce7;
+            color: #166534;
+            padding: 2px 8px;
+            border-radius: 99px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.025em;
+            white-space: nowrap;
+        }
+
+        .time-chip {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Month Header */
+        .month-divider {
+            padding: 24px 0 12px 4px;
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .month-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #eff6ff;
+        }
+
+
+
+        .diocese-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .diocese-tag.tagbilaran {
+            background: #10b981;
+            color: white;
+        }
+
+        .diocese-tag.talibon {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .fiesta-card-horizontal {
+            flex: 0 0 85%;
+            max-width: 320px;
+            scroll-snap-align: start;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(239, 246, 255, 0.8));
+            backdrop-filter: blur(10px);
+        }
+
+        #toast-container {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            width: 100%;
+            max-width: 90%;
+        }
+
+        .toast {
+            background: rgba(30, 41, 59, 0.95);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transform: translateY(20px) scale(0.9);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            text-align: center;
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .animate-scale-in {
+            animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-900">
+
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="flex flex-col items-center text-center px-6">
+            <div
+                class="w-16 h-16 sm:w-20 sm:h-20 bg-blue-600 rounded-2xl sm:rounded-3xl flex items-center justify-center text-white text-3xl sm:text-4xl shadow-2xl mb-6">
+                <i class="fas fa-church"></i>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black tracking-tighter text-gray-900 mb-2">
+                Visita Bohol
+            </h1>
+            <p class="text-gray-500 font-medium text-xs sm:text-sm tracking-wide">
+                Catholic Church Finder & Visita Iglesia App
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 relative overflow-hidden w-full">
+
+        <div id="tab-map" class="tab-content active">
+            <!-- Floating Header (Moved here by JS for Map tab) -->
+            <div id="map"></div>
+            <!-- Map Legend -->
+            <div
+                class="absolute bottom-6 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-gray-100 z-[400] text-[10px] font-bold space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-blue-600 ring-2 ring-white shadow-sm"></span>
+                    <span class="text-blue-700">Diocese of Tagbilaran</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500 ring-2 ring-white shadow-sm"></span>
+                    <span class="text-amber-700">Diocese of Talibon</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-directory" class="tab-content overflow-y-auto px-4 pt-0 pb-20 bg-gray-50">
+            <!-- Inline Header (Moved here by JS for Directory tab) -->
+            <div class="header-ui-container" id="top-ui">
+                <div class="flex gap-2">
+                    <div class="search-input-wrapper flex-1">
+                        <i class="fas fa-search text-gray-400 text-sm"></i>
+                        <input type="text" id="main-search" placeholder="Search churches..." autocomplete="off">
+                    </div>
+                    <button onclick="locateUser()" id="locate-btn" class="floating-action-btn">
+                        <i class="fas fa-location-arrow text-lg"></i>
+                    </button>
+                    <button onclick="findNearestChurch()" id="nearest-btn" class="floating-action-btn"
+                        title="Find Nearest Church">
+                        <i class="fas fa-compass text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Diocese Filter Pills -->
+                <div class="diocese-filter-container">
+                    <button onclick="setDioceseFilter('All')" class="diocese-pill active">All</button>
+                    <button onclick="setDioceseFilter('Tagbilaran')" class="diocese-pill">Diocese of Tagbilaran</button>
+                    <button onclick="setDioceseFilter('Talibon')" class="diocese-pill">Diocese of Talibon</button>
+                </div>
+            </div>
+            <div id="church-list" class="space-y-3 pb-8"></div>
+        </div>
+
+        <div id="tab-visita" class="tab-content overflow-y-auto px-4 pt-0 pb-20 bg-gradient-to-b from-blue-50 to-white">
+            <div id="visita-content">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <div id="tab-about" class="tab-content overflow-y-auto px-4 pt-6 pb-20 bg-gray-50">
+            <div class="max-w-md mx-auto space-y-6">
+                <!-- App Header -->
+                <div class="text-center pt-8 pb-4">
+                    <div
+                        class="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-blue-200">
+                        <i class="fas fa-church text-white text-4xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-black text-gray-900 mb-1">Visita Bohol</h2>
+                    <p class="text-sm font-bold text-gray-400 uppercase tracking-widest">Version 1.0.0</p>
+                </div>
+
+                <!-- Contact/Report Card -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-blue-50">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900">Report Inaccuracies</h3>
+                            <p class="text-xs text-gray-500">Help us improve our data</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+                        If you notice incorrect mass schedules, feast dates, or other church details, please let us know
+                        immediately.
+                    </p>
+                    <a href="mailto:feedback.visitabohol@gmail.com"
+                        class="block w-full bg-blue-600 text-white text-center py-3 rounded-xl font-bold active:scale-95 transition-transform shadow-lg shadow-blue-200">
+                        <i class="fas fa-envelope mr-2"></i> Contact Support
+                    </a>
+                </div>
+
+                <!-- Info Card -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-blue-50">
+                    <h3 class="font-bold text-gray-900 mb-4">About the App</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed mb-4">
+                        Your complete companion for visiting churches across Bohol. Features accurate mass schedules,
+                        feast days, and a guided Visita Iglesia experience.
+                    </p>
+                    <div class="flex items-center gap-2 text-xs text-gray-400 font-medium">
+                        <i class="fas fa-code"></i>
+                        <span>Developed for the Diocese of Tagbilaran & Talibon</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav id="bottom-nav"
+        class="border-t border-white/50 flex justify-around items-center px-4 py-1.5 pb-4 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-[150] flex-shrink-0 backdrop-blur-md"
+        style="background: linear-gradient(to top, rgba(255, 255, 255, 0.95), rgba(239, 246, 255, 0.95));">
+        <button onclick="switchTab('map')"
+            class="nav-btn flex flex-col items-center gap-1 active-tab flex-1 transition-all duration-300" id="btn-map">
+            <i class="fas fa-map-marked-alt text-lg"></i>
+            <span class="text-[10px] font-bold uppercase tracking-tighter">Maps</span>
+        </button>
+        <button onclick="switchTab('directory')"
+            class="nav-btn flex flex-col items-center gap-1 text-gray-400 flex-1 transition-all duration-300"
+            id="btn-directory">
+            <i class="fas fa-church text-lg"></i>
+            <span class="text-[10px] font-bold uppercase tracking-tighter">Church</span>
+        </button>
+        <button onclick="switchTab('visita')"
+            class="nav-btn flex flex-col items-center gap-1 text-gray-400 flex-1 transition-all duration-300"
+            id="btn-visita">
+            <i class="fas fa-cross text-lg"></i>
+            <span class="text-[10px] font-bold uppercase tracking-tighter">Visita</span>
+        </button>
+        <button onclick="switchTab('about')"
+            class="nav-btn flex flex-col items-center gap-1 text-gray-400 flex-1 transition-all duration-300"
+            id="btn-about">
+            <i class="fas fa-info-circle text-lg"></i>
+            <span class="text-[10px] font-bold uppercase tracking-tighter">About</span>
+        </button>
+    </nav>
+
+    <!-- Bottom Sheet UI -->
+    <div id="sheet-backdrop"
+        class="fixed inset-0 bg-gray-900/30 backdrop-blur-[2px] z-[1500] opacity-0 pointer-events-none transition-all duration-300"
+        onclick="closeSheet()">
+    </div>
+
+    <div id="bottom-sheet">
+        <div class="sheet-handle-container" onclick="closeSheet()">
+            <div class="sheet-handle"></div>
+        </div>
+        <div class="sheet-scroll-area">
+            <div id="sheet-content">
+                <!-- Dynamic Content -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="data.js"></script>
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.onkeydown = function (e) {
+            if (e.keyCode == 123) return false;
+            if (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0))) return false;
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+        };
+
+        let allChurches = [];
+        let stationPrayers = [];
+
+        // Load data - try fetch first (for web server), fall back to embedded data
+        async function loadAppData() {
+            try {
+                // Try loading from external files first (if using web server)
+                const [churchesRes, prayersRes] = await Promise.all([
+                    fetch('churches.json'),
+                    fetch('prayers.json')
+                ]);
+
+                if (churchesRes.ok && prayersRes.ok) {
+                    allChurches = await churchesRes.json();
+                    stationPrayers = await prayersRes.json();
+                    console.log(`✓ Loaded ${allChurches.length} churches and ${stationPrayers.length} prayers from files`);
+                } else {
+                    throw new Error('Files not accessible');
+                }
+            } catch (error) {
+                // Fall back to embedded data (for direct file:// access)
+                console.log('Loading embedded data...');
+
+                // Load from embedded script tags
+                if (window.CHURCHES_DATA && window.PRAYERS_DATA) {
+                    allChurches = window.CHURCHES_DATA;
+                    stationPrayers = window.PRAYERS_DATA;
+                    console.log(`✓ Loaded ${allChurches.length} churches and ${stationPrayers.length} prayers from embedded data`);
+                } else {
+                    throw new Error('No data available - missing both files and embedded data');
+                }
+            }
+
+            // Validate data
+            if (!allChurches || allChurches.length === 0) {
+                throw new Error('churches data is empty or invalid');
+            }
+            if (!stationPrayers || stationPrayers.length === 0) {
+                throw new Error('prayers data is empty or invalid');
+            }
+
+            initializeApp();
+        }
+
+        // Start loading
+        loadAppData().catch(error => {
+            console.error('Error loading app data:', error);
+
+            // Show error message to user
+            const errorMsg = document.createElement('div');
+            errorMsg.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 10000; max-width: 90%; text-align: center;';
+            errorMsg.innerHTML = `
+                <div style="color: #dc2626; font-size: 48px; margin-bottom: 20px;">⚠️</div>
+                <h2 style="font-size: 24px; font-weight: bold; color: #1f2937; margin-bottom: 10px;">Failed to Load Data</h2>
+                <p style="color: #6b7280; margin-bottom: 20px; font-size: 14px;">${error.message}</p>
+                <button onclick="location.reload()" style="background: #2563eb; color: white; padding: 12px 24px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;">
+                    Retry
+                </button>
+            `;
+            document.body.appendChild(errorMsg);
+
+            // Hide splash screen
+            const splash = document.getElementById('splash-screen');
+            if (splash) splash.style.display = 'none';
+        });
+
+        let map;
+        let userMarker;
+        let markers = [];
+        let visitedIds = JSON.parse(localStorage.getItem('visitedChurches') || '[]');
+        let activeChurchId = null;
+        let currentDioceseFilter = 'All';
+        let sheetUnclosable = false;
+
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        function initMap() {
+            map = L.map('map', { zoomControl: false }).setView([9.85, 124.15], 10);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+            updateMapMarkers();
+        }
+
+        function updateMapMarkers() {
+            // Clear existing markers
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+
+            const filteredChurches = filterChurches();
+
+            filteredChurches.forEach(church => {
+                const isVisited = visitedIds.includes(church.id);
+
+                // Different colors for different dioceses
+                let markerColor = '#2563eb'; // Default blue
+                if (church.Diocese === 'Tagbilaran') {
+                    markerColor = '#2563eb'; // Blue
+                } else if (church.Diocese === 'Talibon') {
+                    markerColor = '#f59e0b'; // Yellow (Amber)
+                }
+
+                const icon = L.divIcon({
+                    className: 'custom-div-icon',
+                    html: `<div class="flex items-center justify-center w-8 h-8 rounded-full ${isVisited ? 'bg-green-500' : ''}" style="background-color: ${isVisited ? '#22c55e' : markerColor}; border: 2px solid white; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
+                <i class="fas fa-church text-xs"></i>
+            </div>`,
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 32]
+                });
+
+                const marker = L.marker(church.Coords, { icon }).addTo(map);
+                marker.on('click', () => openSheet(church));
+                markers.push(marker);
+            });
+        }
+
+        function filterChurches() {
+            const searchTerm = document.getElementById('main-search').value.toLowerCase();
+
+            return allChurches.filter(church => {
+                const matchesSearch = church.Name.toLowerCase().includes(searchTerm) ||
+                    church.Location.toLowerCase().includes(searchTerm);
+                const matchesDiocese = currentDioceseFilter === 'All' ||
+                    church.Diocese === currentDioceseFilter;
+                return matchesSearch && matchesDiocese;
+            });
+        }
+
+        function setDioceseFilter(diocese) {
+            currentDioceseFilter = diocese;
+
+            // Update UI pills
+            document.querySelectorAll('.diocese-pill').forEach(pill => {
+                pill.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            updateMapMarkers();
+            renderDirectory();
+            renderFiestas();
+        }
+
+        function formatMassTimes(massString) {
+            // Safety check for undefined or null
+            if (!massString) return '<p class="text-sm text-gray-500">Schedule not available</p>';
+
+            // Split by pipe to separate Sunday and Saturday masses
+            const sections = massString.split('|').map(s => s.trim());
+            let chips = `<div class="flex flex-wrap gap-2">`;
+
+            sections.forEach((section, index) => {
+                const parts = section.split(',').map(p => p.trim());
+                if (parts.length > 0) {
+                    const dayInfo = parts[0].split(':')[0];
+                    const firstTime = parts[0].split(':').slice(1).join(':').trim();
+
+                    // Add day label
+                    chips += `<div class="time-chip bg-blue-600 text-white font-bold">${dayInfo}</div>`;
+                    chips += `<div class="time-chip">${firstTime}</div>`;
+
+                    // Add remaining times
+                    for (let i = 1; i < parts.length; i++) {
+                        chips += `<div class="time-chip">${parts[i]}</div>`;
+                    }
+                }
+            });
+
+            chips += `</div>`;
+            return chips;
+        }
+
+        function openSheet(church, specialHeader = null) {
+            sheetUnclosable = false;
+            // Check if we're in Visita map selection mode
+            if (visitaMapSelectionMode === 'start') {
+                const overlay = document.getElementById('map-selection-overlay');
+                if (overlay) overlay.remove();
+                visitaMapSelectionMode = null;
+                selectStartingChurch(church.id);
+                return;
+            }
+
+            if (visitaMapSelectionMode === 'replace' && replacingIndex !== null) {
+                const overlay = document.getElementById('map-selection-overlay');
+                if (overlay) overlay.remove();
+                confirmReplacement(church.id);
+                visitaMapSelectionMode = null;
+                return;
+            }
+
+            activeChurchId = church.id;
+            const isVisited = visitedIds.includes(church.id);
+
+            // Diocese badge color
+            const dioceseColor = church.Diocese === 'Tagbilaran' ? 'bg-blue-100 text-blue-800' :
+                church.Diocese === 'Talibon' ? 'bg-amber-100 text-amber-800' :
+                    'bg-gray-100 text-gray-800';
+
+            const content = `
+            <div class="flex justify-between items-start gap-3 mb-5">
+                <div class="flex-1 min-w-0">
+                    ${specialHeader ? `<div class="text-[10px] font-black ${specialHeader.color} mb-1 flex items-center gap-1 uppercase tracking-wider"><i class="${specialHeader.icon}"></i> ${specialHeader.text}</div>` : ''}
+                    <h2 class="text-xl sm:text-2xl font-black text-gray-900 leading-tight">${church.Name}</h2>
+                    <div class="flex items-center gap-2 mt-1">
+                        <p class="text-xs sm:text-sm text-gray-500 font-semibold flex items-center gap-1">
+                            <i class="fas fa-map-marker-alt text-blue-500"></i> ${church.Location}
+                        </p>
+                        <span class="text-xs ${dioceseColor} px-2 py-1 rounded-full font-bold">${church.Diocese}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-5 mb-8">
+                <div>
+                    <h3 class="text-[10px] uppercase font-black text-gray-400 tracking-widest mb-2">History</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed font-medium">${church.History}</p>
+                </div>
+                ${church.Mass ? `<div>
+                        <h3 class="text-[10px] uppercase font-black text-gray-400 tracking-widest mb-2.5">Mass Schedule</h3>
+                        ${formatMassTimes(church.Mass)}
+                        ${church.Facebook ? `<div class="mt-3 flex items-center gap-2 text-xs text-gray-500">
+                            <i class="fab fa-facebook text-blue-600"></i>
+                            <a href="https://facebook.com/${church.Facebook.replace('@', '')}" target="_blank" class="text-blue-600 hover:underline font-semibold">${church.Facebook}</a>
+                            <span class="text-gray-400">• Official Schedule</span>
+                        </div>` : ''}
+                    </div>` : church.Facebook ? `
+                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-4">
+                        <div class="flex items-start gap-3">
+                            <i class="fab fa-facebook text-blue-600 text-lg mt-1"></i>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-gray-700 mb-1">For Mass Schedule</p>
+                                <a href="https://facebook.com/${church.Facebook.replace('@', '')}" target="_blank" class="text-sm text-blue-600 hover:underline font-bold break-all">${church.Facebook}</a>
+                                <p class="text-[10px] text-gray-500 mt-1">Visit Facebook page for current schedule</p>
+                            </div>
+                        </div>
+                    </div>` : ''}
+                <div class="flex items-center gap-3 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                    <div class="w-9 h-9 bg-white text-gray-600 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
+                        <i class="fas fa-calendar-day text-sm"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-[9px] uppercase font-bold text-gray-400 tracking-wider mb-0.5">Patronal Fiesta</p>
+                        <p class="text-sm text-gray-900 font-bold truncate">${church.Fiesta}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <div class="flex gap-3">
+                    <button onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${church.Coords[0]},${church.Coords[1]}')"
+                        class="flex-1 bg-blue-600 text-white py-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 shadow-xl shadow-blue-200 active:scale-95 transition-all">
+                        <i class="fas fa-directions"></i> Get Directions
+                    </button>
+                    <a href="mailto:feedback.visitabohol@gmail.com?subject=Suggested%20Edit%20for%20${encodeURIComponent(church.Name)}"
+                        class="px-5 bg-blue-50 text-blue-600 border border-blue-100 py-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-blue-50 active:scale-95 transition-all">
+                        <i class="fas fa-pen-to-square"></i> Suggest Edit
+                    </a>
+                </div>
+                <p class="text-[10px] text-gray-400 text-center font-medium">Inaccurate details? Tap suggest edit</p>
+            </div>
+            `;
+            document.getElementById('sheet-content').innerHTML = content;
+            document.getElementById('bottom-sheet').classList.add('open');
+            toggleBackdrop(true);
+
+            const offset = window.innerWidth < 640 ? 0.008 : 0.012;
+            map.panTo([church.Coords[0] - offset, church.Coords[1]], { animate: true });
+        }
+
+        function closeSheet() {
+            if (sheetUnclosable) return;
+            document.getElementById('bottom-sheet').classList.remove('open');
+            toggleBackdrop(false);
+            activeChurchId = null;
+        }
+
+        function dismissUnclosable() {
+            sheetUnclosable = false;
+            closeSheet();
+        }
+
+        function toggleBackdrop(show) {
+            const backdrop = document.getElementById('sheet-backdrop');
+            if (show) {
+                backdrop.classList.remove('opacity-0', 'pointer-events-none');
+                backdrop.classList.add('opacity-100');
+            } else {
+                backdrop.classList.add('opacity-0', 'pointer-events-none');
+                backdrop.classList.remove('opacity-100');
+            }
+        }
+
+        function scrollFiesta(direction) {
+            const container = document.getElementById('fiesta-container');
+            if (container) {
+                const scrollAmount = 300;
+                container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+
+
+        function locateUser() {
+            if (!navigator.geolocation) return;
+            const btn = document.getElementById('locate-btn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin text-sm"></i>';
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const lat = pos.coords.latitude, lng = pos.coords.longitude;
+                updateLocationMarker(lat, lng);
+                map.flyTo([lat, lng], 15);
+                btn.innerHTML = '<i class="fas fa-location-arrow text-lg"></i>';
+            }, () => {
+                btn.innerHTML = '<i class="fas fa-location-arrow text-lg"></i>';
+            }, { enableHighAccuracy: true });
+        }
+
+        function updateLocationMarker(lat, lng) {
+            if (userMarker) map.removeLayer(userMarker);
+            userMarker = L.circleMarker([lat, lng], {
+                radius: 7,
+                fillColor: "#2563eb",
+                color: "#fff",
+                weight: 2,
+                fillOpacity: 0.8
+            }).addTo(map);
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            // Haversine formula to calculate distance in kilometers
+            const R = 6371; // Earth's radius in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        function findNearestChurch() {
+            if (!navigator.geolocation) {
+                alert('Geolocation is not supported by your browser');
+                return;
+            }
+
+            const btn = document.getElementById('nearest-btn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin text-sm"></i>';
+
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const userLat = pos.coords.latitude;
+                const userLng = pos.coords.longitude;
+
+                // Calculate distances to all churches
+                const churchesWithDistance = allChurches.map(church => ({
+                    ...church,
+                    distance: calculateDistance(userLat, userLng, church.Coords[0], church.Coords[1])
+                }));
+
+                // Sort by distance and get the 3 nearest
+                const nearest = churchesWithDistance.sort((a, b) => a.distance - b.distance).slice(0, 3);
+
+                // Update location marker
+                updateLocationMarker(userLat, userLng);
+
+                // Show the nearest church
+                const nearestChurch = nearest[0];
+                map.flyTo([nearestChurch.Coords[0], nearestChurch.Coords[1]], 14);
+
+                // Open bottom sheet with special header showing distance
+                setTimeout(() => {
+                    openSheet(nearestChurch, {
+                        text: `Nearest Church · ${nearestChurch.distance.toFixed(1)} km away`,
+                        icon: 'fas fa-compass',
+                        color: 'text-green-600'
+                    });
+
+                    // Add info about other nearby churches
+                    const sheetContent = document.getElementById('sheet-content');
+                    if (nearest.length > 1) {
+                        const nearbyHTML = `
+            <div class="mt-6 pt-6 border-t border-gray-100">
+                <h3 class="text-[10px] uppercase font-black text-gray-400 tracking-widest mb-3">Other Nearby Churches</h3>
+                <div class="space-y-2">
+                    ${nearest.slice(1).map(c => `
+                                        <div onclick="viewOnMap([${c.Coords}], ${c.id})" class="flex items-center justify-between p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-bold text-gray-900 truncate">${c.Name}</p>
+                                                <p class="text-xs text-gray-500">${c.Location}</p>
+                                            </div>
+                                            <div class="text-xs font-bold text-blue-600 ml-2">${c.distance.toFixed(1)} km</div>
+                                        </div>
+                                    `).join('')}
+                </div>
+            </div>
+            `;
+                        sheetContent.insertAdjacentHTML('beforeend', nearbyHTML);
+                    }
+                }, 500);
+
+                btn.innerHTML = '<i class="fas fa-compass text-lg"></i>';
+            }, (error) => {
+                btn.innerHTML = '<i class="fas fa-compass text-lg"></i>';
+                alert('Unable to get your location. Please enable location services.');
+            }, { enableHighAccuracy: true });
+        }
+
+        function renderDirectory() {
+            const list = document.getElementById('church-list');
+            const filteredChurches = filterChurches();
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const today = now.getDate();
+
+            const currentMonthChurches = filteredChurches.filter(c => c.FiestaMonth === currentMonth)
+                .sort((a, b) => {
+                    const getDay = (str) => {
+                        const match = str.match(/\d+/);
+                        return match ? parseInt(match[0]) : 0;
+                    };
+                    const dayA = getDay(a.Fiesta);
+                    const dayB = getDay(b.Fiesta);
+                    const scoreA = dayA < today ? dayA + 100 : dayA;
+                    const scoreB = dayB < today ? dayB + 100 : dayB;
+                    return scoreA - scoreB;
+                });
+            const otherChurches = filteredChurches.filter(c => c.FiestaMonth !== currentMonth)
+                .sort((a, b) => {
+                    const diffA = (a.FiestaMonth - currentMonth + 12) % 12;
+                    const diffB = (b.FiestaMonth - currentMonth + 12) % 12;
+                    return diffA - diffB;
+                });
+
+            if (filteredChurches.length === 0) {
+                list.innerHTML = '<div class="text-center py-10 text-gray-500">No churches found</div>';
+                return;
+            }
+
+            let html = '';
+
+            // 1. Fiestas this Month (Horizontal Scroll) - Highlighted but duplicates allowed in main list
+            if (currentMonthChurches.length > 0) {
+                html += `
+                    <div class="mb-6 relative z-10 overflow-hidden">
+                        <div class="flex items-center justify-between mb-4 px-1">
+                            <h2 class="text-[11px] font-black uppercase tracking-widest text-blue-600 flex items-center gap-2">
+                                <i class="fas fa-star text-amber-500"></i> Fiestas this Month
+                            </h2>
+                            <span class="bg-blue-100 text-blue-700 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-tighter ring-1 ring-blue-200">
+                                ${months[currentMonth]}
+                            </span>
+                        </div>
+                        
+                        <div class="hidden md:flex gap-2 absolute top-0 right-14 z-20"> 
+                            <button onclick="scrollFiesta(-1)" class="w-7 h-7 rounded-full bg-white/80 border border-blue-200 shadow-sm flex items-center justify-center text-blue-600 hover:bg-blue-50 transition-colors backdrop-blur-sm">
+                                <i class="fas fa-chevron-left text-[10px]"></i>
+                            </button>
+                            <button onclick="scrollFiesta(1)" class="w-7 h-7 rounded-full bg-white/80 border border-blue-200 shadow-sm flex items-center justify-center text-blue-600 hover:bg-blue-50 transition-colors backdrop-blur-sm">
+                                <i class="fas fa-chevron-right text-[10px]"></i>
+                            </button>
+                        </div>
+
+                        <div id="fiesta-container" class="flex overflow-x-auto gap-4 pb-4 -mx-4 px-4 snap-x no-scrollbar scroll-smooth">
+                            ${currentMonthChurches.map(church => {
+                    const isTagbilaran = church.Diocese === 'Tagbilaran';
+                    const iconBg = isTagbilaran ? 'bg-blue-600' : 'bg-amber-500';
+                    return `
+                                    <div class="fiesta-card-horizontal rounded-2xl p-4 border border-blue-100/50 shadow-md shadow-blue-500/5 active:scale-95 transition-all hover:border-blue-300 relative overflow-hidden" onclick="viewOnMap([${church.Coords}], ${church.id})">
+                                        <div class="absolute inset-0 bg-gradient-to-br from-white/80 to-blue-50/50 backdrop-blur-sm -z-10"></div>
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-12 h-12 ${iconBg} text-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-200">
+                                                <i class="fas fa-church text-xl"></i>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <h3 class="font-black text-gray-900 text-base leading-tight truncate mb-1">${church.Name}</h3>
+                                                <p class="text-[10px] font-semibold text-gray-500 truncate flex items-center gap-2 mb-2">
+                                                    <span><i class="fas fa-location-dot ${isTagbilaran ? 'text-blue-500' : 'text-amber-500'}"></i> ${church.Location}</span>
+                                                    <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+                                                    <span class="${isTagbilaran ? 'text-blue-600' : 'text-amber-600'} font-bold"><i class="fas fa-calendar-alt text-[9px] mr-1"></i>${church.Fiesta}</span>
+                                                </p>
+                                                
+                                                <div class="pt-2 border-t border-gray-100/50">
+                                                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Sunday Mass</p>
+                                                    <p class="text-[10px] font-semibold text-gray-700 flex items-center gap-1.5">
+                                                        <i class="fas fa-clock ${isTagbilaran ? 'text-blue-400' : 'text-amber-400'}"></i>
+                                                        <span class="truncate">${church.Mass ? church.Mass.split('|')[0].replace('Sun:', '').trim() : 'Schedule varies'}</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 2. The Rest - Discovery Section (Shows ALL filtered churches now)
+            html += `
+            <div class="mb-4 px-1">
+                <h2 class="text-[11px] font-black uppercase tracking-widest text-gray-400">Discover All Churches</h2>
+            </div>
+            <div class="space-y-3 pb-20">
+                ${filteredChurches.sort((a, b) => {
+                if (a.FiestaMonth !== b.FiestaMonth) return a.FiestaMonth - b.FiestaMonth;
+                const getDay = (s) => parseInt(s.match(/\d+/)?.[0] || 0);
+                return getDay(a.Fiesta) - getDay(b.Fiesta);
+            }).map(church => {
+                const isTagbilaran = church.Diocese === 'Tagbilaran';
+                const iconBg = isTagbilaran ? 'bg-blue-600' : 'bg-amber-500';
+                return `
+                            <div class="rounded-2xl p-5 border border-blue-50/50 shadow-sm active:scale-98 transition-all hover:border-blue-200 relative overflow-hidden" onclick="viewOnMap([${church.Coords}], ${church.id})">
+                                <div class="absolute inset-0 bg-gradient-to-br from-white/90 to-blue-50/30 backdrop-blur-sm -z-10"></div>
+                                <div class="flex items-start gap-4 relative z-10">
+                                    <div class="w-12 h-12 rounded-full ${iconBg} text-white flex items-center justify-center flex-shrink-0 font-black text-lg relative z-10 border-4 border-white shadow-md">
+                                        <i class="fas fa-church text-base"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0 pt-1">
+                                        <div class="flex items-start justify-between gap-2">
+                                            <div class="flex-1 min-w-0">
+                                                <h3 class="font-bold text-gray-900 text-lg truncate">${church.Name}</h3>
+                                                <p class="text-xs text-gray-500 mt-0.5 flex items-center gap-2">
+                                                    <span><i class="fas fa-location-dot ${isTagbilaran ? 'text-blue-500' : 'text-amber-500'}"></i> ${church.Location}</span>
+                                                    <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+                                                    <span class="${isTagbilaran ? 'text-blue-600' : 'text-amber-600'} font-semibold"><i class="fas fa-calendar-alt text-[10px] mr-1"></i>${church.Fiesta}</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                            <div class="mt-3 pt-3 border-t border-gray-100">
+                                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Sunday Mass</p>
+                                                <p class="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
+                                                    <i class="fas fa-clock ${isTagbilaran ? 'text-blue-400' : 'text-amber-400'}"></i>
+                                                    <span class="truncate">${church.Mass ? church.Mass.split('|')[0].replace('Sun:', '').trim() : 'Schedule varies'}</span>
+                                                </p>
+                                            </div>
+
+                                            <div class="mt-3 flex gap-2">
+                                                <button onclick="event.stopPropagation(); openDirections(${church.Coords[0]}, ${church.Coords[1]})" class="flex-1 bg-white/80 text-blue-600 py-2.5 rounded-xl text-[11px] font-bold border border-blue-50 active:scale-95 transition-all shadow-sm">
+                                                    <i class="fas fa-location-arrow mr-1"></i> Directions
+                                                </button>
+                                                <button onclick="event.stopPropagation(); viewOnMap([${church.Coords}], ${church.id})" class="flex-1 bg-blue-600 text-white py-2 rounded-xl text-[11px] font-bold shadow-lg shadow-blue-200 active:scale-95 transition-all">
+                                                    <i class="fas fa-map-marked-alt mr-1"></i> View Map
+                                                </button>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+            }).join('')}
+            </div>
+            `;
+
+            list.innerHTML = html;
+        }
+
+        function renderFiestas() { }
+        function renderVisited() { }
+
+        function viewOnMap(coords, id) {
+            switchTab('map');
+            const church = allChurches.find(c => c.id === id);
+            if (church) setTimeout(() => openSheet(church), 350);
+        }
+
+        function switchTab(id) {
+            closeSheet();
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('active-tab');
+                el.classList.add('text-gray-400');
+            });
+            document.getElementById('btn-' + id).classList.add('active-tab');
+            document.getElementById('btn-' + id).classList.remove('text-gray-400');
+
+            // Hide/Show header UI based on tab
+            const headerUI = document.getElementById('top-ui');
+            const bottomNav = document.getElementById('bottom-nav');
+
+            if (id === 'directory') {
+                headerUI.classList.remove('floating-header');
+                headerUI.classList.add('inline-header');
+                document.getElementById('tab-directory').prepend(headerUI);
+                headerUI.style.display = 'flex';
+            } else if (id === 'map') {
+                headerUI.classList.add('floating-header');
+                headerUI.classList.remove('inline-header');
+                document.getElementById('tab-map').prepend(headerUI);
+                headerUI.style.display = 'flex';
+            } else {
+                headerUI.style.display = 'none';
+            }
+            bottomNav.style.display = 'flex';
+
+            if (id === 'map' && map) setTimeout(() => map.invalidateSize(), 150);
+            if (id === 'directory') renderDirectory();
+            if (id === 'visita') renderVisitaIglesia();
+            if (id === 'about') {
+                // Specific logic for about tab if needed in future
+            }
+        }
+
+        // Initialize app after church data is loaded
+        function initializeApp() {
+            try {
+                initMap();
+                renderDirectory();
+                switchTab('map');
+            } catch (error) {
+                console.error("Initialization error:", error);
+            } finally {
+                setTimeout(() => {
+                    const splash = document.getElementById('splash-screen');
+                    if (splash) splash.classList.add('splash-fade-out');
+                    // Show UI after splash starts fading
+                    const topUI = document.getElementById('top-ui');
+                    if (topUI) topUI.style.display = 'flex';
+                }, 1500);
+            }
+        }
+
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('main-search').addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                if (term.length > 0 && !document.getElementById('tab-directory').classList.contains('active')) {
+                    switchTab('directory');
+                }
+                updateMapMarkers();
+                renderDirectory();
+            });
+        });
+
+        // ===== VISITA IGLESIA FEATURE =====
+        let visitaChurches = JSON.parse(localStorage.getItem('visitaChurches') || '[]');
+        let visitaProgress = JSON.parse(localStorage.getItem('visitaProgress') || '[]');
+        let visitaTimestamps = JSON.parse(localStorage.getItem('visitaTimestamps') || '{}');
+
+        // Selection State Persistence
+        let tempSelectedChurches = JSON.parse(localStorage.getItem('tempSelectedChurches') || '[]');
+        let isSelectingVisita = localStorage.getItem('isSelectingVisita') === 'true';
+        let currentSelectionStep = parseInt(localStorage.getItem('currentSelectionStep') || '0');
+        let showFullCompletion = true; // State for toggling completion view
+
+
+        function renderVisitaIglesia() {
+            document.getElementById('bottom-nav').style.display = 'flex';
+            const container = document.getElementById('visita-content');
+
+            if (visitaChurches.length === 0) {
+                // Resume selection if active
+                if (isSelectingVisita) {
+                    renderSelectionStep(currentSelectionStep);
+                    return;
+                }
+
+                // Empty state - show selection interface
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center min-h-[75vh] text-center py-10 px-4">
+                        <div class="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-200">
+                            <i class="fas fa-cross text-white text-3xl"></i>
+                        </div>
+                        <h1 class="text-3xl font-black text-gray-900 mb-3">Visita Iglesia</h1>
+                        <p class="text-sm text-gray-600 mb-8 max-w-sm mx-auto leading-relaxed">
+                            Select 7 churches for your Visita Iglesia journey. Pray at each station and track your pilgrimage progress.
+                        </p>
+                        <button onclick="startChurchSelection()" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold shadow-xl shadow-blue-200 active:scale-95 transition-transform">
+                            <i class="fas fa-plus-circle mr-2"></i> Select 7 Churches
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Show journey with progress
+            const completedCount = visitaProgress.filter(p => p >= 1 && p <= 7).length;
+            const isComplete = completedCount === 7;
+            const hasOpeningDone = visitaProgress.includes(0);
+
+            // Progress Header
+            let html = `
+            <!-- Floating Sticky Progress Bar -->
+            <div class="fixed top-0 left-0 right-0 backdrop-blur-md border-b border-blue-50/50 z-40 p-5" style="background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(239, 246, 255, 0.95));">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-route text-blue-600"></i>
+                        <span class="font-black text-[11px] text-gray-900 uppercase tracking-widest px-1">Pilgrimage Progress</span>
+                        <span class="text-[10px] font-bold text-blue-600 bg-white px-2 py-1 rounded-lg shadow-sm">${completedCount}/7</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                         ${isComplete ? `<button onclick="showJourneyCompleteModal()" class="text-blue-600 text-xs font-bold px-2 py-1 flex items-center gap-1"><i class="fas fa-award"></i> Card</button>` : ''}
+                        <button onclick="resetVisitaIglesia()" class="text-red-600 text-xs font-bold px-2 py-1 flex items-center gap-1">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-400 h-full rounded-full transition-all duration-500" style="width: ${(completedCount / 7) * 100}%"></div>
+                </div>
+            </div>
+
+            <div class="pt-24">
+                <!-- Opening Prayer Logic -->
+                ${!hasOpeningDone ? `
+                    <div class="mb-6 bg-blue-600 rounded-[32px] p-6 text-white shadow-xl shadow-blue-100 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10"><i class="fas fa-cross text-6xl"></i></div>
+                        <h3 class="font-black text-xl mb-2 leading-tight">Begin Your Pilgrimage</h3>
+                        <p class="text-blue-100 text-xs mb-8">Follow these tips and guides for a meaningful visiting experience.</p>
+                        
+                        <button onclick="showPrayer(0)" class="w-full bg-white text-blue-600 py-4 rounded-2xl font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2">
+                            <span>View</span>
+                        </button>
+                    </div>
+                ` : ''}
+            <!-- List of Churches and Stations -->
+            ${hasOpeningDone ? '' : ''}
+            `;
+
+            // Auto-popup centered modal on load if completed
+            if (isComplete && !sessionStorage.getItem('notifiedCompletion')) {
+                setTimeout(showJourneyCompleteModal, 100);
+                sessionStorage.setItem('notifiedCompletion', 'true');
+            }
+
+            // Show journey churches
+            visitaChurches.forEach((churchId, index) => {
+                const church = allChurches.find(c => c.id === churchId);
+                if (!church) return;
+
+                const prayerIdx = index + 1;
+                const isDone = visitaProgress.includes(prayerIdx);
+                const isNext = !isDone && (index === 0 ? hasOpeningDone : visitaProgress.includes(index));
+
+                html += `
+                <div class="mb-4 relative">
+                    <div class="rounded-2xl p-5 border ${isDone ? 'border-blue-600 bg-blue-50/10 shadow-md shadow-blue-100' : 'border-blue-50/50 shadow-sm'} active:scale-98 transition-all hover:border-blue-200 relative overflow-hidden">
+                         <div class="absolute inset-0 bg-gradient-to-br ${isDone ? 'from-blue-100/40 to-blue-600/5' : isNext ? 'from-blue-50/90 to-white/90' : 'from-white/95 to-blue-50/20'} backdrop-blur-sm -z-10"></div>
+                        <div class="flex items-start gap-4 relative z-10">
+                            <div class="w-12 h-12 rounded-full ${isDone ? 'bg-blue-600 text-white' : isNext ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-400'} flex items-center justify-center flex-shrink-0 font-black text-lg relative z-10 border-4 border-white shadow-md">
+                                ${isDone ? `<i class="fas fa-check"></i>` : index + 1}
+                            </div>
+                            <div class="flex-1 min-w-0 pt-1">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="font-bold text-gray-900 text-lg truncate">${church.Name}</h3>
+                                        <p class="text-xs text-gray-500 mt-0.5">
+                                            <i class="fas fa-location-dot text-blue-500"></i> ${church.Location}
+                                        </p>
+                                    </div>
+                                    ${isDone ? `<span class="bg-blue-600 text-white text-[9px] px-2 py-1 rounded-full font-bold uppercase shadow-sm">Done</span>` : ''}
+                                    ${isNext ? `<span class="bg-blue-100 text-blue-600 text-[9px] px-2 py-1 rounded-full font-bold uppercase animate-pulse shadow-sm">Next</span>` : ''}
+                                </div>
+
+                                <div class="mt-4 flex gap-2">
+                                    ${isDone ? `
+                                        <button onclick="showPrayer(${prayerIdx})" class="flex-1 bg-white text-blue-600 py-2.5 rounded-xl text-[11px] font-bold border border-blue-100 active:scale-95 transition-all shadow-sm">
+                                            <i class="fas fa-book-open mr-1"></i> View Prayer
+                                        </button>
+                                        <button onclick="unmarkStation(${prayerIdx})" class="px-4 py-2.5 bg-red-50/50 text-red-500 rounded-xl text-[11px] font-bold border border-red-50 active:scale-95 transition-all shadow-sm">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    ` : `
+                                        <button onclick="openDirections(${church.Coords[0]}, ${church.Coords[1]})" class="flex-1 bg-white/80 text-blue-600 py-2.5 rounded-xl text-[11px] font-bold border border-blue-50 active:scale-95 transition-all shadow-sm">
+                                            <i class="fas fa-location-arrow mr-1"></i> Directions
+                                        </button>
+                                        <button onclick="showPrayer(${prayerIdx})" class="flex-1 bg-blue-600 text-white shadow-lg shadow-blue-200 py-2.5 rounded-xl text-[11px] font-bold active:scale-95 transition-all">
+                                            <i class="fas fa-praying-hands mr-1"></i> Start
+                                        </button>
+                                    `}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            });
+
+            html += `</div>`; // Close pt-20 div
+            container.innerHTML = html;
+        }
+
+        let visitaMapSelectionMode = null;
+        let replacingIndex = null;
+        let visitaMap = null;
+        let visitaMarkers = [];
+
+        function saveSelectionState() {
+            localStorage.setItem('tempSelectedChurches', JSON.stringify(tempSelectedChurches));
+            localStorage.setItem('isSelectingVisita', isSelectingVisita);
+            localStorage.setItem('currentSelectionStep', currentSelectionStep);
+        }
+
+        function clearSelectionState() {
+            localStorage.removeItem('tempSelectedChurches');
+            localStorage.removeItem('isSelectingVisita');
+            localStorage.removeItem('currentSelectionStep');
+            isSelectingVisita = false;
+            tempSelectedChurches = [];
+            currentSelectionStep = 0;
+        }
+
+        function startChurchSelection() {
+            isSelectingVisita = true;
+            tempSelectedChurches = [];
+            currentSelectionStep = 0;
+            saveSelectionState();
+            renderSelectionStep(0);
+        }
+
+        function cancelChurchSelection() {
+            clearSelectionState();
+            renderVisitaIglesia();
+        }
+
+
+        function renderSelectionStep(stepIndex) {
+            currentSelectionStep = stepIndex;
+            saveSelectionState();
+
+            // If stepIndex is 7, show review screen
+            if (stepIndex === 7) {
+                renderReviewScreen();
+                return;
+            }
+
+            document.getElementById('bottom-nav').style.display = 'flex';
+            const container = document.getElementById('visita-content');
+            const stepTitle = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th"][stepIndex];
+
+            // Calculate progress for "Your Route" display
+            const routeSlots = Array(7).fill(null).map((_, i) => tempSelectedChurches[i] ? tempSelectedChurches[i] : null);
+
+            showStatusToast(`Choose ${stepTitle} Church`, 'info-circle');
+
+            let html = `
+                <div class="sticky top-0 z-40 -mx-4 px-4 pt-4 pb-4 mb-2 bg-gradient-to-b from-white/95 to-blue-50/95 backdrop-blur-xl border-b border-white/60 shadow-[0_4px_30px_-10px_rgba(37,99,235,0.1)] transition-all">
+                
+                <div class="flex items-center justify-between mb-4">
+                    <button onclick="${stepIndex === 0 ? 'cancelChurchSelection()' : `renderSelectionStep(${stepIndex - 1})`}" class="flex items-center gap-2 text-gray-600 active:text-blue-600 transition-colors group">
+                        <div class="w-8 h-8 rounded-full bg-white border border-gray-200 group-active:border-blue-200 flex items-center justify-center shadow-sm transition-colors">
+                            <i class="fas fa-arrow-left text-xs group-active:text-blue-600"></i>
+                        </div>
+                        <span class="text-xs font-bold group-active:text-blue-600">Back</span>
+                    </button>
+                    
+                    <div class="text-center">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-blue-500 block mb-0.5">Step ${stepIndex + 1} of 7</span>
+                         <h2 class="text-base font-black text-gray-900 leading-none">Choose ${stepTitle}</h2>
+                    </div>
+
+                    <div class="w-16 flex justify-end">
+                        <span class="text-[10px] font-bold text-blue-600 bg-white px-2 py-1 rounded-lg shadow-sm">${tempSelectedChurches.filter(x => x).length}/7</span> 
+                    </div>
+                </div>
+
+                <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 mb-4">
+                    ${routeSlots.map((id, idx) => {
+                if (id) {
+                    const c = allChurches.find(x => x.id === id);
+                    return `
+                                <div class="flex items-center gap-2 bg-white pl-3 pr-4 py-2 rounded-xl border shadow-sm flex-shrink-0 cursor-pointer transition-all
+                                    ${idx === stepIndex ? 'border-blue-600 bg-blue-50 shadow-md' : 'border-blue-100 hover:border-blue-300 hover:bg-blue-50/60'}" 
+                                    onclick="renderSelectionStep(${idx})">
+                                    <span class="bg-blue-600 text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm">${idx + 1}</span>
+                                    <span class="text-[10px] font-bold text-gray-700 whitespace-nowrap mr-1 max-w-[80px] truncate">${c.Name}</span>
+                                    <i class="fas fa-pen text-[9px] text-gray-400"></i>
+                                </div>`;
+                } else {
+                    return `
+                                <div class="flex items-center gap-2 bg-white/60 pl-3 pr-4 py-2 rounded-xl border flex-shrink-0 transition-all
+                                    ${idx === stepIndex ? 'border-blue-600 shadow-md bg-white' : 'border-dashed border-gray-300'}
+                                    ${idx <= tempSelectedChurches.length ? 'cursor-pointer hover:border-blue-300 hover:shadow-sm' : 'opacity-50'}"
+                                    ${idx <= tempSelectedChurches.length ? `onclick="renderSelectionStep(${idx})"` : ''}>
+                                    <span class="bg-gray-200 text-gray-500 text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full">${idx + 1}</span>
+                                    <span class="text-[10px] font-bold text-gray-400 whitespace-nowrap mr-1">Select</span>
+                                </div>`;
+                }
+            }).join('')}
+                </div>
+
+                <div class="flex gap-2">
+                    <div class="search-input-wrapper flex-1 !h-12 !rounded-xl !shadow-sm !border-blue-100/50 !bg-white">
+                        <i class="fas fa-search text-gray-400 text-sm"></i>
+                        <input
+                            type="text"
+                            placeholder="Search churches..."
+                            class="!ml-3 !text-sm !font-semibold placeholder-gray-400 text-gray-800 bg-transparent"
+                            oninput="filterVisitaChurches(this.value)"
+                        />
+                    </div>
+                            
+                        <button onclick="showVisitaMapSelection('step', ${stepIndex})" class="floating-action-btn !h-12 !w-12 !rounded-xl !shadow-sm !border !border-blue-100/50 !text-blue-600 active:!scale-95 bg-white">
+                             <i class="fas fa-map-marked-alt text-lg"></i>
+                         </button>
+                    </div>
+                </div>
+
+                <div id="church-selection-list" class="space-y-2 mb-28 pt-2 px-1">
+                    ${allChurches
+                    .sort((a, b) => {
+                        if (a.FiestaMonth !== b.FiestaMonth) return a.FiestaMonth - b.FiestaMonth;
+                        const getDay = (s) => parseInt(s.match(/\d+/)?.[0] || 0);
+                        return getDay(a.Fiesta) - getDay(b.Fiesta);
+                    })
+                    .map(church => {
+                        const isTagbilaran = church.Diocese === 'Tagbilaran';
+                        const iconBg = isTagbilaran ? 'bg-blue-600' : 'bg-amber-500';
+
+                        const isCurrentStep = tempSelectedChurches[stepIndex] === church.id;
+                        const isOtherStep = tempSelectedChurches.includes(church.id) && !isCurrentStep;
+
+                        // Interaction Logic
+                        let onclick = `selectChurchForStep(${church.id}, ${stepIndex})`;
+                        if (isOtherStep) onclick = `showToast('Used in another step', 'info-circle')`;
+
+                        // Style Logic
+                        let containerClass = "church-select-item rounded-2xl p-4 border transition-all cursor-pointer relative overflow-hidden group";
+                        if (isOtherStep) {
+                            containerClass += " border-gray-100 opacity-60 bg-gray-50";
+                        } else if (isCurrentStep) {
+                            containerClass += " border-blue-600 bg-blue-50/20 shadow-md";
+                        } else {
+                            containerClass += " border-white bg-white shadow-sm hover:shadow-md hover:border-blue-200 active:scale-[0.98]";
+                        }
+
+                        // Icon logic
+                        let iconHTML = `<div class="w-10 h-10 rounded-full ${isOtherStep ? 'bg-gray-400' : iconBg} text-white flex items-center justify-center flex-shrink-0 font-black text-sm relative z-10 border-2 border-white shadow-sm">`;
+                        if (isOtherStep || isCurrentStep) {
+                            iconHTML += `<i class="fas fa-check"></i>`;
+                        } else {
+                            iconHTML += `<i class="fas fa-church"></i>`;
+                        }
+                        iconHTML += `</div>`;
+
+                        return `
+                        <div onclick="${onclick}" 
+                             class="${containerClass}"
+                             data-church-name="${church.Name.toLowerCase()}"
+                             data-church-location="${church.Location.toLowerCase()}">
+                            
+                            <!-- Detailed Card Content -->
+                            <div class="flex items-start gap-3 relative z-10">
+                                ${iconHTML}
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <h3 class="font-bold text-gray-900 text-sm truncate ${isOtherStep ? 'text-gray-500' : ''}">${church.Name}</h3>
+                                        ${isOtherStep ? '<span class="text-[10px] font-bold text-gray-400 bg-gray-100 px-2 py-0.5 rounded">SELECTED</span>' : ''}
+                                        ${isCurrentStep ? '<span class="text-[10px] font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded">SELECTED</span>' : ''}
+                                    </div>
+                                    <p class="text-[11px] text-gray-500 mt-0.5 flex items-center gap-1.5">
+                                        <i class="fas fa-location-dot ${isOtherStep ? 'text-gray-400' : (isTagbilaran ? 'text-blue-500' : 'text-amber-500')} text-[10px]"></i> ${church.Location}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    }).join('')}
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        let currentStatusToast = null;
+
+        function showStatusToast(message, icon = 'check-circle') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            // If a status toast already exists, just update its content for a smoother transition
+            if (currentStatusToast && currentStatusToast.parentNode) {
+                currentStatusToast.innerHTML = `<i class="fas fa-${icon} text-green-400 text-lg"></i> <span>${message}</span>`;
+                return;
+            }
+
+            const toast = document.createElement('div');
+            toast.className = 'toast'; // Start without 'show' for fade-in
+            toast.innerHTML = `<i class="fas fa-${icon} text-green-400 text-lg"></i> <span>${message}</span>`;
+
+            toast.onclick = () => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            };
+
+            container.appendChild(toast);
+            currentStatusToast = toast;
+
+            // Fade in for the 1st time
+            requestAnimationFrame(() => {
+                toast.classList.add('show');
+            });
+        }
+
+        function hideStatusToast() {
+            if (currentStatusToast && currentStatusToast.parentNode) {
+                currentStatusToast.classList.remove('show');
+                setTimeout(() => {
+                    if (currentStatusToast && currentStatusToast.parentNode) {
+                        currentStatusToast.remove();
+                    }
+                }, 400);
+            }
+            currentStatusToast = null;
+        }
+
+        function selectChurchForStep(churchId, stepIndex) {
+            tempSelectedChurches[stepIndex] = churchId;
+            saveSelectionState();
+
+            // Check if we are in "Edit Mode" (all 7 slots already have a selection)
+            const isFullyFilled = tempSelectedChurches.filter(x => x !== null).length === 7;
+
+            if (isFullyFilled) {
+                // Return to Review if this was an edit
+                hideStatusToast();
+                renderReviewScreen();
+            } else if (stepIndex < 6) {
+                renderSelectionStep(stepIndex + 1);
+            } else {
+                // Final step selection
+                renderSelectionStep(6);
+                setTimeout(() => {
+                    showVisitaConfirmationModal();
+                }, 400);
+            }
+        }
+
+        function showVisitaConfirmationModal() {
+            hideStatusToast();
+            let modal = document.getElementById('visita-confirm-modal');
+            if (modal) modal.remove();
+
+            modal = document.createElement('div');
+            modal.id = 'visita-confirm-modal';
+            modal.className = 'fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300';
+            modal.innerHTML = `
+                <div class="bg-white rounded-3xl p-8 w-full max-w-sm shadow-2xl transform scale-90 transition-all duration-300 relative overflow-hidden" id="visita-confirm-content">
+                     <div class="absolute inset-0 bg-gradient-to-br from-white to-blue-50/30 -z-10"></div>
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-green-100">
+                            <i class="fas fa-check-circle text-4xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-black text-gray-900 mb-2">Selection Complete!</h2>
+                        <p class="text-sm font-medium text-gray-500 max-w-[240px] mx-auto leading-relaxed">Your 7 churches have been successfully selected.</p>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <button onclick="confirmChurchSelection()" class="w-full py-4 rounded-2xl font-black text-white bg-blue-600 shadow-xl shadow-blue-200 active:scale-95 transition-all text-lg">
+                            Done
+                        </button>
+                        <button onclick="renderSelectionStep(7)" class="w-full py-3 rounded-2xl font-bold text-gray-500 bg-gray-50 hover:bg-gray-100 active:scale-95 transition-all text-sm">
+                            Review Selection
+                        </button>
+                    </div>
+                </div>
+                `;
+            document.body.appendChild(modal);
+
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                const content = modal.querySelector('#visita-confirm-content');
+                content.classList.remove('scale-90');
+                content.classList.add('scale-100');
+            });
+        }
+
+        function closeVisitaConfirmationModal() {
+            const modal = document.getElementById('visita-confirm-modal');
+            if (modal) {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                modal.querySelector('#visita-confirm-content').classList.remove('scale-100');
+                modal.querySelector('#visita-confirm-content').classList.add('scale-90');
+                setTimeout(() => modal.remove(), 300);
+            }
+        }
+
+        function filterVisitaChurches(searchTerm) {
+            const term = searchTerm.toLowerCase();
+            const items = document.querySelectorAll('.church-select-item');
+
+            items.forEach(item => {
+                const name = item.getAttribute('data-church-name');
+                const location = item.getAttribute('data-church-location');
+                item.style.display = (name.includes(term) || location.includes(term)) ? '' : 'none';
+            });
+        }
+
+        function renderReviewScreen() {
+            hideStatusToast();
+            closeVisitaConfirmationModal();
+            document.getElementById('bottom-nav').style.display = 'none'; // Hide bottom nav for cleaner look
+            const container = document.getElementById('visita-content');
+
+            // Calculate progress for horizontal route display
+            const routeSlots = Array(7).fill(null).map((_, i) => tempSelectedChurches[i] ? tempSelectedChurches[i] : null);
+
+            let html = `
+                <div class="sticky top-0 z-40 -mx-4 px-4 pt-4 pb-4 mb-2 bg-gradient-to-b from-white/95 to-blue-50/95 backdrop-blur-xl border-b border-white/60 shadow-[0_4px_30px_-10px_rgba(37,99,235,0.1)] transition-all">
+                
+                <div class="flex items-center justify-between mb-4">
+                    <button onclick="renderSelectionStep(6)" class="flex items-center gap-2 text-gray-600 active:text-blue-600 transition-colors group">
+                        <div class="w-8 h-8 rounded-full bg-white border border-gray-200 group-active:border-blue-200 flex items-center justify-center shadow-sm transition-colors">
+                            <i class="fas fa-arrow-left text-xs group-active:text-blue-600"></i>
+                        </div>
+                        <span class="text-xs font-bold group-active:text-blue-600">Back</span>
+                    </button>
+                    
+                    <div class="text-center">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-blue-500 block mb-0.5">Review Selection</span>
+                         <h2 class="text-base font-black text-gray-900 leading-none">Your Itinerary</h2>
+                    </div>
+
+                    <div class="w-16 flex justify-end">
+                        <span class="text-[10px] font-bold text-blue-600 bg-white px-2 py-1 rounded-lg shadow-sm">7/7</span> 
+                    </div>
+                </div>
+
+                <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 mb-2">
+                    ${routeSlots.map((id, idx) => {
+                const c = allChurches.find(x => x.id === id);
+                return `
+                                <div class="flex items-center gap-2 bg-white pl-3 pr-4 py-2 rounded-xl border border-blue-100 shadow-sm flex-shrink-0 cursor-pointer hover:border-blue-300 hover:bg-blue-50/60 transition-all" 
+                                    onclick="renderSelectionStep(${idx})">
+                                    <span class="bg-blue-600 text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm">${idx + 1}</span>
+                                    <span class="text-[10px] font-bold text-gray-700 whitespace-nowrap mr-1 max-w-[80px] truncate">${c.Name}</span>
+                                    <i class="fas fa-pen text-[9px] text-gray-400"></i>
+                                </div>`;
+            }).join('')}
+                </div>
+                </div>
+
+                <div id="itinerary-list" class="space-y-4 mb-28 pt-4">
+             `;
+
+            tempSelectedChurches.forEach((id, index) => {
+                const church = allChurches.find(c => c.id === id);
+                const isTagbilaran = church.Diocese === 'Tagbilaran';
+                const iconBg = isTagbilaran ? 'bg-blue-600' : 'bg-amber-500';
+
+                html += `
+                    <div class="church-select-item rounded-2xl p-4 border transition-all cursor-pointer relative overflow-hidden group border-blue-600 bg-blue-50/20 shadow-md"
+                         data-id="${id}">
+                        
+                        <div class="flex items-center gap-3 relative z-10">
+                            <!-- Drag Handle -->
+                            <div class="drag-handle text-gray-300 px-1 cursor-grab active:cursor-grabbing hover:text-blue-400">
+                                <i class="fas fa-grip-vertical text-lg"></i>
+                            </div>
+
+                            <div class="w-10 h-10 rounded-full ${iconBg} text-white flex items-center justify-center flex-shrink-0 font-black text-sm relative z-10 border-2 border-white shadow-sm">
+                                ${index + 1}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between gap-2">
+                                    <h3 class="font-bold text-gray-900 text-sm truncate" onclick="renderSelectionStep(${index})">${church.Name}</h3>
+                                    <span class="text-[10px] font-bold text-blue-600 bg-white px-2 py-1 rounded-lg shadow-sm uppercase flex items-center gap-1" onclick="renderSelectionStep(${index})">
+                                        <i class="fas fa-pen text-[8px]"></i> Edit
+                                    </span>
+                                </div>
+                                <p class="text-[11px] text-gray-500 mt-0.5 flex items-center gap-1.5" onclick="renderSelectionStep(${index})">
+                                    <i class="fas fa-location-dot ${isTagbilaran ? 'text-blue-500' : 'text-amber-500'} text-[10px]"></i> ${church.Location}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                 `;
+            });
+
+            html += `
+                </div>
+                
+                <div class="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100 z-50 flex flex-col gap-3 backdrop-blur-xl bg-white/90">
+                    <button onclick="confirmChurchSelection()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-lg shadow-xl shadow-blue-200 active:scale-95 transition-transform flex items-center justify-center gap-2">
+                        <span>Start Journey</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <button onclick="renderSelectionStep(6)" class="w-full text-gray-500 font-bold text-sm py-2">
+                        Back to Selection
+                    </button>
+                </div>
+            `;
+
+            container.innerHTML = html;
+
+            // Initialize Sortable
+            const el = document.getElementById('itinerary-list');
+            new Sortable(el, {
+                animation: 200,
+                handle: '.drag-handle',
+                ghostClass: 'opacity-40',
+                dragClass: 'shadow-2xl',
+                onEnd: function (evt) {
+                    const newIds = Array.from(el.querySelectorAll('.church-select-item')).map(item => parseInt(item.dataset.id));
+                    tempSelectedChurches = newIds;
+                    saveSelectionState();
+                    renderReviewScreen(); // Re-render to update numbers and progress bar
+                    showToast('Route rearranged!', 'arrows-up-down', true);
+                }
+            });
+        }
+
+        function filterReplacementChurches(searchTerm) {
+            const term = searchTerm.toLowerCase();
+            const items = document.querySelectorAll('.replacement-church-item');
+            items.forEach(item => {
+                const name = item.getAttribute('data-church-name');
+                const location = item.getAttribute('data-church-location');
+                item.style.display = (name.includes(term) || location.includes(term)) ? '' : 'none';
+            });
+        }
+
+        function replaceChurchInRoute(routeIndex, currentChurchId) {
+            replacingIndex = routeIndex;
+            const container = document.getElementById('visita-content');
+            let html = `
+                <div class="mb-6">
+                <button onclick="renderVisitaIglesia()" class="text-blue-600 font-bold text-sm">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Journey
+                </button>
+                <h2 class="text-2xl font-black mt-4 mb-2">Replace Church ${routeIndex + 1}</h2>
+                <p class="text-sm text-gray-600 mb-4">Choose a different church for this prayer</p>
+                <div class="relative mb-4">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="replacement-church-search" placeholder="Search churches..." class="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-600 focus:outline-none text-sm font-semibold" oninput="filterReplacementChurches(this.value)" />
+                </div>
+                <button onclick="showVisitaMapSelection('replace')" class="w-full bg-blue-50 border-2 border-blue-600 text-blue-600 py-3 rounded-xl font-bold mb-4 active:scale-95 transition-transform flex items-center justify-center gap-2">
+                    <i class="fas fa-map-marked-alt"></i> Select from Map
+                </button>
+            </div>
+                <div id="church-replacement-list" class="space-y-3 mb-20">
+                    ${allChurches.filter(c => !visitaChurches.includes(c.id))
+                    .sort((a, b) => {
+                        if (a.FiestaMonth !== b.FiestaMonth) return a.FiestaMonth - b.FiestaMonth;
+                        const getDay = (s) => parseInt(s.match(/\d+/)?.[0] || 0);
+                        return getDay(a.Fiesta) - getDay(b.Fiesta);
+                    })
+                    .map(church => {
+                        const isTagbilaran = church.Diocese === 'Tagbilaran';
+                        const iconBg = isTagbilaran ? 'bg-blue-600' : 'bg-amber-500';
+                        return `
+                        <div onclick="confirmReplacement(${church.id})" class="replacement-church-item rounded-2xl p-5 border border-blue-50/50 shadow-sm active:scale-98 transition-all hover:border-blue-200 cursor-pointer relative overflow-hidden" data-church-name="${church.Name.toLowerCase()}" data-church-location="${church.Location.toLowerCase()}">
+                            <div class="absolute inset-0 bg-gradient-to-br from-white/90 to-blue-50/30 backdrop-blur-sm -z-10"></div>
+                            <div class="flex items-start gap-4 relative z-10">
+                                <div class="w-12 h-12 rounded-full ${iconBg} text-white flex items-center justify-center flex-shrink-0 font-black text-lg relative z-10 border-4 border-white shadow-md">
+                                    <i class="fas fa-church text-base"></i>
+                                </div>
+                                <div class="flex-1 min-w-0 pt-1">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <div class="flex-1 min-w-0">
+                                            <h3 class="font-bold text-gray-900 text-lg truncate">${church.Name}</h3>
+                                            <p class="text-xs text-gray-500 mt-0.5">
+                                                <i class="fas fa-location-dot ${isTagbilaran ? 'text-blue-500' : 'text-amber-500'}"></i> ${church.Location}
+                                            </p>
+                                        </div>
+                                        <i class="fas fa-chevron-right text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    }).join('')}
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        function showVisitaMapSelection(mode, stepIndex = null) {
+            hideStatusToast();
+            visitaMapSelectionMode = mode;
+            const container = document.getElementById('visita-content');
+            let title = mode === 'step' ? `Select ${["1st", "2nd", "3rd", "4th", "5th", "6th", "7th"][stepIndex]} Church` : `Select Replacement Church`;
+
+            let html = `
+                <div class="fixed top-0 left-0 right-0 bottom-0 bg-white z-[200] flex flex-col">
+                <div class="fixed top-0 left-0 right-0 backdrop-blur-md border-b border-blue-100 z-[210] px-4 py-3 flex items-center justify-between" style="background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(239, 246, 255, 0.95));">
+                    <button onclick="cancelVisitaMapSelection(${stepIndex})" class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition-colors">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2 class="font-black text-lg text-gray-900">${title}</h2>
+                    <div class="w-10"></div>
+                </div>
+                <div id="visita-map" class="flex-1"></div>
+                <div class="bg-white border-t border-gray-100 px-6 py-5 shadow-[0_-4px_10px_rgba(0,0,0,0.03)] pb-10">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center shadow-inner">
+                            <i class="fas fa-hand-pointer text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-black text-gray-900">${title}</p>
+                            <p class="text-xs font-bold text-gray-500">Tap a marker to add it to your route</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                `;
+            // Hide main navigation
+            document.getElementById('bottom-nav').style.display = 'none';
+            container.innerHTML = html;
+            initVisitaMap(stepIndex);
+        }
+
+        function initVisitaMap(stepIndex) {
+            if (visitaMap) {
+                visitaMap.remove();
+                visitaMap = null;
+            }
+
+            // Small timeout to ensure container is fully in the DOM and has dimensions
+            setTimeout(() => {
+                if (!document.getElementById('visita-map')) return;
+
+                visitaMap = L.map('visita-map', {
+                    zoomControl: false
+                }).setView([9.85, 124.1], 10);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(visitaMap);
+
+                // Add zoom control to top-right out of the way
+                L.control.zoom({ position: 'topright' }).addTo(visitaMap);
+
+                allChurches.forEach(church => {
+                    // Skip if already in temp selection OR already in the main journey
+                    if (tempSelectedChurches.includes(church.id) || visitaChurches.includes(church.id)) return;
+
+                    let markerColor = '#2563eb'; // Default blue (Tagbilaran)
+                    if (church.Diocese === 'Talibon') {
+                        markerColor = '#f59e0b'; // Yellow/Amber (Talibon)
+                    }
+
+                    const icon = L.divIcon({
+                        className: 'custom-div-icon',
+                        html: `<div class="flex items-center justify-center w-8 h-8 rounded-full shadow-lg" style="background-color: ${markerColor}; border: 2px solid white; color: white;"><i class="fas fa-church text-[10px]"></i></div>`,
+                        iconSize: [32, 32], iconAnchor: [16, 32]
+                    });
+
+                    L.marker(church.Coords, { icon }).addTo(visitaMap).on('click', () => {
+                        showMapSelectionModal(church, visitaMapSelectionMode, stepIndex);
+                    });
+                });
+
+                // Force size calculation to prevent gray area bugs
+                visitaMap.invalidateSize();
+            }, 100);
+        }
+
+        function showMapSelectionModal(church, mode, stepIndex) {
+            let modal = document.getElementById('map-selection-modal');
+            if (modal) modal.remove();
+
+            const dioceseColor = church.Diocese === 'Tagbilaran' ? 'bg-blue-100 text-blue-800' :
+                church.Diocese === 'Talibon' ? 'bg-amber-100 text-amber-800' :
+                    'bg-gray-100 text-gray-800';
+
+            modal = document.createElement('div');
+            modal.id = 'map-selection-modal';
+            modal.className = 'fixed inset-0 z-[300] flex items-end justify-center bg-gray-900/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300';
+            modal.innerHTML = `
+                <div class="bg-white rounded-t-[32px] w-full max-w-2xl shadow-2xl transform translate-y-full transition-all duration-300 overflow-hidden flex flex-col max-h-[85vh]" id="map-selection-content">
+                    <!--Handle -->
+                    <div class="w-full flex justify-center py-4 cursor-pointer" onclick="closeMapSelectionModal()">
+                        <div class="w-12 h-1.5 bg-gray-200 rounded-full"></div>
+                    </div>
+                    
+                    <div class="overflow-y-auto px-6 pb-8">
+                        <div class="flex justify-between items-start gap-3 mb-5 mt-2">
+                            <div class="flex-1 min-w-0">
+                                <h2 class="text-2xl font-black text-gray-900 leading-tight">${church.Name}</h2>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <p class="text-sm text-gray-500 font-semibold flex items-center gap-1">
+                                        <i class="fas fa-map-marker-alt text-blue-500"></i> ${church.Location}
+                                    </p>
+                                    <span class="text-xs ${dioceseColor} px-2 py-1 rounded-full font-bold">${church.Diocese}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-3">
+                            <button onclick="handleMapSelectionConfirm(${church.id}, '${mode}', ${stepIndex})" class="w-full py-4 rounded-2xl font-black text-white bg-blue-600 shadow-xl shadow-blue-200 active:scale-95 transition-all text-lg flex items-center justify-center gap-3">
+                                <span>Select</span>
+                            </button>
+                            <button onclick="cancelVisitaMapSelection(${stepIndex})" class="w-full py-3 rounded-2xl font-bold text-gray-500 bg-gray-50 shadow-md shadow-gray-100 active:scale-95 transition-all text-sm">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            document.body.appendChild(modal);
+
+            // Initialize swipe to close for this dynamic modal
+            const content = modal.querySelector('#map-selection-content');
+            initSwipeToClose(content, () => cancelVisitaMapSelection(stepIndex));
+
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                content.classList.remove('translate-y-full');
+                content.classList.add('translate-y-0');
+            });
+        }
+
+        function closeMapSelectionModal() {
+            const modal = document.getElementById('map-selection-modal');
+            if (modal) {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                const content = modal.querySelector('#map-selection-content');
+                if (content) {
+                    content.classList.remove('translate-y-0');
+                    content.classList.add('translate-y-full');
+                }
+                setTimeout(() => modal.remove(), 300);
+            }
+        }
+
+        function handleMapSelectionConfirm(churchId, mode, stepIndex) {
+            closeMapSelectionModal();
+            // Clean up map
+            if (visitaMap) {
+                visitaMap.remove();
+                visitaMap = null;
+            }
+            visitaMapSelectionMode = null;
+            document.getElementById('bottom-nav').style.display = 'flex';
+
+            if (mode === 'step') {
+                selectChurchForStep(churchId, stepIndex);
+            } else {
+                confirmReplacement(churchId);
+            }
+        }
+
+        function openDirections(lat, lng) {
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+        }
+
+        function cancelVisitaMapSelection(stepIndex = null) {
+            const modal = document.getElementById('map-selection-modal');
+            if (modal) modal.remove();
+
+            if (visitaMap) { visitaMap.remove(); visitaMap = null; }
+            visitaMapSelectionMode = null; // Reset mode
+            document.getElementById('bottom-nav').style.display = 'flex';
+            if (replacingIndex !== null) {
+                // If we were replacing, go back to the journey view
+                replacingIndex = null; // Clear replacing index
+                renderVisitaIglesia();
+            } else if (stepIndex !== null) {
+                // If we were selecting for a step, go back to that step's selection
+                renderSelectionStep(stepIndex);
+            } else {
+                // Default back to the main Visita Iglesia view
+                renderVisitaIglesia();
+            }
+        }
+
+        function confirmReplacement(newChurchId) {
+            visitaChurches[replacingIndex] = newChurchId;
+            localStorage.setItem('visitaChurches', JSON.stringify(visitaChurches));
+            replacingIndex = null;
+            renderVisitaIglesia();
+        }
+
+        function confirmChurchSelection() {
+            const modal = document.getElementById('visita-confirm-modal');
+            if (modal) modal.remove();
+
+            visitaChurches = [...tempSelectedChurches];
+            visitaProgress = [];
+            localStorage.setItem('visitaChurches', JSON.stringify(visitaChurches));
+            localStorage.setItem('visitaProgress', JSON.stringify(visitaProgress));
+            clearSelectionState();
+            renderVisitaIglesia();
+        }
+
+        function showPrayer(stationIndex) {
+            const isOpening = stationIndex === 0;
+            const isClosing = stationIndex === 8;
+
+            if (isOpening) {
+                const content = `
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-blue-600 shadow-blue-200 shadow-lg rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-info-circle text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-black text-gray-900 leading-tight">Begin Your Pilgrimage</h2>
+                    <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-2">Before Visiting the Church</p>
+                </div>
+                
+                <div class="space-y-6 mb-8">
+                    <div>
+                        <p class="text-[10px] uppercase font-black text-blue-600 tracking-[0.2em] mb-3">Tips</p>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3 text-xs font-bold text-gray-600">
+                                <i class="fas fa-check text-[10px] mt-0.5 text-blue-500"></i>
+                                <span>Dress modestly and respectfully.</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-xs font-bold text-gray-600">
+                                <i class="fas fa-check text-[10px] mt-0.5 text-blue-500"></i>
+                                <span>Arrive a few minutes early.</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-xs font-bold text-gray-600">
+                                <i class="fas fa-check text-[10px] mt-0.5 text-blue-500"></i>
+                                <span>Silence your phone before entering.</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-xs font-bold text-gray-600">
+                                <i class="fas fa-check text-[10px] mt-0.5 text-blue-500"></i>
+                                <span>Be respectful of people praying.</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-xs font-bold text-gray-600">
+                                <i class="fas fa-check text-[10px] mt-0.5 text-blue-500"></i>
+                                <span>Follow any posted rules or signs.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <p class="text-[10px] uppercase font-black text-blue-600 tracking-[0.2em] mb-3">Guides</p>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3 text-xs font-bold text-gray-600">
+                                <i class="fas fa-chevron-right text-[10px] mt-0.5 text-blue-500"></i>
+                                <span>Check the church schedule (mass times or visiting hours).</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-xs font-bold text-gray-600">
+                                <i class="fas fa-chevron-right text-[10px] mt-0.5 text-blue-500"></i>
+                                <span>Learn basic church etiquette.</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-xs font-bold text-gray-600">
+                                <i class="fas fa-chevron-right text-[10px] mt-0.5 text-blue-500"></i>
+                                <span>Ask politely if photos are allowed.</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-xs font-bold text-gray-600">
+                                <i class="fas fa-chevron-right text-[10px] mt-0.5 text-blue-500"></i>
+                                <span>Sit or stand when others do, if attending a service.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="closeSheet()" class="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-black shadow-xl shadow-blue-200 active:scale-95 transition-all">
+                        Close
+                    </button>
+                </div>
+                `;
+                document.getElementById('sheet-content').innerHTML = content;
+                document.getElementById('bottom-sheet').classList.add('open');
+                toggleBackdrop(true);
+                return;
+            }
+
+            const prayer = stationPrayers[stationIndex] || stationPrayers[0];
+            const content = `
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 ${isClosing ? 'bg-amber-500 shadow-amber-200' : 'bg-blue-600 shadow-blue-200'} shadow-lg rounded-2xl flex items-center justify-center mx-auto mb-4"><i class="fas ${isClosing ? 'fa-crown' : isOpening ? 'fa-pray' : 'fa-book-open'} text-white text-2xl"></i></div>
+                <h2 class="text-2xl font-black text-gray-900 leading-tight">${prayer.title}</h2>
+                ${!isOpening && !isClosing ? `<p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-3">Prayer ${stationIndex} of 7</p>` : ''}
+            </div>
+            <div class="bg-blue-50/50 rounded-3xl p-6 mb-8 border border-blue-50">
+                <p class="text-gray-700 leading-relaxed whitespace-pre-line text-sm font-medium">${prayer.prayer}</p>
+            </div>
+            <div class="flex gap-3">
+                ${!isClosing ? `<button onclick="closeSheet()" class="flex-1 bg-gray-100 text-gray-600 py-4 rounded-2xl font-black text-sm active:scale-95 transition-all">Close</button>` : ''}
+                ${!visitaProgress.includes(stationIndex) && !isClosing ? `
+                    <button onclick="markStationComplete(${stationIndex})" class="flex-[2] bg-blue-600 text-white py-4 rounded-2xl font-black shadow-xl shadow-blue-200 active:scale-95 transition-all">
+                        <i class="fas fa-check-circle mr-2"></i> ${isOpening ? 'Mark as Done' : 'Complete'}
+                    </button>
+                ` : isClosing ? `
+                    <button onclick="showJourneyCompleteModal(); dismissUnclosable();" class="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-black shadow-xl shadow-blue-200 active:scale-95 transition-all">
+                        Finish Pilgrimage
+                    </button>
+                ` : ''}
+            </div>
+            `;
+            sheetUnclosable = isClosing;
+            document.getElementById('sheet-content').innerHTML = content;
+            document.getElementById('bottom-sheet').classList.add('open');
+            toggleBackdrop(true);
+        }
+
+        function markStationComplete(stationIndex) {
+            if (!visitaProgress.includes(stationIndex)) {
+                visitaProgress.push(stationIndex);
+                visitaProgress.sort((a, b) => a - b);
+                localStorage.setItem('visitaProgress', JSON.stringify(visitaProgress));
+
+                // Save timestamp for this station
+                visitaTimestamps[stationIndex] = new Date().toISOString();
+                localStorage.setItem('visitaTimestamps', JSON.stringify(visitaTimestamps));
+
+                const ordinals = ["Opening Prayer", "1st Church", "2nd Church", "3rd Church", "4th Church", "5th Church", "6th Church", "7th Church", "Closing Prayer"];
+                const stationName = ordinals[stationIndex] || `Station ${stationIndex}`;
+
+                showToast(stationIndex === 0 ? 'Journey started!' : `${stationName} completed!`, 'pray');
+
+                // Trigger centered modal on the 7th prayer completion
+                const completedCount = visitaProgress.filter(p => p >= 1 && p <= 7).length;
+                if (completedCount === 7) {
+                    localStorage.setItem('visitaCompletionTime', new Date().toISOString());
+                    setTimeout(() => showPrayer(8), 500); // Automatically trigger Closing Prayer
+                }
+            }
+            closeSheet();
+            renderVisitaIglesia();
+        }
+
+        function showJourneyCompleteModal() {
+            const completionTime = localStorage.getItem('visitaCompletionTime');
+
+            // List of Visited Churches - matching the simple, bold design in the image
+            const churchListHtml = visitaChurches.map((id, i) => {
+                const church = allChurches.find(c => c.id === id);
+                return `
+                <div class="flex items-center gap-3 py-1.5">
+                    <i class="fas fa-check text-blue-500 text-xs w-4"></i>
+                    <span class="font-bold text-gray-800 text-xs truncate">${church.Name}</span>
+                </div>`;
+            }).join('');
+
+            let modal = document.getElementById('completion-fullscreen-modal');
+            if (modal) modal.remove();
+
+            modal = document.createElement('div');
+            modal.id = 'completion-fullscreen-modal';
+            modal.className = 'fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-md transition-all duration-300';
+            modal.innerHTML = `
+                <div class="bg-white rounded-[40px] p-2 shadow-2xl w-full max-w-sm animate-scale-in relative border border-white">
+                    <button onclick="document.getElementById('completion-fullscreen-modal').remove()" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 active:scale-90 transition-transform z-10">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                    
+                    <div class="bg-white rounded-[38px] p-8 text-center relative overflow-hidden">
+                        <div class="w-24 h-24 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-100 ring-8 ring-blue-50 relative z-10">
+                            <i class="fas fa-check text-white text-4xl"></i>
+                        </div>
+                        
+                        <h2 class="text-3xl font-black text-gray-900 mb-2 leading-tight relative z-10">Complete!</h2>
+                        <p class="text-gray-400 font-bold mb-8 text-sm px-4 leading-relaxed relative z-10">You have successfully visited the 7 churches of your pilgrimage.</p>
+                        
+                        <!-- Church List Card -->
+                        <div class="bg-gray-50/50 rounded-3xl p-6 border border-gray-100 relative z-10 text-left mb-6">
+                            <p class="text-[9px] uppercase font-black text-gray-400 tracking-[0.1em] mb-4">Pilgrimage Stations</p>
+                            <div class="space-y-1">
+                                ${churchListHtml}
+                            </div>
+                        </div>
+
+                        <button onclick="document.getElementById('completion-fullscreen-modal').remove();" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-lg active:scale-95 transition-all shadow-xl shadow-blue-200 flex items-center justify-center gap-2 relative z-10">
+                            <span>Done</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // Close when clicking outside the card
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+
+        function unmarkStation(stationIndex) {
+            const idx = visitaProgress.indexOf(stationIndex);
+            if (idx > -1) {
+                visitaProgress.splice(idx, 1);
+                localStorage.setItem('visitaProgress', JSON.stringify(visitaProgress));
+                localStorage.removeItem('visitaCompletionTime');
+            }
+            renderVisitaIglesia();
+        }
+
+        function resetVisitaIglesia() {
+            showVisitaResetModal();
+        }
+
+        function confirmResetVisitaIglesia() {
+            closeSheet();
+            visitaChurches = [];
+            visitaProgress = [];
+            showFullCompletion = true; // Reset view state too
+            localStorage.removeItem('visitaChurches');
+            localStorage.removeItem('visitaProgress');
+            localStorage.removeItem('visitaCompletionTime');
+            localStorage.removeItem('tempSelectedChurches');
+            localStorage.removeItem('isSelectingVisita');
+            localStorage.removeItem('currentSelectionStep');
+            renderVisitaIglesia();
+        }
+
+        function showVisitaResetModal() {
+            const content = `
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-200">
+                    <i class="fas fa-redo-alt text-white text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-black text-gray-900">Reset Journey?</h2>
+                <p class="text-xs text-red-600 font-bold uppercase tracking-wider mt-1">Warning: Permanent Action</p>
+            </div>
+            
+            <div class="bg-gray-50 border border-gray-100 rounded-2xl p-6 mb-8">
+                <p class="text-gray-600 leading-relaxed text-sm text-center">
+                    This will clear your 7 selected churches and reset all station progress. This action cannot be undone.
+                </p>
+            </div>
+
+            <div class="flex gap-3 mb-4">
+                <button onclick="closeSheet()" class="flex-1 bg-gray-100 text-gray-600 py-4 rounded-xl font-bold active:scale-95 transition-all text-sm">
+                    Cancel
+                </button>
+                <button onclick="confirmResetVisitaIglesia()" class="flex-1 bg-red-600 text-white py-4 rounded-xl font-bold shadow-lg shadow-red-200 active:scale-95 transition-all text-sm">
+                    <i class="fas fa-trash-alt mr-2"></i> Reset
+                </button>
+            </div>
+            `;
+            document.getElementById('sheet-content').innerHTML = content;
+            document.getElementById('bottom-sheet').classList.add('open');
+            toggleBackdrop(true);
+        }
+
+
+        function viewChurchDetails(id) {
+            const church = allChurches.find(c => c.id === id);
+            if (church) openSheet(church);
+        }
+
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            if (splash && !splash.classList.contains('splash-fade-out')) splash.classList.add('splash-fade-out');
+        }, 5000);
+        function showToast(message, icon = 'check-circle', isHigh = false) {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            } else {
+                // Clear existing toasts to prevent duplication/stacking
+                container.innerHTML = '';
+            }
+
+            const toast = document.createElement('div');
+            toast.className = 'toast' + (isHigh ? ' mb-14' : '');
+            toast.innerHTML = `<i class="fas fa-${icon} text-green-400 text-lg"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.add('show');
+            });
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // Initialize swipe to close for the main bottom sheet
+        const sheet = document.getElementById('bottom-sheet');
+        if (sheet) initSwipeToClose(sheet, closeSheet);
+
+        function initSwipeToClose(element, closeCallback) {
+            let startY = 0;
+            let lastY = 0;
+            let isDragging = false;
+            let rafId = null;
+
+            const getScrollArea = () => element.querySelector('.sheet-scroll-area, .overflow-y-auto') || element;
+
+            element.addEventListener('touchstart', (e) => {
+                startY = e.touches[0].clientY;
+                lastY = startY;
+                isDragging = false;
+            }, { passive: true });
+
+            element.addEventListener('touchmove', (e) => {
+                const currentY = e.touches[0].clientY;
+                const deltaY = currentY - startY;
+                const scrollArea = getScrollArea();
+
+                if (!isDragging && deltaY > 0 && scrollArea.scrollTop <= 0) {
+                    isDragging = true; element.style.transition = 'none';
+                    element.style.willChange = 'transform';
+                } if (isDragging) {
+                    if (e.cancelable) e.preventDefault(); lastY = currentY;
+                    if (rafId) cancelAnimationFrame(rafId); rafId = requestAnimationFrame(() => {
+                        element.style.transform = `translateY(${deltaY}px)`;
+                    });
+                }
+            }, { passive: false });
+
+            element.addEventListener('touchend', (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                if (rafId) cancelAnimationFrame(rafId);
+
+                const deltaY = lastY - startY;
+                element.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+
+                if (deltaY > 50 && !sheetUnclosable) {
+                    element.style.transform = 'translateY(100%)';
+                    closeCallback();
+                    setTimeout(() => {
+                        element.style.transform = '';
+                        element.style.willChange = '';
+                    }, 400);
+                } else {
+                    element.style.transform = '';
+                    setTimeout(() => {
+                        element.style.willChange = '';
+                    }, 400);
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

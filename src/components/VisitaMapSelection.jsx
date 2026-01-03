@@ -5,17 +5,23 @@ import { useState, useEffect } from 'react';
 import { useGeolocation } from '../hooks/useGeolocation';
 
 // Reuse helper for icons
-const createChurchIcon = (church, isSelected) => {
+const createChurchIcon = (church, isSelected, isTaken) => {
     // Default Colors
     let markerColor = church.Diocese === 'Tagbilaran' ? '#2563eb' : '#f59e0b';
     let content = '<i class="fas fa-church text-[12px]"></i>';
     let borderColor = 'white';
 
+    // Grey out if taken by another step
+    if (isTaken) {
+        markerColor = '#9ca3af'; // gray-400
+        borderColor = '#d1d5db'; // gray-300
+    }
+
     return L.divIcon({
         className: 'custom-div-icon',
         html: `
             <div class="flex items-center justify-center w-8 h-8 rounded-full" 
-                 style="background-color: ${markerColor}; border: 2px solid ${borderColor}; color: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); transform: ${isSelected ? 'scale(1.2)' : 'scale(1)'}">
+                 style="background-color: ${markerColor}; border: 2px solid ${borderColor}; color: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); transform: ${isSelected ? 'scale(1.2)' : 'scale(1)'}; opacity: ${isTaken ? '0.5' : '1'}">
                 ${content}
             </div>`,
         iconSize: [32, 32],
@@ -119,16 +125,14 @@ export default function VisitaMapSelection({ churches, onSelect, onClose, curren
                         // Robust check with string comparison
                         const takenIndex = selectedIds ? selectedIds.findIndex(id => id && String(id) === String(church.id)) : -1;
 
-                        // If taken by another step (and not the current one we are re-selecting), HIDE IT completely.
-                        if (takenIndex !== -1 && takenIndex !== currentStep) {
-                            return null;
-                        }
+                        // If taken by another step (not current), show as grey/disabled
+                        const isTaken = takenIndex !== -1 && takenIndex !== currentStep;
 
                         return (
                             <Marker
                                 key={church.id}
                                 position={church.Coords}
-                                icon={createChurchIcon(church, selectedChurch?.id === church.id)}
+                                icon={createChurchIcon(church, selectedChurch?.id === church.id, isTaken)}
                                 eventHandlers={{
                                     click: () => handleChurchClick(church)
                                 }}

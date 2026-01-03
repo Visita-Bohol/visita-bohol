@@ -232,7 +232,13 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
 
                 {/* Always render temp coordinate if it exists, regardless of modal state */}
                 {tempCoordinate && (
-                    <Marker position={tempCoordinate} icon={createTempIcon()} />
+                    <Marker
+                        position={tempCoordinate}
+                        icon={createTempIcon()}
+                        eventHandlers={{
+                            click: () => setShowAddModal(true)
+                        }}
+                    />
                 )}
 
                 <MapRefresher center={activeCenter} zoom={activeZoom} />
@@ -240,7 +246,7 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
 
             <AddChurchModal
                 isOpen={showAddModal}
-                onClose={() => { setShowAddModal(false); setTempCoordinate(null); }}
+                onClose={() => setShowAddModal(false)}
                 coordinates={tempCoordinate}
             />
 

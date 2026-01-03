@@ -4,6 +4,7 @@ export default function AddChurchModal({ isOpen, onClose, coordinates }) {
     const [formData, setFormData] = useState({
         name: '',
         location: '',
+        diocese: 'Diocese of Tagbilaran',
         massSchedule: '',
         fiestaDate: '',
         fbPage: '',
@@ -23,6 +24,7 @@ export default function AddChurchModal({ isOpen, onClose, coordinates }) {
             setFormData({
                 name: '',
                 location: '',
+                diocese: 'Diocese of Tagbilaran',
                 massSchedule: '',
                 fiestaDate: '',
                 fbPage: '',
@@ -60,18 +62,21 @@ export default function AddChurchModal({ isOpen, onClose, coordinates }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        const recipient = "feedback.visitabohol@gmail.com";
         const subject = encodeURIComponent("Add Missing Church Report");
         const body = encodeURIComponent(`
-Church Name: ${formData.name}
+Name: ${formData.name}
 Location: ${formData.location}
-Coordinates: ${coordinates ? `${coordinates.lat}, ${coordinates.lng}` : 'Not set'}
-Mass Schedule: ${formData.massSchedule}
-Fiesta Date: ${formData.fiestaDate}
-Facebook Page: ${formData.fbPage}
+Coords: ${coordinates ? `${coordinates.lat}, ${coordinates.lng}` : 'Not set'}
+Diocese: ${formData.diocese}
+Mass: ${formData.massSchedule}
+Fiesta: ${formData.fiestaDate}
 History: ${formData.history}
+
+Facebook Page: ${formData.fbPage}
         `);
 
-        window.open(`mailto:?subject=${subject}&body=${body}`);
+        window.open(`mailto:${recipient}?subject=${subject}&body=${body}`);
         onClose();
     };
 
@@ -136,6 +141,34 @@ History: ${formData.history}
                                     placeholder="e.g. Tabalong, Dauis"
                                     required
                                 />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Diocese</label>
+                                <div className="flex flex-col gap-2 bg-gray-50 p-3 rounded-2xl border border-gray-200">
+                                    <label className="flex items-center gap-3 p-2 rounded-xl hover:bg-white transition-colors cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="diocese"
+                                            value="Diocese of Tagbilaran"
+                                            checked={formData.diocese === 'Diocese of Tagbilaran'}
+                                            onChange={e => setFormData({ ...formData, diocese: e.target.value })}
+                                            className="w-5 h-5 text-amber-500 border-gray-300 focus:ring-amber-500"
+                                        />
+                                        <span className="text-sm font-bold text-gray-700">Diocese of Tagbilaran</span>
+                                    </label>
+                                    <label className="flex items-center gap-3 p-2 rounded-xl hover:bg-white transition-colors cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="diocese"
+                                            value="Diocese of Talibon"
+                                            checked={formData.diocese === 'Diocese of Talibon'}
+                                            onChange={e => setFormData({ ...formData, diocese: e.target.value })}
+                                            className="w-5 h-5 text-amber-500 border-gray-300 focus:ring-amber-500"
+                                        />
+                                        <span className="text-sm font-bold text-gray-700">Diocese of Talibon</span>
+                                    </label>
+                                </div>
                             </div>
 
                             <div className="space-y-1.5">

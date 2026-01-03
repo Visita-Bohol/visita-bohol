@@ -93,9 +93,6 @@ Facebook Page: ${formData.fbPage}
             {/* Sheet */}
             <div
                 ref={sheetRef}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
                 className={`fixed bottom-0 left-0 right-0 bg-white z-[6000] shadow-[0_-10px_40px_rgba(0,0,0,0.15)] flex flex-col max-h-[85vh] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]`}
                 style={{
                     borderTopLeftRadius: '24px',
@@ -104,21 +101,31 @@ Facebook Page: ${formData.fbPage}
                     transition: isDragging ? 'none' : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
                 }}
             >
-                {/* Drag Handle */}
-                <div onClick={onClose} className="pt-3 pb-2 cursor-pointer flex-shrink-0">
-                    <div className="w-12 h-1.5 bg-gray-200/80 rounded-full mx-auto"></div>
+                {/* Drag Zone (Handle + Header) */}
+                <div
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                    className="flex-shrink-0 cursor-grab active:cursor-grabbing"
+                >
+                    {/* Drag Handle */}
+                    <div onClick={onClose} className="pt-3 pb-2 cursor-pointer flex-shrink-0">
+                        <div className="w-12 h-1.5 bg-gray-200/80 rounded-full mx-auto"></div>
+                    </div>
+
+                    {/* Header */}
+                    <div className="px-6 pt-2 pb-6 text-center">
+                        <div className="w-16 h-16 bg-orange-500 shadow-orange-200 shadow-lg rounded-2xl flex items-center justify-center mx-auto mb-4 pointer-events-none">
+                            <i className="fas fa-map-pin text-white text-2xl"></i>
+                        </div>
+                        <h2 className="text-2xl font-black text-gray-900 leading-tight pointer-events-none">Add Missing Church</h2>
+                        <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-2 pointer-events-none">Help us improve the map</p>
+                    </div>
                 </div>
 
                 {/* Content */}
                 <div className="overflow-y-auto flex-1 px-0 no-scrollbar">
-                    <div className="p-6 pt-2">
-                        <div className="text-center mb-6">
-                            <div className="w-16 h-16 bg-orange-500 shadow-orange-200 shadow-lg rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                <i className="fas fa-map-pin text-white text-2xl"></i>
-                            </div>
-                            <h2 className="text-2xl font-black text-gray-900 leading-tight">Add Missing Church</h2>
-                            <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-2">Help us improve the map</p>
-                        </div>
+                    <div className="px-6 pb-6">
 
                         <form onSubmit={handleSubmit} className="space-y-5">
                             <div className="space-y-1.5">

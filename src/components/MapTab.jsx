@@ -241,7 +241,7 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <MapClickHandler isAddMode={isAddMode} onMapClick={handleMapClick} />
 
-                {filteredChurches.map((church) => (
+                {useMemo(() => filteredChurches.map((church) => (
                     <Marker
                         key={church.id}
                         position={church.Coords}
@@ -256,7 +256,7 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                             }
                         }}
                     />
-                ))}
+                )), [filteredChurches, visitedChurches, isAddMode, onChurchClick])}
 
                 {location && (
                     <CircleMarker
@@ -290,7 +290,7 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
             <div className="absolute bottom-6 right-4 z-[400] flex flex-col gap-3 items-end pointer-events-none">
 
                 {/* Button Legend */}
-                <div className="bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-gray-100 text-[10px] font-bold space-y-2 pointer-events-auto">
+                <div className="bg-white p-3 rounded-xl shadow-lg border border-gray-100 text-[10px] font-bold space-y-2 pointer-events-auto">
                     <div className="flex items-center gap-2">
                         <div className="w-4 flex justify-center"><i className="fas fa-location-dot text-gray-500"></i></div>
                         <span className="text-gray-600">My Location</span>

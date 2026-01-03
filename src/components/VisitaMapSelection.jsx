@@ -137,7 +137,7 @@ export default function VisitaMapSelection({ churches, onSelect, onClose, onBack
                         />
                     )}
 
-                    {churches.map(church => {
+                    {useMemo(() => churches.map(church => {
                         // Check if this church is already picked (in any step)
                         const isPicked = selectedIds && selectedIds.some(id => id && String(id) === String(church.id));
 
@@ -151,7 +151,7 @@ export default function VisitaMapSelection({ churches, onSelect, onClose, onBack
                                 }}
                             />
                         );
-                    })}
+                    }), [churches, selectedIds, selectedChurch, currentStep])}
 
                     <MapRefresher center={activeCenter} zoom={activeZoom} />
                 </MapContainer>

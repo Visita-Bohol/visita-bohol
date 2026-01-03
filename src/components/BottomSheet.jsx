@@ -273,7 +273,7 @@ export default function BottomSheet({ isOpen, church, nearbyChurches, isVisited,
                 </div>
 
                 {/* Fixed Action Footer */}
-                <div className="p-5 pb-8 border-t border-gray-50 bg-white/95 backdrop-blur-md flex-shrink-0">
+                <div className="p-5 pb-8 border-t border-gray-50 bg-white/95 flex-shrink-0">
                     {isResetView ? (
                         <div className="flex gap-3">
                             <button onClick={onClose} className="flex-1 bg-gray-100 text-gray-600 py-4 rounded-2xl font-black active:scale-95 transition-all text-sm">

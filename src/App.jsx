@@ -20,6 +20,7 @@ function App() {
     const [selectedChurch, setSelectedChurch] = useState(null);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
+    const [churchToEdit, setChurchToEdit] = useState(null); // Separate state for edit modal
     const [specialHeader, setSpecialHeader] = useState(null);
     const [visitaProgress, setVisitaProgress] = useLocalStorage('visitaProgress', []);
     const [visitaChurches, setVisitaChurches] = useLocalStorage('visitaChurches', []);
@@ -136,6 +137,7 @@ function App() {
                 SpecialHeader={specialHeader}
                 onToggleVisited={() => selectedChurch && toggleVisited(selectedChurch.id)}
                 onEdit={() => {
+                    setChurchToEdit(selectedChurch);
                     closeSheet();
                     // Small delay to allow sheet to close before opening edit modal
                     setTimeout(() => setShowEditModal(true), 300);
@@ -163,7 +165,7 @@ function App() {
             <EditChurchModal
                 isOpen={showEditModal}
                 onClose={() => setShowEditModal(false)}
-                church={selectedChurch}
+                church={churchToEdit}
             />
             {showCompletion && (
                 <div id="completion-fullscreen-modal" className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-md transition-all duration-500 animate-in fade-in">

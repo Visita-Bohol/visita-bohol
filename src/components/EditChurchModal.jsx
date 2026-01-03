@@ -4,7 +4,7 @@ export default function EditChurchModal({ isOpen, onClose, church }) {
     const [formData, setFormData] = useState({
         name: '',
         location: '',
-        diocese: 'Diocese of Tagbilaran',
+        diocese: 'Tagbilaran',
         massSchedule: '',
         fiestaDate: '',
         fbPage: '',
@@ -24,7 +24,7 @@ export default function EditChurchModal({ isOpen, onClose, church }) {
             setFormData({
                 name: church.Name || '',
                 location: church.Location || '',
-                diocese: church.Diocese || 'Diocese of Tagbilaran',
+                diocese: church.Diocese || 'Tagbilaran',
                 massSchedule: church.Mass || '',
                 fiestaDate: church.Fiesta || '',
                 fbPage: church.Facebook || '',
@@ -150,8 +150,8 @@ Facebook Page: ${formData.fbPage}
                                         <input
                                             type="radio"
                                             name="diocese"
-                                            value="Diocese of Tagbilaran"
-                                            checked={formData.diocese === 'Diocese of Tagbilaran'}
+                                            value="Tagbilaran"
+                                            checked={formData.diocese === 'Tagbilaran'}
                                             onChange={e => setFormData({ ...formData, diocese: e.target.value })}
                                             className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
                                         />
@@ -161,8 +161,8 @@ Facebook Page: ${formData.fbPage}
                                         <input
                                             type="radio"
                                             name="diocese"
-                                            value="Diocese of Talibon"
-                                            checked={formData.diocese === 'Diocese of Talibon'}
+                                            value="Talibon"
+                                            checked={formData.diocese === 'Talibon'}
                                             onChange={e => setFormData({ ...formData, diocese: e.target.value })}
                                             className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
                                         />

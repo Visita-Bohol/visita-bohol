@@ -11,8 +11,6 @@ export default function EditChurchModal({ isOpen, onClose, church }) {
         history: ''
     });
 
-    const [activeEdits, setActiveEdits] = useState({});
-
     // Bottom Sheet Logic
     const sheetRef = useRef(null);
     const [dragOffset, setDragOffset] = useState(0);
@@ -23,7 +21,6 @@ export default function EditChurchModal({ isOpen, onClose, church }) {
         if (isOpen && church) {
             document.body.style.overflow = 'hidden';
             setDragOffset(0);
-            setActiveEdits({}); // Reset edits on open
             setFormData({
                 name: church.Name || '',
                 location: church.Location || '',
@@ -63,10 +60,6 @@ export default function EditChurchModal({ isOpen, onClose, church }) {
         }
     };
 
-    const toggleEdit = (field) => {
-        setActiveEdits(prev => ({ ...prev, [field]: !prev[field] }));
-    };
-
     const isChanged = (field, originalValue) => {
         return formData[field] !== (originalValue || '');
     };
@@ -101,50 +94,28 @@ ${getLine('Facebook Page', 'fbPage', church.Facebook)}
     if (!isOpen || !church) return null;
 
     const renderEditableField = (key, label, type = 'text', placeholder = '') => {
-        const isEditing = activeEdits[key];
         const hasChange = isChanged(key, key === 'diocese' ? (church.Diocese || 'Tagbilaran') : (key === 'massSchedule' ? church.Mass : (key === 'fiestaDate' ? church.Fiesta : (key === 'fbPage' ? church.Facebook : church[key.charAt(0).toUpperCase() + key.slice(1)]))));
 
         return (
             <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                    <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                        {label}
-                        {hasChange && <span className="text-[9px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded uppercase tracking-normal font-bold">Modified</span>}
-                    </label>
-                    <button
-                        type="button"
-                        onClick={() => toggleEdit(key)}
-                        className={`text-[10px] font-bold px-3 py-1.5 rounded-full transition-all active:scale-95 ${isEditing ? 'bg-blue-600 text-white shadow-blue-200 shadow-md' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
-                    >
-                        {isEditing ? 'Done' : <span className="flex items-center gap-1"><i className="fas fa-pencil-alt"></i> Edit</span>}
-                    </button>
-                </div>
-                {isEditing ? (
-                    type === 'textarea' ? (
-                        <textarea
-                            className="w-full bg-white border-2 border-blue-100 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:font-medium placeholder:text-gray-400 min-h-[100px] animate-in fade-in zoom-in-95 duration-200"
-                            value={formData[key]}
-                            onChange={e => setFormData({ ...formData, [key]: e.target.value })}
-                            placeholder={placeholder}
-                            autoFocus
-                        />
-                    ) : (
-                        <input
-                            className="w-full bg-white border-2 border-blue-100 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:font-medium placeholder:text-gray-400 animate-in fade-in zoom-in-95 duration-200"
-                            value={formData[key]}
-                            onChange={e => setFormData({ ...formData, [key]: e.target.value })}
-                            placeholder={placeholder}
-                            autoFocus
-                        />
-                    )
+                <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                    {label}
+                    {hasChange && <span className="text-[9px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded uppercase tracking-normal font-bold">Modified</span>}
+                </label>
+                {type === 'textarea' ? (
+                    <textarea
+                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all placeholder:font-medium placeholder:text-gray-400 min-h-[100px]"
+                        value={formData[key]}
+                        onChange={e => setFormData({ ...formData, [key]: e.target.value })}
+                        placeholder={placeholder}
+                    />
                 ) : (
-                    <div className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl p-4 text-sm font-medium text-gray-700 min-h-[50px] flex items-center">
-                        {formData[key] ? (
-                            <span className="break-words line-clamp-4">{formData[key]}</span>
-                        ) : (
-                            <span className="italic text-gray-400">No info provided</span>
-                        )}
-                    </div>
+                    <input
+                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all placeholder:font-medium placeholder:text-gray-400"
+                        value={formData[key]}
+                        onChange={e => setFormData({ ...formData, [key]: e.target.value })}
+                        placeholder={placeholder}
+                    />
                 )}
             </div>
         );
@@ -203,49 +174,34 @@ ${getLine('Facebook Page', 'fbPage', church.Facebook)}
 
                             {/* Diocese Special Handling */}
                             <div className="space-y-1.5">
-                                <div className="flex items-center justify-between">
-                                    <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                                        Diocese
-                                        {isChanged('diocese', church.Diocese || 'Tagbilaran') && <span className="text-[9px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded uppercase tracking-normal font-bold">Modified</span>}
+                                <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                                    Diocese
+                                    {isChanged('diocese', church.Diocese || 'Tagbilaran') && <span className="text-[9px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded uppercase tracking-normal font-bold">Modified</span>}
+                                </label>
+                                <div className="flex flex-col gap-2 bg-gray-50 p-3 rounded-2xl border border-gray-200">
+                                    <label className="flex items-center gap-3 p-2 rounded-xl hover:bg-white transition-colors cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="diocese"
+                                            value="Tagbilaran"
+                                            checked={formData.diocese === 'Tagbilaran'}
+                                            onChange={e => setFormData({ ...formData, diocese: e.target.value })}
+                                            className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                        />
+                                        <span className="text-sm font-bold text-gray-700">Diocese of Tagbilaran</span>
                                     </label>
-                                    <button
-                                        type="button"
-                                        onClick={() => toggleEdit('diocese')}
-                                        className={`text-[10px] font-bold px-3 py-1.5 rounded-full transition-all active:scale-95 ${activeEdits['diocese'] ? 'bg-blue-600 text-white shadow-blue-200 shadow-md' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
-                                    >
-                                        {activeEdits['diocese'] ? 'Done' : <span className="flex items-center gap-1"><i className="fas fa-pencil-alt"></i> Edit</span>}
-                                    </button>
+                                    <label className="flex items-center gap-3 p-2 rounded-xl hover:bg-white transition-colors cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="diocese"
+                                            value="Talibon"
+                                            checked={formData.diocese === 'Talibon'}
+                                            onChange={e => setFormData({ ...formData, diocese: e.target.value })}
+                                            className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                        />
+                                        <span className="text-sm font-bold text-gray-700">Diocese of Talibon</span>
+                                    </label>
                                 </div>
-                                {activeEdits['diocese'] ? (
-                                    <div className="flex flex-col gap-2 bg-white p-3 rounded-2xl border-2 border-blue-100 animate-in fade-in zoom-in-95 duration-200">
-                                        <label className="flex items-center gap-3 p-2 rounded-xl hover:bg-blue-50 transition-colors cursor-pointer">
-                                            <input
-                                                type="radio"
-                                                name="diocese"
-                                                value="Tagbilaran"
-                                                checked={formData.diocese === 'Tagbilaran'}
-                                                onChange={e => setFormData({ ...formData, diocese: e.target.value })}
-                                                className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
-                                            />
-                                            <span className="text-sm font-bold text-gray-700">Diocese of Tagbilaran</span>
-                                        </label>
-                                        <label className="flex items-center gap-3 p-2 rounded-xl hover:bg-blue-50 transition-colors cursor-pointer">
-                                            <input
-                                                type="radio"
-                                                name="diocese"
-                                                value="Talibon"
-                                                checked={formData.diocese === 'Talibon'}
-                                                onChange={e => setFormData({ ...formData, diocese: e.target.value })}
-                                                className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
-                                            />
-                                            <span className="text-sm font-bold text-gray-700">Diocese of Talibon</span>
-                                        </label>
-                                    </div>
-                                ) : (
-                                    <div className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl p-4 text-sm font-medium text-gray-700">
-                                        Diocese of {formData.diocese}
-                                    </div>
-                                )}
                             </div>
 
                             {renderEditableField('massSchedule', 'Mass Schedule', 'textarea', 'e.g. Sun: 6am, 8am, 5pm')}

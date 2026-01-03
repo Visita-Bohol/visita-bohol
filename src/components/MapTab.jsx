@@ -260,6 +260,21 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-500 ring-2 ring-white shadow-sm"></span>
                     <span className="text-amber-700">Diocese of Talibon</span>
                 </div>
+
+                <div className="w-full h-px bg-gray-200 my-1"></div>
+
+                <div className="flex items-center gap-2">
+                    <div className="w-4 flex justify-center"><i className="fas fa-location-arrow text-gray-500"></i></div>
+                    <span className="text-gray-600">My Location</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="w-4 flex justify-center"><i className="fas fa-compass text-gray-500"></i></div>
+                    <span className="text-gray-600">Nearby Church</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="w-4 flex justify-center"><i className="fas fa-map-pin text-orange-500"></i></div>
+                    <span className="text-gray-600">Add Missing Church</span>
+                </div>
             </div>
         </div>
     );

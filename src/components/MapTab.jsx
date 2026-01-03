@@ -315,12 +315,12 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                 {/* Diocese Legend */}
                 <div className="bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-gray-100 text-[10px] font-bold space-y-2 pointer-events-auto min-w-[140px]">
                     <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-blue-600 ring-2 ring-white shadow-sm"></span>
-                        <span className="text-blue-700">Diocese of Tagbilaran</span>
+                        <div className="w-4 flex justify-center"><i className="fas fa-church text-blue-600"></i></div>
+                        <span className="text-gray-500">Diocese of Tagbilaran</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-amber-500 ring-2 ring-white shadow-sm"></span>
-                        <span className="text-amber-700">Diocese of Talibon</span>
+                        <div className="w-4 flex justify-center"><i className="fas fa-church text-amber-500"></i></div>
+                        <span className="text-gray-500">Diocese of Talibon</span>
                     </div>
                 </div>
             </div>

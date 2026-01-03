@@ -58,8 +58,7 @@
   }
 
   .search-input-wrapper {
-    @apply relative bg-white rounded-2xl flex items-center px-4 h-[52px] border border-gray-100;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    @apply relative flex items-center px-4;
   }
 
   .search-input-wrapper input {

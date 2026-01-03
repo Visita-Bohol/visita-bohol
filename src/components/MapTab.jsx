@@ -159,7 +159,7 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
             {/* MATCHING EXACT HTML STRUCTURE */}
             <div className="header-ui-container floating-header" id="top-ui" style={{ display: 'flex' }}>
                 <div className="flex gap-2">
-                    <div className="search-input-wrapper flex-1 min-w-0 relative">
+                    <div className="search-input-wrapper flex-1 min-w-0 relative !h-12 !rounded-xl !shadow-sm !border-blue-100/50 !bg-white border">
                         <i className="fas fa-search text-gray-400 text-sm"></i>
                         <input
                             type="text"
@@ -203,7 +203,7 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                     <button onClick={findNearest} id="nearest-btn" className="floating-action-btn" title="Find Nearest Church">
                         <i className={`fas ${geoLoading && isFindingNearest ? 'fa-spinner fa-spin' : 'fa-compass'} text-lg`}></i>
                     </button>
-                    <button onClick={enableAddMode} id="add-btn" className={`floating-action-btn ${isAddMode ? 'bg-orange-100 text-orange-600' : 'text-orange-500 bg-white border-orange-200 active:bg-orange-100'}`} title="Add Missing Church">
+                    <button onClick={enableAddMode} id="add-btn" className={`floating-action-btn ${isAddMode ? 'bg-orange-100 text-orange-600' : 'text-orange-500 bg-white active:bg-orange-100'}`} title="Add Missing Church">
                         <i className="fas fa-map-pin text-lg"></i>
                     </button>
                 </div>

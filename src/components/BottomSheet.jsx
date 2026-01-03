@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-export default function BottomSheet({ isOpen, church, isVisited, onClose, SpecialHeader, onToggleVisited, onVisitaComplete, onResetPilgrimage, onEdit }) {
+export default function BottomSheet({ isOpen, church, nearbyChurches, isVisited, onClose, SpecialHeader, onToggleVisited, onVisitaComplete, onResetPilgrimage, onEdit }) {
     const sheetRef = useRef(null);
     const [dragOffset, setDragOffset] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
@@ -311,6 +311,25 @@ export default function BottomSheet({ isOpen, church, isVisited, onClose, Specia
                                 </button>
                             </div>
                             <p className="text-[10px] text-gray-400 text-center font-bold uppercase tracking-widest">Inaccurate details? Tap suggest</p>
+
+                            {nearbyChurches && nearbyChurches.length > 0 && (
+                                <div className="mt-8 pt-6 border-t border-gray-100/80">
+                                    <h3 className="text-[10px] uppercase font-black text-gray-400 tracking-[0.2em] mb-4">Other Nearby Churches</h3>
+                                    <div className="space-y-2">
+                                        {nearbyChurches.map(c => (
+                                            <div key={c.id} className="flex items-center justify-between p-4 rounded-2xl bg-gray-50/80 border border-gray-100">
+                                                <div className="min-w-0 pr-4">
+                                                    <h4 className="font-bold text-gray-800 text-xs truncate mb-0.5">{c.Name}</h4>
+                                                    <p className="text-[10px] text-gray-500 font-medium truncate">{c.Location}</p>
+                                                </div>
+                                                <div className="flex-shrink-0 text-blue-600 font-bold text-xs">
+                                                    {c.distance.toFixed(1)} km
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

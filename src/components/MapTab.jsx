@@ -61,13 +61,15 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
         }));
         const nearest = churchesWithDistance.sort((a, b) => a.distance - b.distance).slice(0, 3);
         const nearestChurch = nearest[0];
+        const others = nearest.slice(1);
+
         setActiveCenter(nearestChurch.Coords);
         setActiveZoom(16);
         onChurchClick(nearestChurch, {
             text: `Nearest Church · ${nearestChurch.distance.toFixed(1)} km away`,
             icon: 'fas fa-compass',
             color: 'text-green-600'
-        });
+        }, others);
     };
 
     useEffect(() => {

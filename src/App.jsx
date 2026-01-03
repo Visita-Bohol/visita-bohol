@@ -18,6 +18,7 @@ function App() {
     const [prayers, setPrayers] = useState([]);
     const [visitedChurches, setVisitedChurches] = useLocalStorage('visitedChurches', []);
     const [selectedChurch, setSelectedChurch] = useState(null);
+    const [nearbyChurches, setNearbyChurches] = useState([]);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [churchToEdit, setChurchToEdit] = useState(null); // Separate state for edit modal
@@ -56,18 +57,20 @@ function App() {
         loadData();
     }, []);
 
-    const openSheet = (church, header = null, switchTabState = false) => {
+    const openSheet = (church, header = null, switchTabState = false, nearby = []) => {
         if (switchTabState) {
             setActiveTab('map');
             // Small delay to allow tab animation/mount before opening sheet
             setTimeout(() => {
                 setSpecialHeader(header);
                 setSelectedChurch(church);
+                setNearbyChurches(nearby);
                 setIsSheetOpen(true);
             }, 350);
         } else {
             setSpecialHeader(header);
             setSelectedChurch(church);
+            setNearbyChurches(nearby);
             setIsSheetOpen(true);
         }
     };
@@ -77,6 +80,7 @@ function App() {
         setTimeout(() => {
             setSelectedChurch(null);
             setSpecialHeader(null);
+            setNearbyChurches([]);
         }, 400);
     };
 
@@ -110,7 +114,7 @@ function App() {
                     <MapTab
                         churches={churches}
                         visitedChurches={visitedChurches}
-                        onChurchClick={(c, h) => openSheet(c, h, false)}
+                        onChurchClick={(c, h, n) => openSheet(c, h, false, n)}
                         initialFocusChurch={selectedChurch}
                         onSearchRedirect={handleMapSearchRedirect}
                     />
@@ -147,6 +151,7 @@ function App() {
             <BottomSheet
                 isOpen={isSheetOpen}
                 church={selectedChurch}
+                nearbyChurches={nearbyChurches}
                 isVisited={selectedChurch && visitedChurches.includes(selectedChurch.id)}
                 onClose={closeSheet}
                 SpecialHeader={specialHeader}

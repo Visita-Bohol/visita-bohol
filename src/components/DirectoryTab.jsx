@@ -72,7 +72,7 @@ export default function DirectoryTab({ churches, visitedChurches, onChurchClick,
             {/* EXACT HTML STRUCTURE FROM USER */}
             <div className="header-ui-container inline-header" id="top-ui" style={{ display: 'flex' }}>
                 <div className="flex gap-2">
-                    <div className="search-input-wrapper flex-1 min-w-0">
+                    <div className="search-input-wrapper flex-1 !h-12 !rounded-xl !shadow-sm !border-blue-100/50 !bg-white">
                         <i className="fas fa-search text-gray-400 text-sm"></i>
                         <input
                             type="text"

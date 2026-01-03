@@ -200,6 +200,17 @@ export default function VisitaMapSelection({ churches, onSelect, onClose, onBack
                                     </p>
                                 </div>
 
+                                {/* Patronal Fiesta Section */}
+                                <div className="flex items-center gap-4 bg-gray-50/80 p-5 rounded-[24px] border border-gray-100">
+                                    <div className="w-11 h-11 bg-white text-blue-600 rounded-[18px] flex items-center justify-center shadow-sm flex-shrink-0 border border-white">
+                                        <i className="fas fa-calendar-day text-lg"></i>
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="text-[10px] uppercase font-black text-gray-400 tracking-[0.2em] mb-1">Patronal Fiesta</p>
+                                        <p className="text-[15px] text-gray-900 font-black">{selectedChurch.Fiesta}</p>
+                                    </div>
+                                </div>
+
                                 <button
                                     onClick={confirmSelection}
                                     className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black shadow-xl shadow-blue-200 active:scale-95 transition-all flex items-center justify-center gap-2 text-sm"

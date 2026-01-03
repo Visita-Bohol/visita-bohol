@@ -156,6 +156,26 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
         onChurchClick(church);
     };
 
+    const handleChurchMarkerClick = (church) => {
+        if (!isAddMode) {
+            setActiveCenter(church.Coords);
+            setActiveZoom(16);
+            onChurchClick(church);
+        }
+    };
+
+    // Correctly memoize markers at top level
+    const churchMarkers = useMemo(() => filteredChurches.map((church) => (
+        <Marker
+            key={church.id}
+            position={church.Coords}
+            icon={createChurchIcon(church)}
+            eventHandlers={{
+                click: () => handleChurchMarkerClick(church)
+            }}
+        />
+    )), [filteredChurches, visitedChurches, isAddMode, onChurchClick]);
+
     return (
         <div className="h-full w-full relative">
             {/* MATCHING EXACT HTML STRUCTURE */}
@@ -241,22 +261,7 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <MapClickHandler isAddMode={isAddMode} onMapClick={handleMapClick} />
 
-                {useMemo(() => filteredChurches.map((church) => (
-                    <Marker
-                        key={church.id}
-                        position={church.Coords}
-                        icon={createChurchIcon(church)}
-                        eventHandlers={{
-                            click: () => {
-                                if (!isAddMode) {
-                                    setActiveCenter(church.Coords);
-                                    setActiveZoom(16);
-                                    onChurchClick(church);
-                                }
-                            }
-                        }}
-                    />
-                )), [filteredChurches, visitedChurches, isAddMode, onChurchClick])}
+                {churchMarkers}
 
                 {location && (
                     <CircleMarker

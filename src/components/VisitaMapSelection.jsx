@@ -86,6 +86,23 @@ export default function VisitaMapSelection({ churches, onSelect, onClose, onBack
         }
     };
 
+    // Correctly memoize markers at top level
+    const churchMarkers = useMemo(() => churches.map(church => {
+        // Check if this church is already picked (in any step)
+        const isPicked = selectedIds && selectedIds.some(id => id && String(id) === String(church.id));
+
+        return (
+            <Marker
+                key={church.id}
+                position={church.Coords}
+                icon={createChurchIcon(church, selectedChurch?.id === church.id, isPicked)}
+                eventHandlers={{
+                    click: () => handleChurchClick(church)
+                }}
+            />
+        );
+    }), [churches, selectedIds, selectedChurch, currentStep]);
+
     return (
         <div className="fixed inset-0 z-[6000] bg-white flex flex-col">
             {/* Header */}
@@ -137,21 +154,7 @@ export default function VisitaMapSelection({ churches, onSelect, onClose, onBack
                         />
                     )}
 
-                    {useMemo(() => churches.map(church => {
-                        // Check if this church is already picked (in any step)
-                        const isPicked = selectedIds && selectedIds.some(id => id && String(id) === String(church.id));
-
-                        return (
-                            <Marker
-                                key={church.id}
-                                position={church.Coords}
-                                icon={createChurchIcon(church, selectedChurch?.id === church.id, isPicked)}
-                                eventHandlers={{
-                                    click: () => handleChurchClick(church)
-                                }}
-                            />
-                        );
-                    }), [churches, selectedIds, selectedChurch, currentStep])}
+                    {churchMarkers}
 
                     <MapRefresher center={activeCenter} zoom={activeZoom} />
                 </MapContainer>

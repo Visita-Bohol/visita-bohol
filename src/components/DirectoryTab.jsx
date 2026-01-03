@@ -101,32 +101,33 @@ export default function DirectoryTab({ churches, visitedChurches, onChurchClick,
                             <h2 className="text-[11px] font-black uppercase tracking-widest text-blue-600 flex items-center gap-2">
                                 <i className="fas fa-star text-amber-500"></i> Fiestas this Month
                             </h2>
-                            <span className="bg-blue-100 text-blue-700 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-tighter ring-1 ring-blue-200">
-                                {MONTHS[currentMonth]}
-                            </span>
-                        </div>
-
-                        <div className="hidden md:flex gap-2 absolute top-0 right-2 z-20">
-                            <button
-                                onClick={() => {
-                                    if (fiestaContainerRef.current) {
-                                        fiestaContainerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
-                                    }
-                                }}
-                                className="w-7 h-7 rounded-full bg-white/80 border border-blue-200 shadow-sm flex items-center justify-center text-blue-600 hover:bg-blue-50 transition-colors backdrop-blur-sm"
-                            >
-                                <i className="fas fa-chevron-left text-[10px]"></i>
-                            </button>
-                            <button
-                                onClick={() => {
-                                    if (fiestaContainerRef.current) {
-                                        fiestaContainerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
-                                    }
-                                }}
-                                className="w-7 h-7 rounded-full bg-white/80 border border-blue-200 shadow-sm flex items-center justify-center text-blue-600 hover:bg-blue-50 transition-colors backdrop-blur-sm"
-                            >
-                                <i className="fas fa-chevron-right text-[10px]"></i>
-                            </button>
+                            <div className="flex items-center gap-3">
+                                <span className="bg-blue-100 text-blue-700 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-tighter ring-1 ring-blue-200">
+                                    {MONTHS[currentMonth]}
+                                </span>
+                                <div className="hidden md:flex gap-2">
+                                    <button
+                                        onClick={() => {
+                                            if (fiestaContainerRef.current) {
+                                                fiestaContainerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+                                            }
+                                        }}
+                                        className="w-7 h-7 rounded-full bg-white/80 border border-blue-200 shadow-sm flex items-center justify-center text-blue-600 hover:bg-blue-50 transition-colors backdrop-blur-sm"
+                                    >
+                                        <i className="fas fa-chevron-left text-[10px]"></i>
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            if (fiestaContainerRef.current) {
+                                                fiestaContainerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+                                            }
+                                        }}
+                                        className="w-7 h-7 rounded-full bg-white/80 border border-blue-200 shadow-sm flex items-center justify-center text-blue-600 hover:bg-blue-50 transition-colors backdrop-blur-sm"
+                                    >
+                                        <i className="fas fa-chevron-right text-[10px]"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
                         <div

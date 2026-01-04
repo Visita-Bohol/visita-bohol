@@ -37,12 +37,18 @@ export default function ChurchCard({ church, isVisited, onClick, onViewOnMap }) 
                         </div>
                     </div>
 
-                    <div className="mt-3 pt-3 border-t border-gray-100">
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Sunday Mass</p>
-                        <p className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
-                            <i className={`fas fa-clock ${isTagbilaran ? 'text-blue-400' : 'text-amber-400'}`}></i>
-                            <span className="truncate">{SundayMass}</span>
-                        </p>
+                    <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Sunday Mass</p>
+                            <p className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
+                                <i className={`fas fa-clock ${isTagbilaran ? 'text-blue-400' : 'text-amber-400'}`}></i>
+                                <span className="truncate">{SundayMass}</span>
+                            </p>
+                        </div>
+                        <div className="bg-gray-50 text-gray-400 px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-1.5 border border-gray-100 group-hover:bg-blue-50 group-hover:text-blue-600 group-hover:border-blue-100 transition-colors">
+                            <i className="fas fa-eye text-[11px]"></i>
+                            <span>View</span>
+                        </div>
                     </div>
 
                 </div>

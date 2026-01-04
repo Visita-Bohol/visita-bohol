@@ -313,30 +313,40 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                 </button>
 
                 {/* Button Legend */}
-                <div className="bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-gray-100 text-[10px] font-bold space-y-2 pointer-events-auto">
-                    <div className="flex items-center gap-2">
-                        <div className="w-4 flex justify-center"><i className="fas fa-location-dot text-blue-600"></i></div>
-                        <span className="text-gray-500">My Location</span>
+                <div className="bg-white/95 backdrop-blur-md p-5 rounded-[28px] shadow-xl border border-white text-[11px] font-bold space-y-3 pointer-events-auto min-w-[160px]">
+                    <div className="flex items-center gap-3">
+                        <div className="w-6 flex justify-center text-blue-600">
+                            <i className="fas fa-location-dot text-sm"></i>
+                        </div>
+                        <span className="text-gray-600">My Location</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-4 flex justify-center"><i className="fas fa-compass text-blue-600"></i></div>
-                        <span className="text-gray-500">Nearby Church</span>
+                    <div className="flex items-center gap-3">
+                        <div className="w-6 flex justify-center text-blue-600">
+                            <i className="fas fa-compass text-sm"></i>
+                        </div>
+                        <span className="text-gray-600">Nearby Church</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-4 flex justify-center"><i className="fas fa-map-pin text-orange-500"></i></div>
-                        <span className="text-gray-500">Add Missing Church</span>
+                    <div className="flex items-center gap-3">
+                        <div className="w-6 flex justify-center text-orange-500">
+                            <i className="fas fa-map-pin text-sm"></i>
+                        </div>
+                        <span className="text-gray-600">Add Missing Church</span>
                     </div>
                 </div>
 
                 {/* Diocese Legend */}
-                <div className="bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-gray-100 text-[10px] font-bold space-y-2 pointer-events-auto min-w-[140px]">
-                    <div className="flex items-center gap-2">
-                        <div className="w-4 flex justify-center"><i className="fas fa-circle text-blue-600 text-[10px]"></i></div>
-                        <span className="text-gray-500">Diocese of Tagbilaran</span>
+                <div className="bg-white/95 backdrop-blur-md p-5 rounded-[28px] shadow-xl border border-white text-[11px] font-bold space-y-3 pointer-events-auto min-w-[160px]">
+                    <div className="flex items-center gap-3">
+                        <div className="w-6 flex justify-center">
+                            <i className="fas fa-circle text-blue-600 text-xs"></i>
+                        </div>
+                        <span className="text-gray-600">Diocese of Tagbilaran</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-4 flex justify-center"><i className="fas fa-circle text-amber-500 text-[10px]"></i></div>
-                        <span className="text-gray-500">Diocese of Talibon</span>
+                    <div className="flex items-center gap-3">
+                        <div className="w-6 flex justify-center">
+                            <i className="fas fa-circle text-amber-500 text-xs"></i>
+                        </div>
+                        <span className="text-gray-600">Diocese of Talibon</span>
                     </div>
                 </div>
             </div>

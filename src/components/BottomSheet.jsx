@@ -53,7 +53,7 @@ export default function BottomSheet({ isOpen, church, nearbyChurches, isVisited,
             return;
         }
         setIsDragging(false);
-        if (dragOffset > 100) {
+        if (dragOffset > 50) { // Reduced threshold for better sensitivity
             onClose();
         } else {
             setDragOffset(0);

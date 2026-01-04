@@ -208,10 +208,26 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                 </div>
 
                 {/* Diocese Filter Pills */}
-                <div className="diocese-filter-container">
-                    <button onClick={() => setDioceseFilter('All')} className={`diocese-pill ${dioceseFilter === 'All' ? 'active' : ''}`}>All</button>
-                    <button onClick={() => setDioceseFilter('Tagbilaran')} className={`diocese-pill ${dioceseFilter === 'Tagbilaran' ? 'active' : ''}`}>Diocese of Tagbilaran</button>
-                    <button onClick={() => setDioceseFilter('Talibon')} className={`diocese-pill ${dioceseFilter === 'Talibon' ? 'active' : ''}`}>Diocese of Talibon</button>
+                <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 mb-2">
+                    {['All', 'Tagbilaran', 'Talibon'].map((diocese) => {
+                        const isActive = dioceseFilter === diocese;
+                        const label = diocese === 'All' ? 'All Parishes' : `Diocese of ${diocese}`;
+                        return (
+                            <div
+                                key={diocese}
+                                onClick={() => setDioceseFilter(diocese)}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl border flex-shrink-0 transition-all cursor-pointer ${isActive
+                                    ? 'border-blue-600 shadow-md bg-white'
+                                    : 'bg-white border-blue-100 shadow-sm hover:border-blue-300 hover:bg-blue-50/60'
+                                    }`}
+                            >
+                                <span className={`text-[10px] font-bold whitespace-nowrap mr-1 ${isActive ? 'text-blue-600' : 'text-gray-700'}`}>
+                                    {label}
+                                </span>
+                                {isActive && <i className="fas fa-check text-[9px] text-blue-600"></i>}
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
 
@@ -315,11 +331,11 @@ export default function MapTab({ churches, visitedChurches, onChurchClick, initi
                 {/* Diocese Legend */}
                 <div className="bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-gray-100 text-[10px] font-bold space-y-2 pointer-events-auto min-w-[140px]">
                     <div className="flex items-center gap-2">
-                        <div className="w-4 flex justify-center"><i className="fas fa-church text-blue-600"></i></div>
+                        <div className="w-4 flex justify-center"><i className="fas fa-circle text-blue-600 text-[10px]"></i></div>
                         <span className="text-gray-500">Diocese of Tagbilaran</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <div className="w-4 flex justify-center"><i className="fas fa-church text-amber-500"></i></div>
+                        <div className="w-4 flex justify-center"><i className="fas fa-circle text-amber-500 text-[10px]"></i></div>
                         <span className="text-gray-500">Diocese of Talibon</span>
                     </div>
                 </div>

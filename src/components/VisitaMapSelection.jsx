@@ -66,6 +66,42 @@ export default function VisitaMapSelection({ churches, onSelect, onClose, onBack
         if (!location) getLocation();
     };
 
+    // Bottom Sheet Logic
+    const [dragOffset, setDragOffset] = useState(0);
+    const [isDragging, setIsDragging] = useState(false);
+    const touchStart = useRef(0);
+
+    const handleTouchStart = (e) => {
+        touchStart.current = e.touches[0].clientY;
+        setIsDragging(true);
+    };
+
+    const handleTouchMove = (e) => {
+        const currentY = e.touches[0].clientY;
+        const deltaY = currentY - touchStart.current;
+
+        if (deltaY < 0) {
+            setDragOffset(deltaY * 0.15); // Resistance
+        } else {
+            setDragOffset(deltaY);
+        }
+    };
+
+    const handleTouchEnd = () => {
+        setIsDragging(false);
+        if (dragOffset > 50) { // 50px threshold for better sensitivity
+            setSelectedChurch(null);
+        } else {
+            setDragOffset(0);
+        }
+    };
+
+    useEffect(() => {
+        if (selectedChurch) {
+            setDragOffset(0);
+        }
+    }, [selectedChurch]);
+
     const handleChurchClick = (church) => {
         // Robust check with string comparison
         const takenIndex = selectedIds ? selectedIds.findIndex(id => id && String(id) === String(church.id)) : -1;
@@ -164,11 +200,15 @@ export default function VisitaMapSelection({ churches, onSelect, onClose, onBack
 
                 {/* Main-Map Style Selection Sheet */}
                 <div
-                    className={`absolute bottom-0 left-0 right-0 bg-white z-[500] shadow-[0_-10px_40px_rgba(0,0,0,0.15)] flex flex-col transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] max-h-[70vh]`}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                    className={`absolute bottom-0 left-0 right-0 bg-white z-[500] shadow-[0_-10px_40px_rgba(0,0,0,0.15)] flex flex-col max-h-[70vh]`}
                     style={{
                         borderTopLeftRadius: '24px',
                         borderTopRightRadius: '24px',
-                        transform: selectedChurch ? 'translateY(0)' : 'translateY(100.1%)'
+                        transform: selectedChurch ? `translateY(${dragOffset}px)` : 'translateY(100.1%)',
+                        transition: isDragging ? 'none' : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
                     }}
                 >
                     {/* Handle */}
@@ -222,6 +262,7 @@ export default function VisitaMapSelection({ churches, onSelect, onClose, onBack
                         )}
                     </div>
                 </div>
+
             </div>
         </div>
     );

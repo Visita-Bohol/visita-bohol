@@ -1,7 +1,10 @@
+import { MONTHS } from '../utils/helpers';
+
 export default function ChurchCard({ church, isVisited, onClick, onViewOnMap }) {
     const isTagbilaran = church.Diocese === 'Tagbilaran';
     const iconBg = isTagbilaran ? 'bg-blue-600' : 'bg-amber-500';
     const SundayMass = church.Mass ? church.Mass.split('|')[0].replace('Sun:', '').trim() : 'Schedule varies';
+    const dioceseBadgeColor = isTagbilaran ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800';
 
     return (
         <div
@@ -16,14 +19,24 @@ export default function ChurchCard({ church, isVisited, onClick, onViewOnMap }) 
                 </div>
 
                 <div className="flex-1 min-w-0 pt-1">
-                    <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-start justify-between gap-2 overflow-hidden mb-1">
                         <div className="flex-1 min-w-0">
                             <h3 className="font-bold text-gray-900 text-lg truncate">{church.Name}</h3>
-                            <p className="text-xs text-gray-500 mt-0.5 flex items-center gap-2">
-                                <span><i className={`fas fa-location-dot ${isTagbilaran ? 'text-blue-500' : 'text-amber-500'}`}></i> {church.Location}</span>
-                                <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-                                <span className={`${isTagbilaran ? 'text-blue-600' : 'text-amber-600'} font-semibold`}><i className="fas fa-calendar-alt text-[10px] mr-1"></i>{church.Fiesta}</span>
-                            </p>
+                            <div className="flex items-center gap-2 mt-0.5">
+                                <span className={`text-[9px] ${dioceseBadgeColor} px-2 py-0.5 rounded-full font-bold uppercase tracking-tight`}>{church.Diocese}</span>
+                                <span className="text-xs text-gray-500 truncate flex items-center gap-1.5">
+                                    <i className={`fas fa-location-dot ${isTagbilaran ? 'text-blue-500' : 'text-amber-500'}`}></i> {church.Location}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2 mt-2">
+                        <div className="flex items-center gap-1.5">
+                            <span className={`${isTagbilaran ? 'text-blue-600' : 'text-amber-600'} font-bold text-xs`}><i className="fas fa-calendar-alt text-[10px] mr-1"></i>{church.Fiesta}</span>
+                            <span className="bg-blue-100 text-blue-600 text-[9px] px-2 py-1 rounded-full font-bold uppercase shadow-sm">
+                                {MONTHS[church.FiestaMonth]}
+                            </span>
                         </div>
                     </div>
 
@@ -43,7 +56,7 @@ export default function ChurchCard({ church, isVisited, onClick, onViewOnMap }) 
                             }}
                             className={`w-full ${isTagbilaran ? 'bg-blue-600 shadow-blue-200' : 'bg-amber-500 shadow-amber-200'} text-white py-3 rounded-xl text-[11px] font-bold shadow-lg active:scale-95 transition-all`}
                         >
-                            <i className="fas fa-map-pin mr-1"></i> View Church Location
+                            <i className="fas fa-map-pin mr-1"></i> View Location
                         </button>
                     </div>
                 </div>

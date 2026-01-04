@@ -27,6 +27,13 @@ export default function DirectoryTab({ churches, visitedChurches, onChurchClick,
                 church.Location.toLowerCase().includes(searchTerm.toLowerCase());
             const matchesDiocese = dioceseFilter === 'All' || church.Diocese === dioceseFilter;
             return matchesSearch && matchesDiocese;
+        }).sort((a, b) => {
+            if (a.FiestaMonth !== b.FiestaMonth) return a.FiestaMonth - b.FiestaMonth;
+            const getDay = (str) => {
+                const match = str.match(/\d+/);
+                return match ? parseInt(match[0]) : 0;
+            };
+            return getDay(a.Fiesta) - getDay(b.Fiesta);
         });
     }, [churches, searchTerm, dioceseFilter]);
 
@@ -104,14 +111,11 @@ export default function DirectoryTab({ churches, visitedChurches, onChurchClick,
                             <div
                                 key={diocese}
                                 onClick={() => setDioceseFilter(diocese)}
-                                className={`flex items-center gap-2 pl-3 pr-4 py-2 rounded-xl border flex-shrink-0 transition-all cursor-pointer ${isActive
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl border flex-shrink-0 transition-all cursor-pointer ${isActive
                                     ? 'border-blue-600 shadow-md bg-white'
                                     : 'bg-white border-blue-100 shadow-sm hover:border-blue-300 hover:bg-blue-50/60'
                                     }`}
                             >
-                                <span className={`${isActive ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'} text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm`}>
-                                    {idx + 1}
-                                </span>
                                 <span className={`text-[10px] font-bold whitespace-nowrap mr-1 ${isActive ? 'text-blue-600' : 'text-gray-700'}`}>
                                     {label}
                                 </span>
@@ -145,7 +149,7 @@ export default function DirectoryTab({ churches, visitedChurches, onChurchClick,
                                 <i className="fas fa-star text-amber-500"></i> Fiestas this Month
                             </h2>
                             <div className="flex items-center gap-3">
-                                <span className="bg-blue-100 text-blue-700 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-tighter ring-1 ring-blue-200">
+                                <span className="bg-blue-600 text-white text-[9px] px-2 py-1 rounded-full font-bold uppercase shadow-sm">
                                     {MONTHS[currentMonth]}
                                 </span>
                                 <div className="hidden md:flex gap-2">
@@ -191,20 +195,26 @@ export default function DirectoryTab({ churches, visitedChurches, onChurchClick,
                                     >
                                         <div className="absolute inset-0 bg-gradient-to-br from-white/80 to-blue-50/50 backdrop-blur-sm -z-10"></div>
                                         <div className="flex items-start gap-4">
-                                            <div className={`w-12 h-12 ${iconBg} text-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg ${iconShadow}`}>
-                                                <i className="fas fa-church text-xl"></i>
+                                            <div className={`w-12 h-12 rounded-full ${iconBg} text-white flex items-center justify-center flex-shrink-0 font-black text-lg relative z-10 border-4 border-white shadow-md ${iconShadow}`}>
+                                                <i className="fas fa-church text-base"></i>
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <h3 className="font-black text-gray-900 text-base leading-tight truncate mb-1">
                                                     {church.Name}
                                                 </h3>
-                                                <p className="text-[10px] font-semibold text-gray-500 truncate flex items-center gap-2 mb-2">
-                                                    <span><i className={`fas fa-location-dot ${isTagbilaran ? 'text-blue-500' : 'text-amber-500'}`}></i> {church.Location}</span>
-                                                    <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-                                                    <span className={`${isTagbilaran ? 'text-blue-600' : 'text-amber-600'} font-bold`}>
-                                                        <i className="fas fa-calendar-alt text-[9px] mr-1"></i>{church.Fiesta}
+                                                <div className="flex items-start justify-between gap-2 overflow-hidden mb-2">
+                                                    <span className="text-[10px] font-semibold text-gray-500 truncate flex items-center gap-2">
+                                                        <span><i className={`fas fa-location-dot ${isTagbilaran ? 'text-blue-500' : 'text-amber-500'}`}></i> {church.Location}</span>
                                                     </span>
-                                                </p>
+                                                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                                                        <span className={`${isTagbilaran ? 'text-blue-600' : 'text-amber-600'} font-bold text-[10px]`}>
+                                                            <i className="fas fa-calendar-alt text-[9px] mr-1"></i>{church.Fiesta}
+                                                        </span>
+                                                        <span className="bg-blue-100 text-blue-600 text-[9px] px-2 py-1 rounded-full font-bold uppercase shadow-sm">
+                                                            {MONTHS[church.FiestaMonth]}
+                                                        </span>
+                                                    </div>
+                                                </div>
 
                                                 <div className="pt-2 border-t border-gray-100/50">
                                                     <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Sunday Mass</p>
